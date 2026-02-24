@@ -1,0 +1,3213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>플랩 어드민 v5</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+:root{
+  --blue:#1466F5;--blue-dk:#0E52CC;--blue-lt:#EBF1FF;
+  --green:#10B981;--yellow:#F59E0B;--red:#EF4444;--purple:#8B5CF6;
+  --r:8px;--r-lg:12px;
+}
+html:not(.dark){
+  --ab:#F9FAFB;--as:#FFFFFF;--as2:#F3F4F6;--as3:#E5E7EB;
+  --abdr:#E5E7EB;--at:#111827;--am:#6B7280;--abl:#1466F5;
+  --ahv:rgba(0,0,0,.04);
+}
+html.dark{
+  --ab:#0F131A;--as:#161D2B;--as2:#1E2840;--as3:#253352;
+  --abdr:#263044;--at:#DDE3F0;--am:#6B7FA5;--abl:#4E8EF7;
+  --ahv:rgba(255,255,255,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard',sans-serif;background:var(--ab);color:var(--at);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6;transition:background .18s,color .18s}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--abdr);border-radius:3px}
+
+/* ── LOGIN ── */
+#loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.lbox{background:var(--as);border:1px solid var(--abdr);border-radius:16px;padding:40px 36px;width:380px;max-width:90vw}
+.lmark{width:44px;height:44px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;margin:0 auto 14px}
+.lbox h1{text-align:center;font-size:17px;font-weight:800;color:var(--at);margin-bottom:4px}
+.lbox p{text-align:center;font-size:12px;color:var(--am);margin-bottom:24px}
+.lerr{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#F87171;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:12px;display:none}
+.ll{font-size:11px;font-weight:700;color:var(--am);letter-spacing:.04em;display:block;margin-bottom:5px}
+.li{width:100%;background:var(--ab);border:1px solid var(--abdr);border-radius:8px;padding:10px 13px;font-size:13.5px;color:var(--at);outline:none;font-family:inherit;transition:border .13s}
+.li:focus{border-color:var(--abl)}
+.lg{margin-bottom:12px}
+.lbtn{width:100%;padding:11px;border-radius:8px;background:var(--blue);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;transition:background .14s}
+.lbtn:hover{background:var(--blue-dk)}
+
+/* ── SHELL ── */
+#adminWrap{display:none}
+#adminWrap.on{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.aside{background:var(--as);border-right:1px solid var(--abdr);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.aside::-webkit-scrollbar{width:0}
+.a-logo{display:flex;align-items:center;gap:10px;padding:16px 14px;border-bottom:1px solid var(--abdr)}
+.a-logo-mark{width:28px;height:28px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff}
+.a-logo-t{font-size:13px;font-weight:800;color:var(--at);line-height:1.2}
+.a-logo-s{font-size:10px;color:var(--am)}
+.asl{padding:14px 14px 3px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--am)}
+.anav{padding:0 8px 8px}
+.alink{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 0;border-radius:7px;font-size:12.5px;font-weight:500;color:var(--am);cursor:pointer;transition:all .12s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.alink:hover{background:var(--ahv);color:var(--at)}
+.alink.on{background:var(--as2);color:var(--abl);font-weight:700}
+.alink-ic{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.aspacer{flex:1}
+.abottom{padding:12px;border-top:1px solid var(--abdr)}
+.auser{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .12s}
+.auser:hover{background:var(--ahv)}
+.aava{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.auname{font-size:12px;font-weight:600;color:var(--at)}
+.auemail{font-size:10px;color:var(--am)}
+
+/* ── MAIN ── */
+.main{overflow-y:auto;min-height:100vh;background:var(--ab)}
+.mhd{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--abdr);background:var(--as);position:sticky;top:0;z-index:50}
+.mhd-t{font-size:16px;font-weight:800;color:var(--at)}
+.mhd-s{font-size:11.5px;color:var(--am);margin-top:1px}
+.mbody{padding:28px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12.5px;font-weight:700;font-family:inherit;transition:all .13s;white-space:nowrap}
+.btn-bl{background:var(--blue);color:#fff}.btn-bl:hover{background:var(--blue-dk)}
+.btn-gh{background:var(--as2);color:var(--at);border:1px solid var(--abdr)}.btn-gh:hover{background:var(--as3)}
+/* 라이트모드 sidebar border */
+html:not(.dark) .aside{border-right:1px solid var(--abdr)}
+html:not(.dark) .atbl tr:hover td{background:rgba(0,0,0,.02)}
+html:not(.dark) .rte-body{background:var(--as2)}
+.btn-rd{background:rgba(239,68,68,.1);color:#F87171;border:1px solid rgba(239,68,68,.2)}.btn-rd:hover{background:rgba(239,68,68,.18)}
+.btn-gr{background:rgba(16,185,129,.1);color:#34D399;border:1px solid rgba(16,185,129,.2)}
+.bsm{padding:5px 10px;font-size:11.5px}.bxs{padding:3px 8px;font-size:11px}
+
+/* ── PANEL ── */
+.panel{background:var(--as);border:1px solid var(--abdr);border-radius:12px;margin-bottom:16px}
+.phd{padding:16px 20px;border-bottom:1px solid var(--abdr);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.phd-t{font-size:13.5px;font-weight:700;color:var(--at)}
+.phd-s{font-size:11px;color:var(--am);margin-top:2px}
+.pbody{padding:20px}
+
+/* ── FIELDS ── */
+.field{margin-bottom:14px}
+.fl{font-size:10.5px;font-weight:700;color:var(--am);letter-spacing:.06em;display:block;margin-bottom:5px;text-transform:uppercase}
+.fi{width:100%;background:var(--ab);border:1px solid var(--abdr);border-radius:8px;padding:9px 13px;font-size:13.5px;color:var(--at);outline:none;font-family:inherit;transition:border .13s;resize:vertical}
+.fi:focus{border-color:var(--abl);box-shadow:0 0 0 3px rgba(20,102,245,.12)}
+.fi::placeholder{color:var(--am);opacity:.55}
+select.fi{cursor:pointer}
+.fhint{font-size:11px;color:var(--am);margin-top:4px}
+
+/* ── TABLE ── */
+.atbl{width:100%;border-collapse:collapse}
+.atbl th{font-size:10.5px;font-weight:700;color:var(--am);text-transform:uppercase;letter-spacing:.05em;padding:8px 14px;border-bottom:1px solid var(--abdr);text-align:left}
+.atbl td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.035);font-size:12.5px;color:var(--at);vertical-align:middle}
+.atbl tr:last-child td{border-bottom:none}
+.atbl tr:hover td{background:var(--ahv)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
+.badge-new{background:rgba(78,142,247,.15);color:#7AB5FA}
+.badge-fix{background:rgba(16,185,129,.12);color:#34D399}
+.badge-notice{background:rgba(245,158,11,.12);color:#FCD34D}
+.badge-pub{background:rgba(16,185,129,.12);color:#34D399}
+.badge-dft{background:rgba(156,163,175,.1);color:var(--am)}
+
+/* ── MODAL ── */
+.mback{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.mback.open{display:flex}
+.modal{background:var(--as);border:1px solid var(--abdr);border-radius:14px;width:700px;max-width:100%;max-height:92vh;display:flex;flex-direction:column}
+.mhdr{padding:18px 24px;border-bottom:1px solid var(--abdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mhdr-t{font-size:15px;font-weight:800;color:var(--at)}
+.mx{background:none;border:none;color:var(--am);font-size:22px;cursor:pointer;line-height:1;padding:2px}
+.mx:hover{color:var(--at)}
+.mbdy{padding:24px;overflow-y:auto;flex:1}
+.mft{padding:14px 24px;border-bottom:1px solid var(--abdr);border-top:1px solid var(--abdr);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;background:var(--as)}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--as2);border:1px solid var(--abdr);border-radius:10px;padding:12px 18px;font-size:13px;color:var(--at);box-shadow:0 4px 24px rgba(0,0,0,.35);transform:translateY(8px);opacity:0;transition:all .22s;pointer-events:none}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ── SPLIT ── */
+.split{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+@media(max-width:920px){.split{grid-template-columns:1fr}}
+
+/* ── GA4 DASHBOARD ── */
+.ga-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.ga-card{background:var(--as);border:1px solid var(--abdr);border-radius:10px;padding:18px;position:relative;overflow:hidden}
+.ga-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
+.ga-card.blue::before{background:var(--blue)}
+.ga-card.green::before{background:var(--green)}
+.ga-card.yellow::before{background:var(--yellow)}
+.ga-card.purple::before{background:var(--purple)}
+.ga-val{font-size:26px;font-weight:900;color:var(--at);line-height:1;margin-bottom:4px}
+.ga-lbl{font-size:11.5px;color:var(--am);margin-bottom:6px}
+.ga-chg{font-size:11px;display:flex;align-items:center;gap:4px}
+.ga-chg.up{color:#34D399}.ga-chg.dn{color:#F87171}
+.ga-mini{font-size:10px;color:var(--am);margin-top:3px}
+
+/* 차트 바 */
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-label{font-size:11.5px;color:var(--am);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;background:var(--as2);border-radius:100px;height:8px;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;background:var(--blue);transition:width .6s ease}
+.bar-fill.green{background:var(--green)}
+.bar-fill.yellow{background:var(--yellow)}
+.bar-fill.purple{background:var(--purple)}
+.bar-val{font-size:11.5px;color:var(--at);font-weight:600;width:52px;text-align:right;flex-shrink:0}
+
+/* 도넛 차트 (CSS only) */
+.donut-wrap{position:relative;width:100px;height:100px;margin:0 auto 12px}
+.donut-svg{transform:rotate(-90deg)}
+.donut-lbl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-lbl span{display:block;font-size:18px;font-weight:900;color:var(--at)}
+.donut-lbl small{font-size:10px;color:var(--am)}
+
+/* 미니 스파크라인 */
+.sparkline{display:flex;align-items:flex-end;gap:3px;height:40px}
+.spark-bar{flex:1;background:var(--blue);border-radius:2px 2px 0 0;opacity:.7;min-height:4px;transition:opacity .15s}
+.spark-bar:hover{opacity:1}
+
+/* 날짜 레인지 셀렉터 */
+.date-range-tabs{display:flex;gap:2px;background:var(--as2);border-radius:8px;padding:3px}
+.dr-tab{padding:5px 12px;border-radius:6px;font-size:11.5px;font-weight:600;color:var(--am);cursor:pointer;border:none;background:none;font-family:inherit;transition:all .12s}
+.dr-tab.on{background:var(--as);color:var(--abl);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+
+/* 테이블 섹션 */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:10.5px;color:var(--am);text-transform:uppercase;letter-spacing:.05em;padding:7px 10px;border-bottom:1px solid var(--abdr);text-align:left;font-weight:700}
+.data-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.03);font-size:12.5px;color:var(--at);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.rank-num{font-size:11px;color:var(--am);font-weight:700;width:24px}
+.prog-cell{display:flex;align-items:center;gap:8px}
+.mini-bar{flex:1;height:4px;background:var(--as2);border-radius:2px;overflow:hidden}
+.mini-fill{height:100%;background:var(--blue);border-radius:2px}
+
+/* ════════════════════
+   RICH TEXT EDITOR
+════════════════════ */
+.rte-wrap{border:1px solid var(--abdr);border-radius:10px;overflow:hidden}
+
+/* ── 전체화면 에디터 ── */
+.editor-fullscreen{position:fixed;inset:0;z-index:2000;background:var(--ab);display:flex;flex-direction:column;overflow:hidden}
+.editor-fullscreen .rte-wrap{border:none;border-radius:0;flex:1;display:flex;flex-direction:column;overflow:hidden}
+.editor-fullscreen .rte-body{flex:1;max-height:none;overflow-y:auto}
+.editor-fullscreen .rte-toolbar{border-radius:0}
+.editor-fullscreen-hd{display:flex;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid var(--abdr);background:var(--as);flex-shrink:0}
+.editor-fullscreen-hd input{flex:1;font-size:18px;font-weight:700;color:var(--at);background:transparent;border:none;outline:none;font-family:inherit}
+
+/* ── 콜아웃 블록 ── */
+.rte-body .callout{background:var(--as2);border-left:4px solid var(--abl);border-radius:8px;padding:12px 16px;margin:10px 0;display:flex;gap:10px;align-items:flex-start}
+.rte-body .callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.rte-body .callout-text{flex:1;min-width:0}
+/* ── 서비스 페이지 미리보기 (홈페이지 동일 렌더링) ── */
+.rte-body .sp-hero{text-align:center;padding:32px 20px 24px;border-bottom:1px solid var(--abdr);margin:-32px -40px 0;background:var(--as)}
+.rte-body .sp-hero-icon{font-size:48px;margin-bottom:12px;line-height:1}
+.rte-body .sp-title{font-size:24px;font-weight:800;color:var(--at);letter-spacing:-.02em;margin-bottom:8px}
+.rte-body .sp-lead{font-size:14.5px;color:var(--am);line-height:1.6;max-width:360px;margin:0 auto}
+.rte-body .sp-section{padding:24px 0;border-bottom:1px solid var(--abdr)}
+.rte-body .sp-section:last-child{border-bottom:none}
+.rte-body .sp-section h2{font-size:17px;font-weight:700;color:var(--at);margin-bottom:10px;letter-spacing:-.01em}
+.rte-body .sp-section p{font-size:14px;color:var(--am);line-height:1.7;margin-bottom:12px}
+.rte-body .sp-section p:last-child{margin-bottom:0}
+.rte-body .sp-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.rte-body .sp-card{background:var(--as2);border-radius:14px;padding:16px;text-align:center}
+.rte-body .sp-card-icon{font-size:28px;margin-bottom:8px}
+.rte-body .sp-card-title{font-size:13px;font-weight:700;color:var(--at);margin-bottom:4px}
+.rte-body .sp-card-desc{font-size:12px;color:var(--am);line-height:1.5}
+.rte-body .sp-steps{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.rte-body .sp-step{display:flex;gap:14px;align-items:flex-start}
+.rte-body .sp-step-num{width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--abl);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.rte-body .sp-step strong{font-size:14px;color:var(--at);display:block;margin-bottom:3px}
+.rte-body .sp-step p{font-size:13px;color:var(--am);line-height:1.6;margin:0}
+
+/* ── 에디터 개선 ── */
+.rte-body{background:var(--ab);min-height:1360px;padding:32px 40px;font-size:15px;color:var(--at);line-height:1.8;outline:none;overflow-y:auto;max-height:90vh}
+.rte-toolbar{background:var(--as);border-bottom:1px solid var(--abdr);padding:6px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:3px;position:sticky;top:0;z-index:10}
+.rtb{padding:4px 7px;border:none;background:none;border-radius:5px;cursor:pointer;font-size:12.5px;color:var(--at);font-family:inherit;transition:background .12s;white-space:nowrap}
+.rtb:hover{background:var(--ahv)}
+.rtb-fs{padding:3px 6px;border:1px solid var(--abdr);background:var(--as);border-radius:5px;font-size:12px;color:var(--at);cursor:pointer;font-family:inherit}
+.rte-sep{width:1px;height:18px;background:var(--abdr);margin:0 3px;flex-shrink:0}
+
+/* ── iOS 드래그 핸들 ── */
+.drag-handle{width:24px;min-height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:grab;flex-shrink:0;opacity:1;transition:background .15s;border-radius:6px}
+.drag-handle span{display:block;width:14px;height:2px;background:var(--abdr);border-radius:2px;transition:background .15s}
+.drag-handle:hover{background:var(--as2)}
+.drag-handle:hover span{background:var(--abl)}
+.drag-handle:active{cursor:grabbing}
+.dragging-item{opacity:.3!important;outline:2px dashed var(--abl);border-radius:10px}
+.drag-over-top{border-top:2px solid var(--abl)!important;background:rgba(20,102,245,.04)!important}
+.drag-over-bot{border-bottom:2px solid var(--abl)!important;background:rgba(20,102,245,.04)!important}
+
+/* ── iOS 스타일 게시글 목록 ── */
+.posts-list{display:flex;flex-direction:column;gap:12px}
+.cat-card{background:var(--as);border:1px solid var(--abdr);border-radius:16px;overflow:hidden;transition:box-shadow .2s}
+.cat-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.cat-hd{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--abdr);background:var(--as)}
+.cat-hd-info{flex:1;min-width:0}
+.cat-hd-name{font-size:15px;font-weight:600;color:var(--at);letter-spacing:-.01em}
+.cat-hd-sub{font-size:11.5px;color:var(--am);margin-top:1px}
+.sub-section{border-bottom:1px solid var(--abdr)}
+.sub-section:last-child{border-bottom:none}
+.sub-hd{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--as2)}
+.sub-hd-name{flex:1;font-size:12px;font-weight:600;color:var(--am);letter-spacing:.01em}
+.sub-hd-cnt{font-weight:400;opacity:.6}
+.post-row{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,.05);transition:background .12s}
+.post-row:last-child{border-bottom:none}
+.post-row:hover{background:var(--ahv)}
+.post-row-body{flex:1;min-width:0}
+.post-row-title{font-size:14px;font-weight:400;color:var(--at);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.post-row-meta{display:flex;gap:8px;margin-top:3px;align-items:center}
+.meta-date{font-size:11px;color:var(--am)}
+.meta-upd{font-size:11px;color:var(--abl);font-weight:500}
+.empty-sub{padding:16px 16px;font-size:13px;color:var(--am)}
+.add-cat-row{text-align:center;padding:16px 0}
+.svc-post-row{background:var(--as)}
+.posts-svc-wrap{border-radius:16px;overflow:hidden;border:1px solid var(--abdr)}
+
+/* ── iOS 버튼 시스템 ── */
+.ios-btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;padding:7px 14px;transition:all .15s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.ios-btn:active{transform:scale(.97)}
+.ios-btn-blue{background:var(--abl);color:#fff}
+.ios-btn-blue:hover{filter:brightness(1.1)}
+.ios-btn-red{background:rgba(239,68,68,.1);color:#EF4444}
+.ios-btn-red:hover{background:rgba(239,68,68,.18)}
+.ios-btn-gray{background:var(--as2);color:var(--at);border:1px solid var(--abdr)}
+.ios-btn-gray:hover{background:var(--as3)}
+.ios-btn-sm{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:8px;font-size:11.5px;font-weight:500;cursor:pointer;padding:4px 10px;transition:all .15s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.ios-btn-sm:active{transform:scale(.96)}
+
+/* ── 표 리사이즈 커서 힌트 ── */
+.rte-body table th,.rte-body table td{position:relative}
+.rte-body table th:hover,.rte-body table td:hover{background-color:rgba(78,142,247,.04)!important}
+.ord-btn{width:18px;height:14px;border:1px solid var(--abdr);border-radius:3px;background:var(--as2);color:var(--am);font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:all .12s;font-family:inherit}
+.ord-btn:hover:not([disabled]){background:var(--abl);color:#fff;border-color:var(--abl)}
+.ord-btn[disabled]{opacity:.3;cursor:default}
+.rte-toolbar{
+  background:var(--as2);border-bottom:1px solid var(--abdr);
+  padding:8px 12px;display:flex;align-items:center;gap:2px;flex-wrap:wrap;
+}
+.rte-sep{width:1px;height:18px;background:var(--abdr);margin:0 4px;flex-shrink:0}
+.rtb{
+  background:none;border:none;color:var(--am);cursor:pointer;
+  padding:4px 6px;border-radius:5px;font-size:13px;font-family:inherit;
+  transition:all .12s;line-height:1;display:flex;align-items:center;justify-content:center;
+  min-width:26px;height:26px;font-weight:500;
+}
+.rtb:hover{background:var(--as3);color:var(--at)}
+.rtb.on{background:var(--blue);color:#fff}
+.rtb-fs{width:60px;background:var(--ab);border:1px solid var(--abdr);border-radius:5px;padding:2px 6px;font-size:12px;color:var(--at);outline:none;font-family:inherit;cursor:pointer;height:26px}
+.rtb-color{width:20px;height:20px;border-radius:50%;border:2px solid var(--abdr);cursor:pointer;padding:0}
+.rte-body{
+  background:var(--ab);min-height:1360px;padding:24px 32px;
+  font-size:14px;color:var(--at);line-height:1.75;outline:none;
+  overflow-y:auto;max-height:90vh;
+}
+.rte-body:empty::before{content:'내용을 입력하세요...';color:var(--am);opacity:.5;pointer-events:none}
+/* 에디터 내부 스타일 */
+.rte-body h1{font-size:24px;font-weight:800;margin:16px 0 8px;color:var(--at)}
+.rte-body h2{font-size:19px;font-weight:700;margin:14px 0 6px;color:var(--at)}
+.rte-body h3{font-size:16px;font-weight:700;margin:12px 0 5px;color:var(--at)}
+.rte-body p{margin:4px 0}
+.rte-body ul,.rte-body ol{margin:6px 0 6px 20px}
+.rte-body li{margin:2px 0}
+.rte-body blockquote{border-left:3px solid var(--abl);padding:8px 14px;color:var(--am);margin:10px 0;font-style:italic}
+.rte-body hr{border:none;border-top:1px solid var(--abdr);margin:16px 0}
+.rte-body table{border-collapse:collapse;width:100%;margin:10px 0}
+.rte-body table td,.rte-body table th{border:1px solid var(--abdr);padding:6px 10px;font-size:12.5px}
+.rte-body table th{background:var(--as2);font-weight:700}
+.rte-body img{max-width:100%;border-radius:8px;margin:8px 0;display:block;cursor:pointer}
+.rte-body img.img-selected{outline:2px solid var(--abl);outline-offset:2px}
+.img-resize-bar{display:none;align-items:center;gap:8px;padding:6px 12px;background:var(--as);border:1px solid var(--abdr);border-radius:8px;position:fixed;z-index:1000;font-size:12px;color:var(--at);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.img-resize-bar.show{display:flex}
+.rte-body a{color:var(--abl);text-decoration:underline}
+.rte-body pre{background:var(--as2);border-radius:6px;padding:12px 16px;font-family:monospace;font-size:12.5px;color:#93C5FD;overflow-x:auto;margin:8px 0}
+/* 갤러리 그리드 */
+.rte-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+.rte-gallery img{border-radius:6px;aspect-ratio:4/3;object-fit:cover;width:100%}
+
+/* 이미지 첨부 드랍존 */
+.img-drop{border:2px dashed var(--abdr);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .15s;background:var(--ab)}
+.img-drop:hover,.img-drop.over{border-color:var(--abl);background:rgba(78,142,247,.04)}
+.img-drop-ic{font-size:28px;margin-bottom:8px}
+.img-drop-t{font-size:13px;font-weight:600;color:var(--at);margin-bottom:4px}
+.img-drop-s{font-size:11.5px;color:var(--am)}
+.img-preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.img-thumb{position:relative;aspect-ratio:4/3;border-radius:8px;overflow:hidden;border:1px solid var(--abdr)}
+.img-thumb img{width:100%;height:100%;object-fit:cover}
+.img-thumb-rm{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);border:none;border-radius:50%;width:20px;height:20px;font-size:12px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+
+/* 갤러리 빌더 */
+.gallery-builder{background:var(--ab);border:1px solid var(--abdr);border-radius:10px;padding:16px}
+.gallery-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--abdr)}
+.gallery-item:last-child{border-bottom:none}
+.gallery-thumb-sm{width:48px;height:36px;border-radius:5px;object-fit:cover;background:var(--as2);flex-shrink:0}
+
+/* 색상 피커 팝업 */
+.color-popup{
+  position:fixed;z-index:9999;background:var(--as);border:1px solid var(--abdr);
+  border-radius:10px;padding:12px;display:none;
+  grid-template-columns:repeat(6,1fr);gap:5px;width:160px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.color-popup.open{display:grid}
+.cp-swatch{width:20px;height:20px;border-radius:50%;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:transform .1s}
+.cp-swatch:hover{transform:scale(1.2)}
+
+/* 링크 팝업 */
+.link-popup{position:fixed;z-index:9999;background:var(--as);border:1px solid var(--abdr);border-radius:10px;padding:14px;display:none;width:300px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.link-popup.open{display:block}
+.link-popup input{width:100%;background:var(--ab);border:1px solid var(--abdr);border-radius:7px;padding:8px 11px;font-size:13px;color:var(--at);outline:none;font-family:inherit;margin-bottom:8px}
+.link-popup input:focus{border-color:var(--abl)}
+
+/* 테이블 빌더 팝업 */
+.tbl-builder{background:var(--as);border:1px solid var(--abdr);border-radius:10px;padding:14px;display:none;position:fixed;z-index:9999;width:220px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.tbl-builder.open{display:block}
+.tbl-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:8px}
+.tbl-cell{width:22px;height:22px;border:1px solid var(--abdr);border-radius:3px;cursor:pointer;transition:all .1s;background:var(--as2)}
+.tbl-cell.hl{background:var(--abl);border-color:var(--blue)}
+</style>
+<!-- ══ Firebase SDK ══ -->
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getFirestore,doc,setDoc,getDoc}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   🔧 Firebase 설정값을 아래에 붙여넣으세요
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const FB = {
+  apiKey:            "AIzaSyB3tPHPnv961f2PhxVEZb_g2g6mdKxNbsQ",
+  authDomain:        "plabstadiumguide.firebaseapp.com",
+  projectId:         "plabstadiumguide",
+  storageBucket:     "plabstadiumguide.firebasestorage.app",
+  messagingSenderId: "347837323084",
+  appId:             "1:347837323084:web:0261a61bddadb188d721e9"
+};
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+const configured = !FB.apiKey.includes('여기에');
+
+if(configured){
+  const app=initializeApp(FB);
+  const db=getFirestore(app);
+  const REF=()=>doc(db,'plab','siteData');
+
+  window._fbSave=async(json)=>{
+    try{
+      await setDoc(REF(),{data:json,savedAt:new Date().toISOString()});
+      return true;
+    }catch(e){console.error('Firebase 저장 오류',e);return false;}
+  };
+
+  window._fbLoad=async()=>{
+    try{
+      const snap=await getDoc(REF());
+      return snap.exists()?snap.data().data:null;
+    }catch(e){console.error('Firebase 로드 오류',e);return null;}
+  };
+}else{
+  window._fbSave=async()=>false;
+  window._fbLoad=async()=>null;
+  console.warn('⚠️ Firebase 설정값을 입력하세요. 지금은 로컬 저장만 됩니다.');
+}
+</script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginWrap">
+  <div class="lbox">
+    <div class="lmark">P</div>
+    <h1>플랩 어드민</h1>
+    <p>관리자 계정으로 로그인하세요</p>
+    <div class="lerr" id="lerr">이메일 또는 비밀번호가 올바르지 않습니다</div>
+    <div class="lg"><label class="ll">이메일</label><input class="li" id="lemail" type="email" value="admin@plab.kr"></div>
+    <div class="lg"><label class="ll">비밀번호</label><input class="li" id="lpw" type="password" value="plab1234" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="lbtn" onclick="doLogin()">로그인</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminWrap">
+  <aside class="aside">
+    <div id="fbBar" style="padding:7px 14px;font-size:11.5px;font-weight:600;border-bottom:1px solid var(--abdr);display:flex;align-items:center;gap:7px;background:rgba(245,158,11,.08);color:#F59E0B">
+      <span>⏳</span><span id="fbBarTxt">클라우드 연결 중...</span>
+    </div>
+    <div class="a-logo">
+      <div class="a-logo-mark">P</div>
+      <div>
+        <div class="a-logo-t">플랩 어드민</div>
+        <div class="a-logo-s">파트너 가이드 CMS</div>
+      </div>
+    </div>
+    <div class="asl">메인</div>
+    <div class="anav">
+      <button class="alink on" onclick="pg('dashboard')" id="nav-dashboard"><span class="alink-ic">📊</span>대시보드</button>
+    </div>
+    <div class="asl">홈 편집</div>
+    <div class="anav">
+      <button class="alink" onclick="pg('home-hero')" id="nav-home-hero"><span class="alink-ic">🖼️</span>Hero 영역</button>
+      <button class="alink" onclick="pg('home-banner')" id="nav-home-banner"><span class="alink-ic">📢</span>업데이트 소식</button>
+    </div>
+    <div class="asl">가이드 콘텐츠</div>
+    <div class="anav">
+      <button class="alink" onclick="pg('guide-cats')" id="nav-guide-cats"><span class="alink-ic">🗂️</span>카드 관리</button>
+
+      <button class="alink" onclick="pg('guide-posts')" id="nav-guide-posts"><span class="alink-ic">📄</span>게시글 관리</button>
+    </div>
+    <div class="asl">서비스 콘텐츠</div>
+    <div class="anav">
+      <button class="alink" onclick="pg('service-cards')" id="nav-service-cards"><span class="alink-ic">⚙️</span>카드 관리</button>
+      <button class="alink" onclick="pg('service-posts')" id="nav-service-posts"><span class="alink-ic">📄</span>게시글 관리</button>
+    </div>
+    <div class="asl">설정</div>
+    <div class="anav">
+      <button class="alink" onclick="pg('settings')" id="nav-settings"><span class="alink-ic">⚙️</span>사이트 설정</button>
+      <button class="alink" onclick="pg('footer-edit')" id="nav-footer"><span class="alink-ic">📋</span>푸터 편집</button>
+    </div>
+    <div class="aspacer"></div>
+    <div class="abottom">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;margin-bottom:6px;border-radius:8px;background:var(--as2);border:1px solid var(--abdr)">
+        <span style="font-size:12px;color:var(--am);flex:1">다크 모드</span>
+        <button id="adminThemeBtn" onclick="toggleAdminTheme()" style="position:relative;width:36px;height:20px;border-radius:100px;border:none;cursor:pointer;background:var(--abdr);transition:background .2s;padding:0">
+          <span id="adminThemeKnob" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;display:block"></span>
+        </button>
+      </div>
+      <div class="auser" onclick="doLogout()">
+        <div class="aava">A</div>
+        <div><div class="auname">관리자</div><div class="auemail" id="aEmail">admin@plab.kr</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="mhd">
+      <div>
+        <div class="mhd-t" id="pTitle">대시보드</div>
+        <div class="mhd-s" id="pSub">플랩 파트너 가이드 관리</div>
+      </div>
+      <div style="display:flex;gap:8px" id="pActs"></div>
+    </div>
+    <div class="mbody" id="mainBody"></div>
+  </div>
+</div>
+
+<!-- COLOR POPUP -->
+<div class="color-popup" id="colorPopup">
+  <div class="cp-swatch" style="background:#DDE3F0" onclick="applyColor('#DDE3F0')"></div>
+  <div class="cp-swatch" style="background:#7AB5FA" onclick="applyColor('#7AB5FA')"></div>
+  <div class="cp-swatch" style="background:#34D399" onclick="applyColor('#34D399')"></div>
+  <div class="cp-swatch" style="background:#FCD34D" onclick="applyColor('#FCD34D')"></div>
+  <div class="cp-swatch" style="background:#F87171" onclick="applyColor('#F87171')"></div>
+  <div class="cp-swatch" style="background:#C4B5FD" onclick="applyColor('#C4B5FD')"></div>
+  <div class="cp-swatch" style="background:#6B7280" onclick="applyColor('#6B7280')"></div>
+  <div class="cp-swatch" style="background:#1466F5" onclick="applyColor('#1466F5')"></div>
+  <div class="cp-swatch" style="background:#10B981" onclick="applyColor('#10B981')"></div>
+  <div class="cp-swatch" style="background:#F59E0B" onclick="applyColor('#F59E0B')"></div>
+  <div class="cp-swatch" style="background:#EF4444" onclick="applyColor('#EF4444')"></div>
+  <div class="cp-swatch" style="background:#8B5CF6" onclick="applyColor('#8B5CF6')"></div>
+</div>
+
+<!-- LINK POPUP -->
+<div class="link-popup" id="linkPopup">
+  <div style="font-size:11px;font-weight:700;color:var(--am);margin-bottom:6px">링크 삽입</div>
+  <input id="linkUrl" placeholder="https://..." type="url">
+  <input id="linkText" placeholder="링크 텍스트 (선택)">
+  <div style="display:flex;gap:6px">
+    <button class="btn btn-bl bsm" onclick="insertLink()" style="flex:1">삽입</button>
+    <button class="btn btn-gh bsm" onclick="closeLinkPopup()">취소</button>
+  </div>
+</div>
+
+<!-- TABLE BUILDER (고급) -->
+<div class="tbl-builder" id="tblBuilder">
+  <div style="font-size:12px;font-weight:600;color:var(--at);margin-bottom:10px;letter-spacing:-.01em">표 삽입</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+    <div style="flex:1"><div style="font-size:11px;color:var(--am);margin-bottom:4px">행</div>
+    <input id="tblRowInp" type="number" min="1" max="30" value="3" class="fi" style="width:100%;padding:5px 8px;font-size:13px"></div>
+    <div style="flex:1"><div style="font-size:11px;color:var(--am);margin-bottom:4px">열</div>
+    <input id="tblColInp" type="number" min="1" max="20" value="3" class="fi" style="width:100%;padding:5px 8px;font-size:13px"></div>
+  </div>
+  <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--am);cursor:pointer;margin-bottom:10px;padding:8px;background:var(--as2);border-radius:8px">
+    <input type="checkbox" id="tblHasHeader" checked style="width:15px;height:15px;accent-color:var(--abl)">
+    <span>첫 번째 행을 제목행으로 설정</span>
+  </label>
+  <div style="margin-bottom:12px">
+    <div style="font-size:11px;color:var(--am);margin-bottom:6px">제목행 배경색</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+      <div onclick="selectTblHeaderColor('#1E2840')" data-color="#1E2840" style="width:22px;height:22px;border-radius:5px;background:#1E2840;cursor:pointer;border:2px solid var(--abl)"></div>
+      <div onclick="selectTblHeaderColor('#1a3a2a')" data-color="#1a3a2a" style="width:22px;height:22px;border-radius:5px;background:#1a3a2a;cursor:pointer;border:2px solid transparent"></div>
+      <div onclick="selectTblHeaderColor('#3a1a1a')" data-color="#3a1a1a" style="width:22px;height:22px;border-radius:5px;background:#3a1a1a;cursor:pointer;border:2px solid transparent"></div>
+      <div onclick="selectTblHeaderColor('#1a1a3a')" data-color="#1a1a3a" style="width:22px;height:22px;border-radius:5px;background:#1a1a3a;cursor:pointer;border:2px solid transparent"></div>
+      <div onclick="selectTblHeaderColor('#374151')" data-color="#374151" style="width:22px;height:22px;border-radius:5px;background:#374151;cursor:pointer;border:2px solid transparent"></div>
+      <div onclick="selectTblHeaderColor('#7c3aed')" data-color="#7c3aed" style="width:22px;height:22px;border-radius:5px;background:#7c3aed;cursor:pointer;border:2px solid transparent"></div>
+      <input type="color" id="tblHeaderColorPicker" value="#1E2840" title="직접 선택" style="width:22px;height:22px;border:none;padding:0;cursor:pointer;border-radius:5px;border:2px solid transparent" onchange="selectTblHeaderColor(this.value)">
+    </div>
+  </div>
+  <button class="btn btn-bl" style="width:100%;padding:8px;font-size:13px;border-radius:10px" onclick="insertTableAdv()">표 삽입</button>
+</div>
+
+<!-- MODAL -->
+<div class="mback" id="mback" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal">
+    <div class="mhdr">
+      <div class="mhdr-t" id="mTitle">-</div>
+      <button class="mx" onclick="closeModal()">×</button>
+    </div>
+    <div class="mbdy" id="mBody"></div>
+    <div class="mft" id="mFt"></div>
+  </div>
+</div>
+<div id="toast"></div>
+<!-- IMAGE RESIZE BAR -->
+<div class="img-resize-bar" id="imgResizeBar">
+  <span id="imgResizeInfo" style="color:var(--am)">-</span>
+  <input type="range" id="imgResizeSlider" min="10" max="100" value="100" style="width:120px;accent-color:var(--abl)" oninput="onImgResize(this.value)">
+  <span id="imgResizePct" style="min-width:32px;font-weight:600">100%</span>
+  <button class="btn btn-gh bxs" onclick="closeImgResize()">✕</button>
+</div>
+
+<script>
+/* ── 어드민 테마 ── */
+function initAdminTheme(){
+  const t=localStorage.getItem('plab_admin_theme')||'light';
+  if(t==='light'){document.documentElement.classList.remove('dark');}
+  else{document.documentElement.classList.add('dark');}
+  _syncThemeBtn();
+}
+function toggleAdminTheme(){
+  const isDark=document.documentElement.classList.contains('dark');
+  if(isDark){
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('plab_admin_theme','light');
+  } else {
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('plab_admin_theme','dark');
+  }
+  _syncThemeBtn();
+}
+function _syncThemeBtn(){
+  const isDark=document.documentElement.classList.contains('dark');
+  const btn=document.getElementById('adminThemeBtn');
+  const knob=document.getElementById('adminThemeKnob');
+  if(btn){btn.style.background=isDark?'var(--blue)':'var(--abdr)';}
+  if(knob){knob.style.transform=isDark?'translateX(16px)':'translateX(0)';}
+}
+initAdminTheme();
+
+/* ════════════════════════════════════
+   DATA
+════════════════════════════════════ */
+const DEF = {
+  settings:{siteName:'플랩 이용 가이드',heroTitle:'플랩 이용 가이드',
+    heroDesc:'소셜 매치부터 정산까지 구장 운영에 필요한 모든 정보',
+    heroCopy:'더 많은 사람들이 풋살을 즐길 수 있도록\n더 많은 구장이 플랩의 80만 유저에게 닿도록\n더 많은 구장이 매출을 늘릴 수 있도록\n언제, 어디서나 플랩입니다',
+    adminEmail:'admin@plab.kr',adminPw:'plab1234',
+    footer:{
+      links:[
+        {label:'홈페이지',url:'https://plab.kr'},
+        {label:'이용약관',url:'#'},
+        {label:'개인정보처리방침',url:'#'},
+        {label:'사업자 정보',url:'#'}
+      ],
+      biz:'주식회사 마이플레이컴퍼니\n사업자등록번호 650-81-00575\n서울시 마포구 잔다리로31 제우피스빌딩 2층\n신고 2020-서울마포-4411',
+      contact:'대표 메일: contact@plab.kr\n마케팅: marketing@plab.kr\n언론, 연구: pr@plab.kr',
+      copyright:'© Myplaycompany All Rights Reserved.',
+      instagram:'https://instagram.com/plabfootball',
+      youtube:'#',appstore:'#'
+    }
+  },
+  subcategories:{
+    gc1:['매치 시작하기','매치 추가 및 취소','매치 운영'],
+    gc2:['시작하기','일정 관리'],
+    gc3:['서비스 소개','이용 현황'],
+    gc4:['홍보 도구','고객 관리'],
+    gc5:['정산 기본','정산 조회'],
+    gc6:['공통 FAQ','소셜매치 FAQ','정산 FAQ']
+  },
+  servicePages:{
+  s1:`<section class="sp-hero">
+    <div class="sp-hero-icon">⚽</div>
+    <h1 class="sp-title">소셜 매치</h1>
+    <p class="sp-lead">내가 하고 싶을 때, 하고 싶은 곳에서, 하고 싶은 사람들과 하는 원데이 소셜 풋살</p>
+  </section>
+  <section class="sp-section">
+    <h2>소셜 매치란?</h2>
+    <p>플랩풋볼 소셜 매치는 개인 참가자들이 레벨과 지역에 맞게 매치에 참여하는 서비스입니다. 구장 파트너는 매치를 편성하고 운영하여 수익을 창출합니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">📅</div><div class="sp-card-title">유연한 일정</div><div class="sp-card-desc">원하는 날짜·시간에 매치를 편성할 수 있습니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">🎯</div><div class="sp-card-title">레벨 매칭</div><div class="sp-card-desc">8단계 레벨 시스템으로 실력에 맞는 참가자와 매치</div></div>
+      <div class="sp-card"><div class="sp-card-icon">💰</div><div class="sp-card-title">자동 정산</div><div class="sp-card-desc">매치 완료 후 자동으로 정산이 처리됩니다</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>매치 편성 방법</h2>
+    <div class="sp-steps">
+      <div class="sp-step"><span class="sp-step-num">1</span><div><strong>구장관리 사이트 접속</strong><p>partner.plab.kr 에서 로그인 후 [매치 관리] 메뉴를 선택합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">2</span><div><strong>매치 일정 등록</strong><p>날짜, 시간, 레벨, 인원을 설정하고 매치를 등록합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">3</span><div><strong>참가자 모집</strong><p>플랩풋볼 앱과 웹을 통해 자동으로 참가자를 모집합니다</div></div>
+      <div class="sp-step"><span class="sp-step-num">4</span><div><strong>매치 진행 및 정산</strong><p>매치 완료 후 자동으로 정산이 처리됩니다</p></div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>수익 구조</h2>
+    <p>참가자 1인당 참가비에서 플랩 수수료를 제한 금액이 파트너에게 정산됩니다. 정산은 매월 1일, 15일 두 차례 이루어집니다.</p>
+  </section>`,
+  s2:`<section class="sp-hero">
+    <div class="sp-hero-icon">🏟️</div>
+    <h1 class="sp-title">구장 예약</h1>
+    <p class="sp-lead">원하는 시간, 구장을 한 번에 확인하고 바로 예약</p>
+  </section>
+  <section class="sp-section">
+    <h2>구장 예약 서비스</h2>
+    <p>플랩풋볼 앱과 웹에서 전국 파트너 구장을 실시간으로 검색하고 예약할 수 있습니다. 구장 파트너는 예약 관리와 일정 운영을 한 곳에서 처리할 수 있습니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">🔍</div><div class="sp-card-title">실시간 현황</div><div class="sp-card-desc">잔여 슬롯을 실시간으로 확인하고 즉시 예약</div></div>
+      <div class="sp-card"><div class="sp-card-icon">📆</div><div class="sp-card-title">일정 관리</div><div class="sp-card-desc">구장관리 사이트에서 예약 일정을 한눈에 관리</div></div>
+      <div class="sp-card"><div class="sp-card-icon">🔔</div><div class="sp-card-title">자동 알림</div><div class="sp-card-desc">예약 확정, 변경, 취소 시 자동으로 알림 발송</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>구장 등록 및 운영</h2>
+    <div class="sp-steps">
+      <div class="sp-step"><span class="sp-step-num">1</span><div><strong>구장 정보 등록</strong><p>구장관리 사이트에서 구장명, 위치, 시설 정보를 등록합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">2</span><div><strong>운영 시간 설정</strong><p>요일별·시간대별 운영 일정과 가격을 설정합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">3</span><div><strong>예약 접수</strong><p>플랩 앱을 통해 들어오는 예약을 실시간으로 확인합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">4</span><div><strong>정산 수령</strong><p>완료된 예약은 자동으로 정산 처리됩니다</p></div></div>
+    </div>
+  </section>`,
+  s3:`<section class="sp-hero">
+    <div class="sp-hero-icon">👥</div>
+    <h1 class="sp-title">팀</h1>
+    <p class="sp-lead">우리 팀과 팀리그, 게스트 모집 참여하기</p>
+  </section>
+  <section class="sp-section">
+    <h2>팀 서비스란?</h2>
+    <p>플랩풋볼 팀 서비스를 통해 정기 팀을 만들고 팀원을 관리할 수 있습니다. 구장 파트너는 팀 고객을 유치하고 정기적인 수익을 창출할 수 있습니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">🏆</div><div class="sp-card-title">팀리그</div><div class="sp-card-desc">지역 팀들과 리그를 구성하고 승강전을 운영합니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">👤</div><div class="sp-card-title">게스트 모집</div><div class="sp-card-desc">정원 미달 시 개인 참가자를 모집할 수 있습니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">📊</div><div class="sp-card-title">팀 기록 관리</div><div class="sp-card-desc">경기 결과, 득점 현황, 출석률 등을 관리합니다</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>팀 매치 운영</h2>
+    <div class="sp-steps">
+      <div class="sp-step"><span class="sp-step-num">1</span><div><strong>팀 매치 편성</strong><p>구장관리 사이트에서 팀 대상 매치 일정을 등록합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">2</span><div><strong>팀 초대 및 모집</strong><p>기존 팀을 초대하거나 새 팀 모집 공고를 올립니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">3</span><div><strong>게스트 추가 모집</strong><p>정원 미달 시 소셜 매치 참가자를 게스트로 모집합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">4</span><div><strong>경기 진행 및 결과 기록</strong><p>매치 완료 후 결과를 입력하면 자동으로 순위가 업데이트됩니다</p></div></div>
+    </div>
+  </section>`,
+  s4:`<section class="sp-hero">
+    <div class="sp-hero-icon">📣</div>
+    <h1 class="sp-title">마케팅 지원</h1>
+    <p class="sp-lead">80만 유저에게 구장을 알릴 수 있는 홍보 도구를 제공합니다</p>
+  </section>
+  <section class="sp-section">
+    <h2>마케팅 지원 서비스</h2>
+    <p>플랩풋볼 플랫폼의 80만 유저를 대상으로 구장을 효과적으로 홍보할 수 있는 다양한 마케팅 도구를 제공합니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">🖼️</div><div class="sp-card-title">배너 광고</div><div class="sp-card-desc">앱·웹 메인 화면에 구장 홍보 배너를 노출합니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">📱</div><div class="sp-card-title">SNS 연동</div><div class="sp-card-desc">인스타그램, 카카오채널과 연동하여 자동 홍보</div></div>
+      <div class="sp-card"><div class="sp-card-icon">⭐</div><div class="sp-card-title">리뷰 관리</div><div class="sp-card-desc">참가자 리뷰를 관리하고 답변하여 신뢰도 향상</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>마케팅 도구 이용 방법</h2>
+    <p>구장관리 사이트 [마케팅] 메뉴에서 배너 등록, SNS 연동, 리뷰 관리를 모두 진행할 수 있습니다. 마케팅 효과를 대시보드에서 실시간으로 모니터링하세요.</p>
+  </section>`
+},
+  categories:[
+    {id:'gc1',name:'소셜 매치',emoji:'⚽',desc:'소셜 매치 운영 및 편성 가이드',cv:'cv-bl',order:0},
+    {id:'gc2',name:'구장 관리 사이트',emoji:'🏟️',desc:'구장 예약 및 관리 사이트 이용 가이드',cv:'cv-gr',order:1},
+    {id:'gc3',name:'런드리',emoji:'👕',desc:'런드리 소개와 운영 가이드',cv:'cv-pu',order:2},
+    {id:'gc4',name:'마케팅',emoji:'📣',desc:'구장 홍보 방안 안내',cv:'cv-or',order:3},
+    {id:'gc5',name:'정산',emoji:'💰',desc:'매출 정산 및 수수료 관련 안내',cv:'cv-te',order:4},
+    {id:'gc6',name:'자주 묻는 질문',emoji:'❓',desc:'더 많은 내용을 확인해 보세요.',cv:'cv-in',order:5},
+  ],
+  updates:[
+    // 최신 3개 → 홈 배너 노출 / 전체 → 업데이트 노트
+    {id:'u1',type:'new',title:"비·눈 오는 날, 매치 진행 가능 여부 알리기('25.12)",date:"'25.12",subtitle:"날씨 악화 시 매치 진행 여부를 사전에 안내할 수 있는 기능이 추가됩니다.",body:"구장관리 사이트 [매치 관리] → 해당 매치 → '날씨 대응' 설정에서 진행 / 취소 / 대기 중 중 선택 후 저장하면, 참가자 전원에게 카카오톡 알림이 자동 발송됩니다.\n\n경기 시작 3시간 전에는 반드시 상태를 확정해주세요."},
+    {id:'u2',type:'notice',title:"10월 정산일 변경 안내('25.9)",date:"'25.9",subtitle:"10월 한 달간 정산 지급 일정이 변경됩니다. 정산 내역을 미리 확인해 주세요.",body:"10월 정산 일정 변경\n• 1차 정산: 10월 1일 → 10월 7일\n• 2차 정산: 10월 15일 → 10월 21일\n\n11월부터 정상 일정으로 복귀합니다."},
+    {id:'u3',type:'new',title:"런드리 관리로 더 즐거운 매치 만들기('25.9)",date:"'25.9",subtitle:"런드리 장비 현황을 한눈에 확인하고 수거·반납 일정을 손쉽게 관리하세요.",articleId:'p3b',body:"구장관리 사이트 [런드리] 메뉴에서 장비 리포트를 확인할 수 있습니다.\n• 세탁 의뢰 현황 한눈에 파악\n• 수거·반납 일정 캘린더 통합\n• 장비별 이력 조회 가능"},
+    // 이전 소식 → 업데이트 노트에만 노출
+    {id:'u4',type:'fix',title:"플랩 홈 화면이 바뀌었어요('25.4)",date:"'25.4",subtitle:"플랩 앱 홈 화면 UI가 전면 개편됐습니다. 더 빠른 매치 탐색을 경험해보세요.",body:"• 내 근처 매치를 더 빠르게 탐색\n• 즐겨찾는 구장 빠른 접근 기능 추가\n• 레벨별 추천 매치 큐레이션 개선"},
+    {id:'u5',type:'new',title:"플랩 APP이 출시됐어요('25.1)",date:"'25.1",subtitle:"플랩풋볼 전용 앱이 출시되었습니다! 더 빠르고 편리하게 매치를 신청하세요.",body:"App Store / Google Play에서 '플랩풋볼' 검색\n• 앱 전용 푸시 알림 지원\n• 매치 신청부터 정산까지 원스톱"},
+    {id:'u6',type:'fix',title:"레벨 시스템이 개편됐어요('25.1)",date:"'25.1",subtitle:"참가자 레벨 산정 기준이 새로워집니다. 변경 내용을 확인하고 운영에 반영하세요.",body:"• 매치 참가 횟수 + 매너 점수 복합 반영\n• 6단계 → 8단계 세분화\n• 레벨별 매치 참가 조건 명확화\n적용일: 2025년 2월 1일"},
+  ],
+  services:[
+    {id:'s1',emoji:'⚽',title:'소셜 매치',desc:'내가 하고 싶을 때, 하고 싶은 곳에서, 하고 싶은 사람들과 하는 원데이 소셜 풋살',link:'gc1'},
+    {id:'s2',emoji:'🏟️',title:'구장 예약',desc:'원하는 시간, 구장을 한 번에 확인하고 바로 예약',link:'gc2'},
+    {id:'s3',emoji:'👥',title:'팀',desc:'우리 팀과 팀리그, 게스트 모집 참여하기',link:'gc6'},
+    {id:'s4',emoji:'📣',title:'마케팅 지원',desc:'80만 유저에게 구장을 알릴 수 있는 홍보 도구를 제공합니다.',link:'gc4'},
+  ],
+  posts:[
+    // ═══════════════════════════════
+    // gc1 — 소셜 매치
+    // ═══════════════════════════════
+    // [소그룹: 매치 시작하기]
+    {id:'p1a',title:'소셜매치란?',subCat:'매치 시작하기',subCnt:5,excerpt:'플랩풋볼 소셜매치의 개념과 구장 운영 방식을 소개합니다.',content:`<h2>소셜매치란?</h2>
+<p>플랩풋볼 소셜매치는 개인 참가자들이 레벨과 지역에 맞게 매치에 참여하는 서비스입니다. 구장은 플랩이 파트너로 등록된 구장에서 매치를 편성하고 운영합니다.</p>
+<h3>구장 운영자의 역할</h3>
+<ul>
+<li>코트 제공 및 시설 관리</li>
+<li>매치 일정 등록 및 관리</li>
+<li>장비(골대, 비브, 공 등) 준비</li>
+<li>매치 당일 시설 운영 지원</li>
+</ul>
+<blockquote>매니저는 플랩에서 파견하며, 구장 운영자는 시설만 제공하면 됩니다.</blockquote>
+<h3>수익 구조</h3>
+<p>참가비에서 플랩 수수료를 제외한 금액이 구장으로 정산됩니다. 정산 주기는 매월 1일, 15일 두 차례입니다.</p>`,category:'gc1',author:'플랩팀',emoji:'⚽',status:'published',date:new Date(Date.now()-50000000).toISOString(),views:1842},
+    {id:'p1b',title:'소셜매치 신청 방법',subCat:'매치 시작하기',subCnt:5,excerpt:'처음 신청하시는 분들을 위한 단계별 가이드입니다.',content:`<h2>소셜매치 신청하기</h2>
+<p>플랩풋볼 앱 또는 웹에서 간편하게 소셜매치를 신청할 수 있습니다.</p>
+<h3>1단계: 앱 설치</h3>
+<p>App Store 또는 Google Play에서 <strong>"플랩풋볼"</strong>을 검색하여 설치하세요.</p>
+<h3>2단계: 매치 검색</h3>
+<p>지역·날짜·시간대·레벨을 설정하여 가까운 매치를 검색합니다.</p>
+<h3>3단계: 결제 및 확정</h3>
+<p>결제 완료 시 카카오톡으로 예약 확인 메시지가 발송됩니다.</p>
+<blockquote>매치 신청은 경기 시작 30분 전까지 가능합니다.</blockquote>`,category:'gc1',author:'플랩팀',emoji:'📲',status:'published',date:new Date(Date.now()-86400000).toISOString(),views:2107},
+    {id:'p1c',title:'매치 취소 및 환불 정책',subCat:'매치 시작하기',subCnt:5,excerpt:'매치 취소 시 환불 기준과 처리 절차를 안내합니다.',content:`<h2>취소 및 환불 안내</h2>
+<p>매치 취소는 경기 시작 시간 기준으로 취소 시점에 따라 환불 금액이 달라집니다.</p>
+<h3>환불 기준표</h3>
+<table>
+<tr><th>취소 시점</th><th>환불 금액</th></tr>
+<tr><td>경기 24시간 이전</td><td>100% 전액 환불</td></tr>
+<tr><td>경기 12~24시간 전</td><td>50% 부분 환불</td></tr>
+<tr><td>경기 12시간 미만</td><td>환불 불가</td></tr>
+</table>
+<blockquote>환불은 결제 수단으로 영업일 기준 3~5일 이내 처리됩니다.</blockquote>
+<h3>우천 취소</h3>
+<p>우천 또는 기상 악화로 인한 취소는 전액 환불 처리되며, 참가자 개별 카카오톡으로 안내됩니다.</p>`,category:'gc1',author:'플랩팀',emoji:'❌',status:'published',date:new Date(Date.now()-90000000).toISOString(),views:934},
+
+    // [소그룹: 매치 추가 및 취소]
+    {id:'p1d',title:"매치 추가·취소 신규 정책 안내('26.1)",subCat:'매치 추가 및 취소',subCnt:4,excerpt:"2026년 1월 변경된 매치 추가·취소 규정을 확인하세요.",content:`<h2>매치 추가·취소 신규 정책</h2>
+<p>2026년 1월부터 매치 추가 및 취소 정책이 변경됩니다.</p>
+<h3>변경 사항</h3>
+<ul>
+<li>매치 추가 가능 시간: 경기 시작 48시간 전까지 (기존 24시간)</li>
+<li>당일 추가 매치: 별도 수수료 적용</li>
+<li>취소 위약금: 12시간 미만 취소 시 참가비의 30% 위약금</li>
+</ul>
+<blockquote>변경된 정책은 2026년 1월 1일부터 적용됩니다.</blockquote>`,category:'gc1',author:'플랩팀',emoji:'📋',status:'published',date:new Date(Date.now()-100000000).toISOString(),views:1243},
+    {id:'p1e',title:'비·눈 오는 날 매치 진행 여부 설정',subCat:'매치 추가 및 취소',subCnt:4,excerpt:'날씨 악화 시 매치 진행 여부를 참가자에게 사전 안내하는 방법입니다.',content:`<h2>날씨 대응 매치 설정</h2>
+<p>구장관리 사이트에서 악천후 시 매치 진행 여부를 설정하면 참가자에게 자동으로 알림이 발송됩니다.</p>
+<h3>설정 방법</h3>
+<ol>
+<li>구장관리 사이트 로그인</li>
+<li>[매치 관리] → 해당 매치 선택</li>
+<li>[날씨 대응] 항목에서 상태 선택<br>→ <strong>진행 / 취소 / 대기 중</strong></li>
+<li>저장 시 참가자 전원에게 카카오톡 자동 발송</li>
+</ol>
+<blockquote>경기 시작 3시간 전에는 반드시 상태를 확정해주세요.</blockquote>`,category:'gc1',author:'플랩팀',emoji:'🌧️',status:'published',date:new Date(Date.now()-110000000).toISOString(),views:567},
+
+    // [소그룹: 매치 운영]
+    {id:'p1f',title:'레벨 시스템 안내',subCat:'매치 운영',subCnt:6,excerpt:'플랩풋볼 레벨 산정 기준과 매치 참여 조건을 설명합니다.',content:`<h2>레벨 시스템</h2>
+<p>플랩풋볼은 참가자의 실력에 맞는 매치를 제공하기 위해 8단계 레벨 시스템을 운영합니다.</p>
+<h3>레벨 구성 (1~8단계)</h3>
+<table>
+<tr><th>레벨</th><th>명칭</th><th>설명</th></tr>
+<tr><td>1~2</td><td>비기너</td><td>풋살 처음 시작하는 분</td></tr>
+<tr><td>3~4</td><td>아마추어</td><td>기본기를 익힌 분</td></tr>
+<tr><td>5~6</td><td>세미프로</td><td>팀 플레이 가능한 분</td></tr>
+<tr><td>7~8</td><td>프로</td><td>동호회 수준 이상</td></tr>
+</table>
+<h3>레벨 산정 기준</h3>
+<ul>
+<li>매치 참가 횟수</li>
+<li>매너 평가 점수</li>
+<li>포지션 및 플레이 스타일 설문</li>
+</ul>`,category:'gc1',author:'플랩팀',emoji:'📊',status:'published',date:new Date(Date.now()-180000000).toISOString(),views:834},
+    {id:'p1g',title:'매치 결과 및 통계 확인',subCat:'매치 운영',subCnt:6,excerpt:'매치 결과 기록과 구장별 통계를 확인하는 방법을 안내합니다.',content:`<h2>매치 결과 확인</h2>
+<p>구장관리 사이트 [매치 현황] 메뉴에서 완료된 매치의 결과와 참가자 정보를 확인할 수 있습니다.</p>
+<h3>확인 가능 항목</h3>
+<ul>
+<li>매치별 참가자 명단 및 레벨</li>
+<li>매치 완료 여부 및 특이사항</li>
+<li>월별 매치 횟수 및 참가자 수 통계</li>
+<li>코트별 이용률</li>
+</ul>
+<blockquote>통계 데이터는 매치 종료 후 1시간 이내에 업데이트됩니다.</blockquote>`,category:'gc1',author:'플랩팀',emoji:'📈',status:'published',date:new Date(Date.now()-200000000).toISOString(),views:412},
+    {id:'p1h',title:'매치 공지 및 안내 메시지 발송',subCat:'매치 운영',subCnt:6,excerpt:'매치 참가자에게 공지 및 안내 메시지를 보내는 방법입니다.',content:`<h2>공지 메시지 발송</h2>
+<p>구장관리 사이트에서 매치 참가자 전체에게 SMS 또는 카카오톡 메시지를 보낼 수 있습니다.</p>
+<h3>발송 방법</h3>
+<ol>
+<li>[매치 관리] → 해당 매치 선택</li>
+<li>[참가자 공지] 탭 클릭</li>
+<li>메시지 내용 입력 후 [발송]</li>
+</ol>
+<h3>자동 발송 항목</h3>
+<ul>
+<li>매치 확정 알림 (신청 직후)</li>
+<li>매치 D-1 리마인더</li>
+<li>매치 당일 2시간 전 리마인더</li>
+<li>우천 취소 알림</li>
+</ul>`,category:'gc1',author:'플랩팀',emoji:'📢',status:'published',date:new Date(Date.now()-220000000).toISOString(),views:356},
+
+    // ═══════════════════════════════
+    // gc2 — 구장 관리 사이트
+    // ═══════════════════════════════
+    // [소그룹: 시작하기]
+    {id:'p2a',title:'구장관리 사이트 로그인 및 기본 설정',subCat:'시작하기',subCnt:4,excerpt:'처음 로그인하고 기본 설정을 완료하는 방법입니다.',content:`<h2>구장관리 사이트 시작하기</h2>
+<p>플랩 파트너센터(<strong>partner.plab.kr</strong>)에 접속하여 가입 시 등록한 이메일로 로그인하세요.</p>
+<h3>최초 설정 항목</h3>
+<ul>
+<li>구장명 및 주소 등록</li>
+<li>코트 수 및 표면 설정 (천연잔디/인조잔디/우레탄)</li>
+<li>운영 시간 및 정기 휴무일 설정</li>
+<li>정산 계좌 등록</li>
+</ul>
+<blockquote>최초 설정 완료 후 플랩 담당자 검토를 거쳐 서비스가 활성화됩니다.</blockquote>`,category:'gc2',author:'플랩팀',emoji:'🏟️',status:'published',date:new Date(Date.now()-172800000).toISOString(),views:1021},
+    {id:'p2b',title:'계정 정보 수정 및 권한 관리',subCat:'시작하기',subCnt:4,excerpt:'관리자 계정 정보와 직원 접근 권한을 설정하는 방법입니다.',content:`<h2>계정 및 권한 관리</h2>
+<p>구장관리 사이트 [설정 > 계정]에서 관리자 이름, 이메일, 비밀번호를 수정할 수 있습니다.</p>
+<h3>직원 계정 추가</h3>
+<ol>
+<li>[설정] → [권한 관리] → [직원 추가]</li>
+<li>이름, 이메일 입력 후 권한 선택<br>(매니저 / 정산 조회 / 전체 관리)</li>
+<li>초대 메일 발송 → 직원이 수락 후 사용 가능</li>
+</ol>`,category:'gc2',author:'플랩팀',emoji:'👤',status:'published',date:new Date(Date.now()-185000000).toISOString(),views:678},
+
+    // [소그룹: 일정 관리]
+    {id:'p2c',title:'매치 일정 등록 및 관리',subCat:'일정 관리',subCnt:3,excerpt:'구장 매치 일정을 등록하고 관리하는 방법을 안내합니다.',content:`<h2>매치 일정 관리</h2>
+<p>구장관리 사이트 [매치 관리] 메뉴에서 매치 일정을 등록하고 수정할 수 있습니다.</p>
+<h3>일정 등록 방법</h3>
+<ol>
+<li>[매치 관리] → [+ 새 매치 등록]</li>
+<li>날짜, 시작 시간, 종료 시간 선택</li>
+<li>코트 지정 (복수 코트 동시 설정 가능)</li>
+<li>참가 인원, 레벨 제한, 참가비 설정</li>
+<li>공개 설정 후 [저장]</li>
+</ol>
+<blockquote>매치는 등록 즉시 플랩 앱/웹에 노출됩니다.</blockquote>`,category:'gc2',author:'플랩팀',emoji:'📅',status:'published',date:new Date(Date.now()-200000000).toISOString(),views:743},
+    {id:'p2d',title:'구장 정기 휴무 및 임시 휴무 설정',subCat:'일정 관리',subCnt:3,excerpt:'정기 휴무와 임시 휴무를 설정하여 매치 자동 등록을 중단하세요.',content:`<h2>휴무 설정</h2>
+<h3>정기 휴무</h3>
+<p>[설정] → [운영 시간] → [정기 휴무] 에서 요일별 정기 휴무를 지정할 수 있습니다.</p>
+<h3>임시 휴무</h3>
+<p>[매치 관리] → [임시 휴무 등록]에서 날짜를 지정하면 해당일의 모든 매치가 자동으로 비공개 처리됩니다.</p>
+<blockquote>임시 휴무 등록 시 기신청된 참가자에게 자동으로 취소 안내가 발송됩니다.</blockquote>`,category:'gc2',author:'플랩팀',emoji:'🚫',status:'published',date:new Date(Date.now()-215000000).toISOString(),views:289},
+
+    // ═══════════════════════════════
+    // gc3 — 런드리
+    // ═══════════════════════════════
+    // [소그룹: 서비스 소개]
+    {id:'p3a',title:'런드리 서비스 소개',subCat:'서비스 소개',subCnt:3,excerpt:'플랩 런드리 서비스의 개요와 신청 방법을 안내합니다.',content:`<h2>런드리 서비스란?</h2>
+<p>플랩 런드리는 구장에서 사용하는 유니폼, 비브, 골키퍼 장갑 등을 수거하여 세탁 후 반납하는 서비스입니다.</p>
+<h3>서비스 혜택</h3>
+<ul>
+<li>전담 세탁소 위탁 처리로 위생적인 관리</li>
+<li>수거·반납 일정 앱에서 간편 확인</li>
+<li>파손·분실 보험 적용</li>
+</ul>
+<h3>이용 대상</h3>
+<p>플랩 파트너 구장으로 등록된 구장만 이용 가능합니다.</p>`,category:'gc3',author:'플랩팀',emoji:'👕',status:'published',date:new Date(Date.now()-330000000).toISOString(),views:521},
+    {id:'p3b',title:'런드리 서비스 이용 방법',subCat:'서비스 소개',subCnt:3,excerpt:'유니폼 및 용품 세탁 서비스 신청 전체 과정을 안내합니다.',content:`<h2>런드리 신청 방법</h2>
+<p>구장관리 사이트 [런드리] 메뉴에서 수거 일정을 신청하세요.</p>
+<h3>신청 절차</h3>
+<ol>
+<li>[런드리] → [수거 신청]</li>
+<li>수거 희망 날짜 및 시간대 선택</li>
+<li>세탁 품목 및 수량 입력</li>
+<li>신청 완료 → 담당자 확인 후 방문 수거</li>
+</ol>
+<blockquote>수거 신청은 희망일 2일 전까지 완료해야 합니다.</blockquote>`,category:'gc3',author:'플랩팀',emoji:'🧺',status:'published',date:new Date(Date.now()-345600000).toISOString(),views:834},
+
+    // [소그룹: 이용 현황]
+    {id:'p3c',title:'세탁 품목 및 주의사항',subCat:'이용 현황',subCnt:2,excerpt:'런드리 서비스 이용 가능 품목과 주의사항을 확인하세요.',content:`<h2>세탁 가능 품목</h2>
+<ul>
+<li>유니폼 (상·하의)</li>
+<li>골키퍼 장갑</li>
+<li>조끼 및 비브</li>
+<li>양말류</li>
+</ul>
+<h3>주의사항</h3>
+<blockquote>가죽 제품, 방수 코팅 의류, 특수 소재는 세탁 서비스 대상에서 제외됩니다.</blockquote>
+<h3>파손·분실 처리</h3>
+<p>세탁 과정에서 발생한 파손·분실은 세탁 완료일로부터 7일 이내에 [런드리 > 문의하기]로 접수하세요.</p>`,category:'gc3',author:'플랩팀',emoji:'📦',status:'published',date:new Date(Date.now()-360000000).toISOString(),views:312},
+    {id:'p3d',title:'수거·반납 일정 확인',subCat:'이용 현황',subCnt:2,excerpt:'런드리 수거 및 반납 일정을 확인하고 관리하는 방법입니다.',content:`<h2>수거·반납 일정</h2>
+<p>구장관리 사이트 [런드리 > 일정]에서 예정된 수거·반납 날짜를 캘린더로 확인하세요.</p>
+<h3>상태 표시</h3>
+<ul>
+<li><strong>수거 예정</strong>: 담당자 방문 예정</li>
+<li><strong>세탁 중</strong>: 세탁소 처리 중</li>
+<li><strong>반납 예정</strong>: 당일 반납 예정</li>
+<li><strong>완료</strong>: 반납 완료</li>
+</ul>`,category:'gc3',author:'플랩팀',emoji:'🔄',status:'published',date:new Date(Date.now()-375000000).toISOString(),views:198},
+
+    // ═══════════════════════════════
+    // gc4 — 마케팅
+    // ═══════════════════════════════
+    // [소그룹: 홍보 도구]
+    {id:'p4a',title:'구장 홍보 배너 등록 방법',subCat:'홍보 도구',subCnt:3,excerpt:'플랩 앱 내 구장 홍보 배너를 등록하고 관리하는 방법입니다.',content:`<h2>홍보 배너 등록</h2>
+<p>구장관리 사이트 [마케팅] → [배너 관리]에서 홍보 이미지를 등록할 수 있습니다.</p>
+<h3>이미지 사양</h3>
+<table>
+<tr><th>항목</th><th>권장 사양</th></tr>
+<tr><td>크기</td><td>1200 × 400px (3:1 비율)</td></tr>
+<tr><td>형식</td><td>JPG, PNG</td></tr>
+<tr><td>용량</td><td>5MB 이하</td></tr>
+</table>
+<blockquote>배너는 검토 후 1~2 영업일 내에 앱에 노출됩니다.</blockquote>`,category:'gc4',author:'플랩팀',emoji:'📣',status:'published',date:new Date(Date.now()-400000000).toISOString(),views:445},
+    {id:'p4b',title:'소셜 미디어 연동 및 공유',subCat:'홍보 도구',subCnt:3,excerpt:'구장 정보를 소셜 미디어에 공유하는 방법을 안내합니다.',content:`<h2>소셜 미디어 연동</h2>
+<p>구장관리 사이트에서 인스타그램, 카카오채널과 연동하여 매치 일정을 자동으로 공유할 수 있습니다.</p>
+<h3>연동 방법</h3>
+<ol>
+<li>[마케팅] → [SNS 연동]</li>
+<li>연동할 채널 선택 (인스타그램 / 카카오채널)</li>
+<li>계정 연결 후 자동 게시 설정</li>
+</ol>`,category:'gc4',author:'플랩팀',emoji:'📱',status:'published',date:new Date(Date.now()-420000000).toISOString(),views:267},
+
+    // [소그룹: 고객 관리]
+    {id:'p4c',title:'리뷰 및 평점 관리',subCat:'고객 관리',subCnt:2,excerpt:'참가자 리뷰를 확인하고 관리하는 방법을 안내합니다.',content:`<h2>리뷰 관리</h2>
+<p>구장관리 사이트 [마케팅 > 리뷰]에서 참가자가 남긴 리뷰를 확인하고 답변할 수 있습니다.</p>
+<h3>리뷰 답변 방법</h3>
+<ol>
+<li>[마케팅] → [리뷰 관리]</li>
+<li>해당 리뷰 선택 → [답변 작성]</li>
+<li>내용 입력 후 [게시]</li>
+</ol>
+<blockquote>작성된 답변은 플랩 앱 리뷰 페이지에 표시됩니다.</blockquote>`,category:'gc4',author:'플랩팀',emoji:'⭐',status:'published',date:new Date(Date.now()-440000000).toISOString(),views:189},
+
+    // ═══════════════════════════════
+    // gc5 — 정산
+    // ═══════════════════════════════
+    // [소그룹: 정산 기본]
+    {id:'p5a',title:'정산 주기와 수수료 안내',subCat:'정산 기본',subCnt:4,excerpt:'정산 일정과 수수료 체계를 상세히 안내합니다.',content:`<h2>정산 안내</h2>
+<p>플랩풋볼은 매월 <strong>1일</strong>과 <strong>15일</strong>, 두 차례 정산이 진행됩니다.</p>
+<h3>정산 대상 기간</h3>
+<table>
+<tr><th>정산일</th><th>대상 기간</th></tr>
+<tr><td>1일 정산</td><td>전월 16일 ~ 말일 매치</td></tr>
+<tr><td>15일 정산</td><td>당월 1일 ~ 14일 매치</td></tr>
+</table>
+<h3>수수료 구조</h3>
+<ul>
+<li>플랩 플랫폼 수수료: 매치 참가비의 20%</li>
+<li>결제 수수료: 실결제금액의 2.5%</li>
+<li>런드리 이용 시 별도 청구</li>
+</ul>
+<blockquote>정산 내역은 구장관리 사이트 [정산] 메뉴에서 확인 가능합니다.</blockquote>`,category:'gc5',author:'플랩팀',emoji:'💰',status:'published',date:new Date(Date.now()-259200000).toISOString(),views:2107},
+    {id:'p5b',title:'세금계산서 발행 안내',subCat:'정산 기본',subCnt:4,excerpt:'정산 세금계산서 발행 방법과 일정을 안내합니다.',content:`<h2>세금계산서 안내</h2>
+<p>매월 정산 완료 후 사업자 등록증 기준으로 세금계산서가 자동 발행됩니다.</p>
+<h3>발행 일정</h3>
+<ul>
+<li>1일 정산분: 익월 5일 이내 발행</li>
+<li>15일 정산분: 당월 20일 이내 발행</li>
+</ul>
+<h3>확인 방법</h3>
+<p>구장관리 사이트 [정산 > 세금계산서]에서 발행 내역을 확인하고 PDF로 다운로드할 수 있습니다.</p>`,category:'gc5',author:'플랩팀',emoji:'🧾',status:'published',date:new Date(Date.now()-280000000).toISOString(),views:1234},
+    {id:'p5c',title:'부가세 신고를 위한 자료 안내',subCat:'정산 기본',subCnt:4,excerpt:'부가세 신고에 필요한 자료를 구장관리 사이트에서 다운로드하는 방법입니다.',content:`<h2>부가세 신고 자료</h2>
+<p>구장관리 사이트 [정산 > 세금 자료]에서 부가세 신고에 필요한 자료를 다운로드할 수 있습니다.</p>
+<h3>제공 자료</h3>
+<ul>
+<li>월별 매출 현황표 (CSV)</li>
+<li>세금계산서 합계표</li>
+<li>수수료 내역서</li>
+</ul>`,category:'gc5',author:'플랩팀',emoji:'📊',status:'published',date:new Date(Date.now()-290000000).toISOString(),views:456},
+
+    // [소그룹: 정산 조회]
+    {id:'p5d',title:'정산 내역 조회 및 다운로드',subCat:'정산 조회',subCnt:3,excerpt:'정산 내역을 조회하고 엑셀로 다운로드하는 방법입니다.',content:`<h2>정산 내역 조회</h2>
+<p>구장관리 사이트 [정산 > 내역] 메뉴에서 월별 정산 내역을 확인하세요.</p>
+<h3>조회 및 다운로드</h3>
+<ol>
+<li>[정산] → [정산 내역] 탭</li>
+<li>조회 기간 설정 (월 또는 기간 직접 입력)</li>
+<li>[엑셀 다운로드] 버튼 클릭</li>
+</ol>
+<h3>내역 항목</h3>
+<ul>
+<li>매치일, 코트, 참가자 수</li>
+<li>총 참가비, 수수료, 실정산금</li>
+<li>런드리 이용 내역 (해당 시)</li>
+</ul>`,category:'gc5',author:'플랩팀',emoji:'📋',status:'published',date:new Date(Date.now()-300000000).toISOString(),views:892},
+    {id:'p5e',title:'10월 정산일 변경 안내',subCat:'정산 조회',subCnt:3,excerpt:'2025년 10월 정산 일정 변경 내용을 확인하세요.',content:`<h2>10월 정산일 변경 안내</h2>
+<p>2025년 10월 한 달간 정산 지급 일정이 변경됩니다.</p>
+<table>
+<tr><th>정산 회차</th><th>기존</th><th>변경</th></tr>
+<tr><td>1차 정산</td><td>10월 1일</td><td>10월 7일</td></tr>
+<tr><td>2차 정산</td><td>10월 15일</td><td>10월 21일</td></tr>
+</table>
+<blockquote>해당 변경은 10월에만 적용되며 11월부터 정상 일정으로 복귀합니다.</blockquote>`,category:'gc5',author:'플랩팀',emoji:'📅',status:'published',date:new Date(Date.now()-310000000).toISOString(),views:678},
+
+    // ═══════════════════════════════
+    // gc6 — 자주 묻는 질문
+    // ═══════════════════════════════
+    // [소그룹: 공통 FAQ]
+    {id:'p6a',title:'파트너 자주 묻는 질문 모음',subCat:'공통 FAQ',subCnt:6,excerpt:'파트너 운영 중 자주 발생하는 질문과 답변을 정리했습니다.',content:`<h2>자주 묻는 질문</h2>
+<h3>Q. 매치 참가자 수를 임의로 변경할 수 있나요?</h3>
+<p>A. 매치 등록 후 24시간 이내, 그리고 참가자가 없는 경우에 한해 구장관리 사이트에서 변경 가능합니다.</p>
+<h3>Q. 환불 처리는 얼마나 걸리나요?</h3>
+<p>A. 결제 수단에 따라 다르며, 통상 영업일 기준 3~5일 소요됩니다.</p>
+<h3>Q. 구장관리 사이트 비밀번호를 잊었을 때는?</h3>
+<p>A. 로그인 화면에서 [비밀번호 찾기]를 클릭하고 가입 이메일로 재설정 링크를 받으세요.</p>
+<h3>Q. 정산 계좌를 변경하고 싶어요.</h3>
+<p>A. 구장관리 사이트 [설정 > 정산 계좌]에서 직접 변경 가능합니다. 변경 후 다음 정산부터 적용됩니다.</p>`,category:'gc6',author:'플랩팀',emoji:'❓',status:'published',date:new Date(Date.now()-500000000).toISOString(),views:1567},
+    {id:'p6b',title:'소셜매치 관련 자주 묻는 질문',subCat:'소셜매치 FAQ',subCnt:4,excerpt:'소셜매치 운영 시 자주 발생하는 질문을 모았습니다.',content:`<h2>소셜매치 FAQ</h2>
+<h3>Q. 우천 시 매치는 어떻게 되나요?</h3>
+<p>A. 우천 취소 시 참가자 전원 전액 환불 처리되며, 카카오톡으로 개별 안내됩니다. 구장관리 사이트에서 취소 처리를 직접 진행해주세요.</p>
+<h3>Q. 매치 당일 참가자가 오지 않으면?</h3>
+<p>A. 노쇼 참가자는 플랩 정책에 따라 페널티가 부과됩니다. 구장에서 별도로 조치를 취할 필요는 없습니다.</p>
+<h3>Q. 레벨 제한을 설정할 수 있나요?</h3>
+<p>A. 네, 매치 등록 시 [레벨 제한] 항목에서 참가 가능 레벨 범위를 설정할 수 있습니다.</p>`,category:'gc6',author:'플랩팀',emoji:'⚽',status:'published',date:new Date(Date.now()-520000000).toISOString(),views:834},
+    {id:'p6c',title:'정산 및 세금 관련 FAQ',subCat:'정산 FAQ',subCnt:3,excerpt:'정산 및 세금계산서 관련 자주 묻는 질문입니다.',content:`<h2>정산·세금 FAQ</h2>
+<h3>Q. 사업자 등록 전에도 정산이 가능한가요?</h3>
+<p>A. 사업자 등록 후에만 정산이 가능합니다. 개인사업자 또는 법인사업자 모두 가능합니다.</p>
+<h3>Q. 세금계산서 발행이 안 될 때는?</h3>
+<p>A. 사업자 정보(상호명, 사업자번호, 대표자명)가 정확히 입력되어야 합니다. [설정 > 사업자 정보]에서 확인해주세요.</p>
+<h3>Q. 면세 사업자인데 세금계산서 발행이 가능한가요?</h3>
+<p>A. 면세 사업자의 경우 계산서(세금계산서 아님)가 발행됩니다. 별도 문의가 필요한 경우 카카오톡 채널로 연락해주세요.</p>`,category:'gc6',author:'플랩팀',emoji:'💳',status:'published',date:new Date(Date.now()-540000000).toISOString(),views:456},
+
+    // ═══════════════════════════════
+    // 서비스 콘텐츠 게시글
+    // ═══════════════════════════════
+    // ── 서비스 소개 게시글 (홈페이지 servicePages와 동일 내용) ──
+    {id:'sp-s1',postType:'service',serviceId:'s1',title:'소셜 매치 — 서비스 소개',subCat:'서비스 소개',status:'published',date:new Date(Date.now()-600000000).toISOString(),
+     content:`<section class="sp-hero">
+    <div class="sp-hero-icon">⚽</div>
+    <h1 class="sp-title">소셜 매치</h1>
+    <p class="sp-lead">내가 하고 싶을 때, 하고 싶은 곳에서, 하고 싶은 사람들과 하는 원데이 소셜 풋살</p>
+  </section>
+  <section class="sp-section">
+    <h2>소셜 매치란?</h2>
+    <p>플랩풋볼 소셜 매치는 개인 참가자들이 레벨과 지역에 맞게 매치에 참여하는 서비스입니다. 구장 파트너는 매치를 편성하고 운영하여 수익을 창출합니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">📅</div><div class="sp-card-title">유연한 일정</div><div class="sp-card-desc">원하는 날짜·시간에 매치를 편성할 수 있습니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">🎯</div><div class="sp-card-title">레벨 매칭</div><div class="sp-card-desc">8단계 레벨 시스템으로 실력에 맞는 참가자와 매치</div></div>
+      <div class="sp-card"><div class="sp-card-icon">💰</div><div class="sp-card-title">자동 정산</div><div class="sp-card-desc">매치 완료 후 자동으로 정산이 처리됩니다</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>매치 편성 방법</h2>
+    <div class="sp-steps">
+      <div class="sp-step"><span class="sp-step-num">1</span><div><strong>구장관리 사이트 접속</strong><p>partner.plab.kr 에서 로그인 후 [매치 관리] 메뉴를 선택합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">2</span><div><strong>매치 일정 등록</strong><p>날짜, 시간, 레벨, 인원을 설정하고 매치를 등록합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">3</span><div><strong>참가자 모집</strong><p>플랩풋볼 앱과 웹을 통해 자동으로 참가자를 모집합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">4</span><div><strong>매치 진행 및 정산</strong><p>매치 완료 후 자동으로 정산이 처리됩니다</p></div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>수익 구조</h2>
+    <p>참가자 1인당 참가비에서 플랩 수수료를 제한 금액이 파트너에게 정산됩니다. 정산은 매월 1일, 15일 두 차례 이루어집니다.</p>
+  </section>`},
+    {id:'sp-s2',postType:'service',serviceId:'s2',title:'구장 예약 — 서비스 소개',subCat:'서비스 소개',status:'published',date:new Date(Date.now()-590000000).toISOString(),
+     content:`<section class="sp-hero">
+    <div class="sp-hero-icon">🏟️</div>
+    <h1 class="sp-title">구장 예약</h1>
+    <p class="sp-lead">원하는 시간, 구장을 한 번에 확인하고 바로 예약</p>
+  </section>
+  <section class="sp-section">
+    <h2>구장 예약 서비스</h2>
+    <p>플랩풋볼 앱과 웹에서 전국 파트너 구장을 실시간으로 검색하고 예약할 수 있습니다. 구장 파트너는 예약 관리와 일정 운영을 한 곳에서 처리할 수 있습니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">🔍</div><div class="sp-card-title">실시간 현황</div><div class="sp-card-desc">잔여 슬롯을 실시간으로 확인하고 즉시 예약</div></div>
+      <div class="sp-card"><div class="sp-card-icon">📆</div><div class="sp-card-title">일정 관리</div><div class="sp-card-desc">구장관리 사이트에서 예약 일정을 한눈에 관리</div></div>
+      <div class="sp-card"><div class="sp-card-icon">🔔</div><div class="sp-card-title">자동 알림</div><div class="sp-card-desc">예약 확정, 변경, 취소 시 자동으로 알림 발송</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>구장 등록 및 운영</h2>
+    <div class="sp-steps">
+      <div class="sp-step"><span class="sp-step-num">1</span><div><strong>구장 정보 등록</strong><p>구장관리 사이트에서 구장명, 위치, 시설 정보를 등록합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">2</span><div><strong>운영 시간 설정</strong><p>요일별·시간대별 운영 일정과 가격을 설정합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">3</span><div><strong>예약 접수</strong><p>플랩 앱을 통해 들어오는 예약을 실시간으로 확인합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">4</span><div><strong>정산 수령</strong><p>완료된 예약은 자동으로 정산 처리됩니다</p></div></div>
+    </div>
+  </section>`},
+    {id:'sp-s3',postType:'service',serviceId:'s3',title:'팀 — 서비스 소개',subCat:'서비스 소개',status:'published',date:new Date(Date.now()-580000000).toISOString(),
+     content:`<section class="sp-hero">
+    <div class="sp-hero-icon">👥</div>
+    <h1 class="sp-title">팀</h1>
+    <p class="sp-lead">우리 팀과 팀리그, 게스트 모집 참여하기</p>
+  </section>
+  <section class="sp-section">
+    <h2>팀 서비스란?</h2>
+    <p>플랩풋볼 팀 서비스를 통해 정기 팀을 만들고 팀원을 관리할 수 있습니다. 구장 파트너는 팀 고객을 유치하고 정기적인 수익을 창출할 수 있습니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">🏆</div><div class="sp-card-title">팀리그</div><div class="sp-card-desc">지역 팀들과 리그를 구성하고 승강전을 운영합니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">👤</div><div class="sp-card-title">게스트 모집</div><div class="sp-card-desc">정원 미달 시 개인 참가자를 모집할 수 있습니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">📊</div><div class="sp-card-title">팀 기록 관리</div><div class="sp-card-desc">경기 결과, 득점 현황, 출석률 등을 관리합니다</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>팀 매치 운영</h2>
+    <div class="sp-steps">
+      <div class="sp-step"><span class="sp-step-num">1</span><div><strong>팀 매치 편성</strong><p>구장관리 사이트에서 팀 대상 매치 일정을 등록합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">2</span><div><strong>팀 초대 및 모집</strong><p>기존 팀을 초대하거나 새 팀 모집 공고를 올립니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">3</span><div><strong>게스트 추가 모집</strong><p>정원 미달 시 소셜 매치 참가자를 게스트로 모집합니다</p></div></div>
+      <div class="sp-step"><span class="sp-step-num">4</span><div><strong>경기 진행 및 결과 기록</strong><p>매치 완료 후 결과를 입력하면 자동으로 순위가 업데이트됩니다</p></div></div>
+    </div>
+  </section>`},
+    {id:'sp-s4',postType:'service',serviceId:'s4',title:'마케팅 지원 — 서비스 소개',subCat:'서비스 소개',status:'published',date:new Date(Date.now()-570000000).toISOString(),
+     content:`<section class="sp-hero">
+    <div class="sp-hero-icon">📣</div>
+    <h1 class="sp-title">마케팅 지원</h1>
+    <p class="sp-lead">80만 유저에게 구장을 알릴 수 있는 홍보 도구를 제공합니다</p>
+  </section>
+  <section class="sp-section">
+    <h2>마케팅 지원 서비스</h2>
+    <p>플랩풋볼 플랫폼의 80만 유저를 대상으로 구장을 효과적으로 홍보할 수 있는 다양한 마케팅 도구를 제공합니다.</p>
+    <div class="sp-card-grid">
+      <div class="sp-card"><div class="sp-card-icon">🖼️</div><div class="sp-card-title">배너 광고</div><div class="sp-card-desc">앱·웹 메인 화면에 구장 홍보 배너를 노출합니다</div></div>
+      <div class="sp-card"><div class="sp-card-icon">📱</div><div class="sp-card-title">SNS 연동</div><div class="sp-card-desc">인스타그램, 카카오채널과 연동하여 자동 홍보</div></div>
+      <div class="sp-card"><div class="sp-card-icon">⭐</div><div class="sp-card-title">리뷰 관리</div><div class="sp-card-desc">참가자 리뷰를 관리하고 답변하여 신뢰도 향상</div></div>
+    </div>
+  </section>
+  <section class="sp-section">
+    <h2>마케팅 도구 이용 방법</h2>
+    <p>구장관리 사이트 [마케팅] 메뉴에서 배너 등록, SNS 연동, 리뷰 관리를 모두 진행할 수 있습니다. 마케팅 효과를 대시보드에서 실시간으로 모니터링하세요.</p>
+  </section>`},
+  ]
+};
+// 버전 관리: 버전이 다르면 로컬 캐시를 DEF로 초기화
+const _DATA_VER = 'v25'; // 서비스 소개 게시글 추가
+const _storedVer = localStorage.getItem('plab_data_ver');
+if(_storedVer !== _DATA_VER) {
+  localStorage.removeItem('plab_v5');
+  localStorage.setItem('plab_data_ver', _DATA_VER);
+}
+let _raw = JSON.parse(localStorage.getItem('plab_v5') || 'null');
+let S = _raw ? {
+  ...JSON.parse(JSON.stringify(DEF)),
+  ..._raw,
+  settings:{...JSON.parse(JSON.stringify(DEF)).settings,...(_raw.settings||{}),
+    footer:{...JSON.parse(JSON.stringify(DEF)).settings.footer,...((_raw.settings||{}).footer||{})}},
+  subcategories:{...JSON.parse(JSON.stringify(DEF)).subcategories,...(_raw.subcategories||{})},
+  servicePages:{...JSON.parse(JSON.stringify(DEF)).servicePages,...(_raw.servicePages||{})},
+  postOrder:{...(_raw.postOrder||{})}
+} : JSON.parse(JSON.stringify(DEF));
+const save = async()=>{
+  const json=JSON.stringify(S);
+  /* 로컬 백업 */
+  try{localStorage.setItem('plab_v5',json);}catch(e){}
+  /* Firebase 저장 */
+  if(window._fbSave){
+    const ok=await window._fbSave(json);
+    _fbBarSet(ok?'ok':'err');
+  }
+};
+const toast = (msg,dur=2000)=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);};
+
+/* ── Firebase 상태바 업데이트 ── */
+function _fbBarSet(state){
+  const bar=document.getElementById('fbBar');
+  const txt=document.getElementById('fbBarTxt');
+  if(!bar||!txt)return;
+  const cfg={
+    ok:  {bg:'rgba(16,185,129,.1)', color:'#10B981', ic:'✅', msg:'클라우드에 저장됨'},
+    err: {bg:'rgba(239,68,68,.1)',  color:'#F87171', ic:'❌', msg:'저장 실패 (로컬만)'},
+    load:{bg:'rgba(245,158,11,.08)',color:'#F59E0B', ic:'⏳', msg:'클라우드 연결 중...'},
+    live:{bg:'rgba(16,185,129,.1)', color:'#10B981', ic:'☁️', msg:'클라우드 연결됨'},
+    none:{bg:'rgba(99,102,241,.1)', color:'#818CF8', ic:'💾', msg:'로컬 저장 (Firebase 미설정)'},
+  }[state]||{};
+  bar.style.background=cfg.bg;bar.style.color=cfg.color;
+  bar.firstElementChild.textContent=cfg.ic;txt.textContent=cfg.msg;
+}
+
+/* ── 시작 시 Firebase 데이터 로드 ── */
+async function _fbStartLoad(){
+  if(!window._fbLoad){_fbBarSet('none');return;}
+  _fbBarSet('load');
+  const json=await window._fbLoad();
+  if(!json){_fbBarSet('none');return;}
+  try{
+    const parsed=JSON.parse(json);
+    /* DEF와 병합 */
+    S={
+      ...JSON.parse(JSON.stringify(DEF)),
+      ...parsed,
+      settings:{...JSON.parse(JSON.stringify(DEF)).settings,...(parsed.settings||{}),
+        footer:{...JSON.parse(JSON.stringify(DEF)).settings.footer,...((parsed.settings||{}).footer||{})}},
+      subcategories:{...JSON.parse(JSON.stringify(DEF)).subcategories,...(parsed.subcategories||{})},
+      servicePages:{...JSON.parse(JSON.stringify(DEF)).servicePages,...(parsed.servicePages||{})},
+      postOrder:{...(parsed.postOrder||{})}
+    };
+    localStorage.setItem('plab_v5',json); /* 로컬도 갱신 */
+    _fbBarSet('live');
+    /* 현재 보이는 화면 새로고침 */
+    const cur=document.querySelector('.alink.on');
+    if(cur)cur.click();
+  }catch(e){_fbBarSet('none');console.warn('Firebase 데이터 파싱 실패',e);}
+}
+
+/* ════════════════════════════════════
+   AUTH
+════════════════════════════════════ */
+function doLogin(){
+  const em=document.getElementById('lemail').value.trim();
+  const pw=document.getElementById('lpw').value;
+  if(em===S.settings.adminEmail&&pw===S.settings.adminPw){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('adminWrap').classList.add('on');
+    document.getElementById('aEmail').textContent=em;
+    pg('dashboard');
+    _fbStartLoad();
+  } else {
+    document.getElementById('lerr').style.display='block';
+  }
+}
+function doLogout(){
+  document.getElementById('adminWrap').classList.remove('on');
+  document.getElementById('loginWrap').style.display='flex';
+}
+
+/* ════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════ */
+const PM={
+  'dashboard':{t:'대시보드',s:'이용 현황 및 콘텐츠 통계'},
+  'home-hero':{t:'Hero 영역',s:'홈 상단 타이틀·카피 편집'},
+  'home-banner':{t:'업데이트 소식',s:'홈 배너 슬라이드 관리'},
+  'home-guide':{t:'가이드 카드',s:'홈 카테고리 카드 관리'},
+  'home-service':{t:'서비스 카드',s:'홈 서비스 섹션 관리'},
+  'guide-cats':{t:'가이드 카드 관리',s:'홈 사용 가이드 섹션 카드 편집'},
+  'guide-posts':{t:'가이드 게시글',s:'각 가이드 카테고리의 게시글 관리'},
+  'service-cards':{t:'서비스 카드 관리',s:'홈 플랩의 서비스 섹션 카드 편집'},
+  'service-posts':{t:'서비스 게시글',s:'각 서비스의 게시글 관리'},
+  'settings':{t:'사이트 설정',s:'기본 설정 및 계정 관리'},
+  'footer-edit':{t:'푸터 편집',s:'하단 링크·연락처·SNS·저작권 문구 수정'},
+};
+let curPage='';
+function pg(id){
+  curPage=id;
+  document.querySelectorAll('.alink').forEach(el=>el.classList.toggle('on',el.id==='nav-'+id));
+  const m=PM[id]||{t:id,s:''};
+  document.getElementById('pTitle').textContent=m.t;
+  document.getElementById('pSub').textContent=m.s;
+  document.getElementById('pActs').innerHTML='';
+  ({dashboard:rDash,'home-hero':rHero,'home-banner':rBanner,'home-guide':rGuide,'home-service':rService,
+    'guide-cats':rGuideCats,'guide-posts':()=>rPostsFiltered('guide'),'service-cards':rServiceCards,'service-posts':()=>rPostsFiltered('service'),
+    settings:rSettings,'subcats':rSubcats,'footer-edit':rFooterEdit})[id]?.();
+}
+
+/* ════════════════════════════════════
+   ① DASHBOARD — GA4 스타일
+════════════════════════════════════ */
+/* 가상 데이터 생성 */
+const GA = {
+  period: '30',
+  visitors:  12847,  visitorChg: +18.4,
+  pageviews:  48329,  pvChg: +24.1,
+  avgTime:    '3:42', timeChg: +8.2,
+  bounceRate: '38.2%',bounceChg: -5.1,
+  pageRank:[
+    {title:'소셜매치 신청 방법',      cat:'소셜 매치',  views:2107, pct:100},
+    {title:'정산 주기와 수수료 안내', cat:'정산',       views:1834, pct:87},
+    {title:'런드리 서비스 이용 방법', cat:'런드리',     views:1243, pct:59},
+    {title:'매치 취소 및 환불 정책',  cat:'소셜 매치',  views:934,  pct:44},
+    {title:'구장관리 사이트 로그인',  cat:'구장 관리',  views:821,  pct:39},
+    {title:'레벨 시스템 안내',        cat:'소셜 매치',  views:701,  pct:33},
+    {title:'세금계산서 발행 안내',    cat:'정산',       views:534,  pct:25},
+    {title:'매치 공지 발송 방법',     cat:'소셜 매치',  views:412,  pct:20},
+  ],
+  catViews:[
+    {name:'소셜 매치',   views:18420, pct:100},
+    {name:'정산',        views:9834,  pct:53},
+    {name:'구장 관리',   views:8201,  pct:45},
+    {name:'자주 묻는 질문',views:5934, pct:32},
+    {name:'마케팅',      views:3812,  pct:21},
+    {name:'런드리',      views:2128,  pct:12},
+  ],
+  devices:[
+    {name:'Mobile',     pct:58,color:'blue'},
+    {name:'Desktop',    pct:32,color:'green'},
+    {name:'Tablet',     pct:10,color:'yellow'},
+  ],
+  spark:[28,35,22,41,38,52,47,61,55,43,68,72,64,79,83,71,88,76,92,84,97,89,104,96,112,98,108,115,121,118],
+  topSearch:['정산','소셜매치 신청','취소 환불','런드리','레벨','구장 예약','위약금','세금계산서'],
+  referer:[
+    {name:'직접 접속(Direct)',pct:42},
+    {name:'구장관리 사이트',  pct:28},
+    {name:'플랩 앱',          pct:18},
+    {name:'검색(구글/네이버)',pct:8},
+    {name:'기타',             pct:4},
+  ],
+};
+
+function rDash(){
+  const acts=document.getElementById('pActs');
+  acts.innerHTML=`
+    <div class="date-range-tabs">
+      <button class="dr-tab ${GA.period==='7'?'on':''}" onclick="GA.period='7';rDash()">7일</button>
+      <button class="dr-tab ${GA.period==='30'?'on':''}" onclick="GA.period='30';rDash()">30일</button>
+      <button class="dr-tab ${GA.period==='90'?'on':''}" onclick="GA.period='90';rDash()">90일</button>
+    </div>
+    <button class="btn btn-gh bsm">📤 내보내기</button>`;
+
+  // 기간별 가중치
+  const w = GA.period==='7'?.25:GA.period==='30'?1:3.2;
+  const fmtN = n=>Math.round(n*w).toLocaleString();
+  const fmtChg = (v,inv)=>{
+    const cls=(v>0&&!inv)||(v<0&&inv)?'up':'dn';
+    const icon=v>0?'↑':'↓';
+    return`<span class="ga-chg ${cls}">${icon} ${Math.abs(v)}%</span>`;
+  };
+
+  document.getElementById('mainBody').innerHTML=`
+  <!-- KPI 카드 4개 -->
+  <div class="ga-grid">
+    <div class="ga-card blue">
+      <div class="ga-lbl">총 방문자 수 (Sessions)</div>
+      <div class="ga-val">${fmtN(GA.visitors)}</div>
+      ${fmtChg(GA.visitorChg,false)}
+      <div class="ga-mini">전 기간 대비</div>
+    </div>
+    <div class="ga-card green">
+      <div class="ga-lbl">총 페이지뷰 (Pageviews)</div>
+      <div class="ga-val">${fmtN(GA.pageviews)}</div>
+      ${fmtChg(GA.pvChg,false)}
+      <div class="ga-mini">전 기간 대비</div>
+    </div>
+    <div class="ga-card yellow">
+      <div class="ga-lbl">평균 체류 시간</div>
+      <div class="ga-val">${GA.avgTime}</div>
+      ${fmtChg(GA.timeChg,false)}
+      <div class="ga-mini">분:초 기준</div>
+    </div>
+    <div class="ga-card purple">
+      <div class="ga-lbl">이탈률 (Bounce Rate)</div>
+      <div class="ga-val">${GA.bounceRate}</div>
+      ${fmtChg(GA.bounceChg,true)}
+      <div class="ga-mini">낮을수록 좋음</div>
+    </div>
+  </div>
+
+  <!-- 방문 트렌드 + 기기 -->
+  <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;margin-bottom:16px">
+    <div class="panel">
+      <div class="phd"><div><div class="phd-t">방문자 트렌드 (최근 30일)</div><div class="phd-s">일별 세션 수</div></div></div>
+      <div class="pbody">
+        <div class="sparkline">
+          ${GA.spark.map((v,i)=>{const max=Math.max(...GA.spark);return`<div class="spark-bar" style="height:${Math.round(v/max*100)}%" title="${v}명"></div>`;}).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;color:var(--am)">
+          <span>30일 전</span><span>15일 전</span><span>오늘</span>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="phd"><div class="phd-t">사용 기기</div></div>
+      <div class="pbody">
+        ${GA.devices.map(d=>`
+          <div class="bar-row" style="margin-bottom:10px">
+            <div class="bar-label">${d.name}</div>
+            <div class="bar-track"><div class="bar-fill ${d.color}" style="width:${d.pct}%"></div></div>
+            <div class="bar-val">${d.pct}%</div>
+          </div>`).join('')}
+        <div style="font-size:10.5px;color:var(--am);margin-top:8px">
+          모바일 ${GA.devices[0].pct}% · 데스크탑 ${GA.devices[1].pct}% · 태블릿 ${GA.devices[2].pct}%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 페이지별 조회수 + 카테고리별 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <div class="panel">
+      <div class="phd"><div><div class="phd-t">🏆 페이지별 조회수 TOP 8</div><div class="phd-s">기간 내 총 페이지뷰 기준</div></div></div>
+      <div style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>페이지</th><th>카테고리</th><th>조회수</th><th>비율</th></tr></thead>
+          <tbody>${GA.pageRank.map((p,i)=>`
+            <tr>
+              <td class="rank-num">${i+1}</td>
+              <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${p.title}</td>
+              <td><span class="badge badge-pub" style="font-size:10px">${p.cat}</span></td>
+              <td style="color:var(--abl)">${fmtN(p.views)}</td>
+              <td class="prog-cell" style="min-width:80px"><div class="mini-bar"><div class="mini-fill" style="width:${p.pct}%"></div></div><span style="font-size:11px;color:var(--am);width:30px;text-align:right">${p.pct}%</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="phd"><div class="phd-t">📂 카테고리별 조회</div></div>
+      <div class="pbody">
+        <div class="bar-chart">
+          ${GA.catViews.map((c,i)=>{
+            const colors=['blue','green','yellow','purple','','green'];
+            return`<div class="bar-row">
+              <div class="bar-label">${c.name}</div>
+              <div class="bar-track"><div class="bar-fill ${colors[i]||'blue'}" style="width:${c.pct}%"></div></div>
+              <div class="bar-val">${fmtN(c.views)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 검색어 + 유입 경로 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="panel">
+      <div class="phd"><div class="phd-t">🔍 인기 검색어 TOP 8</div></div>
+      <div class="pbody">
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          ${GA.topSearch.map((q,i)=>`
+            <span style="background:var(--as2);border:1px solid var(--abdr);border-radius:100px;padding:4px 12px;font-size:12px;color:var(--at);display:flex;align-items:center;gap:6px">
+              <span style="font-size:10px;color:var(--am);font-weight:700">${i+1}</span>${q}
+            </span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="phd"><div class="phd-t">🔗 유입 경로 (Source)</div></div>
+      <div class="pbody">
+        <div class="bar-chart">
+          ${GA.referer.map(r=>`
+            <div class="bar-row">
+              <div class="bar-label">${r.name}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${r.pct}%"></div></div>
+              <div class="bar-val">${r.pct}%</div>
+            </div>`).join('')}
+        </div>
+        <div style="font-size:10.5px;color:var(--am);margin-top:10px;padding-top:10px;border-top:1px solid var(--abdr)">
+          ⚠️ 현재는 샘플 데이터입니다. 실제 자동 수집은 GA4 연동이 필요합니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--as);border:1px solid rgba(245,158,11,.3);border-radius:12px;margin-top:16px;overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid rgba(245,158,11,.2);display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:13.5px;color:var(--at)">📊 실제 데이터 자동 수집 방법 — GA4 연동 가이드</div>
+        <div style="font-size:11px;color:var(--am);margin-top:2px">현재 대시보드 수치는 샘플입니다. 아래 3단계로 실제 방문 데이터를 연동하세요</div>
+      </div>
+    </div>
+    <div style="padding:20px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px">
+        <div style="background:var(--as2);border-radius:10px;padding:16px">
+          <div style="font-size:18px;margin-bottom:8px">1️⃣</div>
+          <div style="color:var(--at);margin-bottom:6px;font-size:13px">GA4 속성 생성</div>
+          <div style="font-size:12px;color:var(--am);line-height:1.7">analytics.google.com → 관리 → 속성 만들기 → 웹 스트림 생성. 측정 ID(G-XXXXXXXX) 발급받기.</div>
+        </div>
+        <div style="background:var(--as2);border-radius:10px;padding:16px">
+          <div style="font-size:18px;margin-bottom:8px">2️⃣</div>
+          <div style="color:var(--at);margin-bottom:6px;font-size:13px">스크립트 삽입</div>
+          <div style="font-size:12px;color:var(--am);line-height:1.7">plab-site.html의 &lt;head&gt; 안에 GA4 측정 스니펫 삽입. 배포 즉시 수집 시작.</div>
+          <div style="background:var(--ab);border-radius:6px;padding:8px;margin-top:8px;font-family:monospace;font-size:10px;color:#93C5FD;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&lt;script async src="gtag/js?id=G-XXXX"&gt;</div>
+        </div>
+        <div style="background:var(--as2);border-radius:10px;padding:16px">
+          <div style="font-size:18px;margin-bottom:8px">3️⃣</div>
+          <div style="color:var(--at);margin-bottom:6px;font-size:13px">자동 수집 항목</div>
+          <div style="font-size:12px;color:var(--am);line-height:1.7">방문자수·페이지뷰·체류시간·이탈률·기기 자동 수집. 페이지별·검색어 통계는 GA4 리포트에서 확인.</div>
+        </div>
+      </div>
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px 16px;font-size:12px;color:#FCD34D;line-height:1.7">
+        💡 정확히 말하면: 이 어드민은 GA4와 직접 연동되어 있지 않아 자동 수집이 되지 않습니다. 배포 후 실제 통계는 GA4 콘솔에서 확인하고, 어드민 내 실시간 연동을 원하면 GA4 Reporting API + 백엔드 서버 연동이 추가로 필요합니다.
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+/* ════════════════════════════════════
+   ② HOME HERO
+════════════════════════════════════ */
+function rHero(){
+  const s=S.settings;
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="saveHero()">💾 저장</button>`;
+  document.getElementById('mainBody').innerHTML=`
+  <div class="split">
+    <div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">🖼️ 좌측 — 제목 & 브랜드 카피</div></div>
+        <div class="pbody">
+          <div class="field"><label class="fl">메인 제목</label><input class="fi" id="hT" value="${x(s.heroTitle)}" placeholder="플랩 이용 가이드"></div>
+          <div class="field"><label class="fl">브랜드 카피 (줄바꿈으로 구분)</label><textarea class="fi" id="hC" rows="24">${x(s.heroCopy||'')}</textarea><div class="fhint">첫 줄: 영문 키워드, 이후 카피 문구, 마지막: 서명</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">🔍 우측 — 서브텍스트</div></div>
+        <div class="pbody">
+          <div class="field"><label class="fl">서브텍스트</label><textarea class="fi" id="hD" rows="8">${x(s.heroDesc)}</textarea><div class="fhint">검색창 위 보조 설명</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="phd"><div class="phd-t">미리보기</div></div>
+      <div class="pbody">
+        <div style="background:#F8FAFB;border-radius:8px;padding:20px 16px;font-family:sans-serif">
+          <div style="display:flex;gap:0">
+            <div style="flex:0 0 50%;padding-right:14px">
+              <div style="font-size:16px;font-weight:900;color:#111;letter-spacing:-.5px;margin-bottom:8px" id="pv-t">${x(s.heroTitle)}</div>
+              <div style="font-size:10px;color:#6B7280;line-height:1.8" id="pv-c">${(s.heroCopy||'').replace(/\n/g,'<br>')}</div>
+            </div>
+            <div style="flex:1;padding-left:14px">
+              <div style="font-size:12px;font-weight:700;color:#111;line-height:1.4;margin-bottom:10px" id="pv-d">${(s.heroDesc||'').replace(/\n/g,'<br>')}</div>
+              <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:100px;padding:7px 14px;font-size:11px;color:#9CA3AF">🔍 가이드 검색...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  ['hT','hC','hD'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',()=>{
+      document.getElementById('pv-t').textContent=document.getElementById('hT').value;
+      document.getElementById('pv-c').innerHTML=document.getElementById('hC').value.replace(/</g,'&lt;').replace(/\n/g,'<br>');
+      document.getElementById('pv-d').innerHTML=document.getElementById('hD').value.replace(/</g,'&lt;').replace(/\n/g,'<br>');
+    });
+  });
+}
+function saveHero(){
+  S.settings.heroTitle=document.getElementById('hT').value.trim();
+  S.settings.heroCopy=document.getElementById('hC').value;
+  S.settings.heroDesc=document.getElementById('hD').value.trim();
+  save();toast('✓ Hero 영역 저장됨');
+}
+
+/* ════════════════════════════════════
+   ③ BANNER (업데이트 소식) — 갤러리 포함
+════════════════════════════════════ */
+function rBanner(){
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="openUpdModal()">＋ 새 소식 추가</button>`;
+  const rows=S.updates.map(u=>`
+    <tr>
+      <td><span class="badge badge-${u.type}">${u.type==='new'?'NEW':u.type==='fix'?'개선':'공지'}</span></td>
+      <td style="text-align:center">
+        <label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer">
+          <input type="checkbox" ${u.showInBanner?'checked':''} onchange="toggleBanner('${u.id}',this.checked)" style="width:15px;height:15px;accent-color:var(--blue)">
+          <span style="font-size:11px;color:${u.showInBanner?'var(--blue)':'var(--am)'}">${u.showInBanner?'ON':'OFF'}</span>
+        </label>
+      </td>
+      <td style="font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.title}</td>
+      <td style="font-size:11.5px;color:var(--am)">${u.date}</td>
+      <td style="font-size:11.5px;color:var(--am)">${u.gallery?.length?`📷 ${u.gallery.length}장`:'없음'}</td>
+      <td><div style="display:flex;gap:5px"><button class="btn btn-gh bxs" onclick="editUpd('${u.id}')">편집</button><button class="btn btn-rd bxs" onclick="delUpd('${u.id}')">삭제</button></div></td>
+    </tr>`).join('');
+  document.getElementById('mainBody').innerHTML=`
+  <div class="panel">
+    <div class="phd"><div><div class="phd-t">업데이트 소식 목록</div><div class="phd-s">최대 3개가 홈 배너에 노출됩니다</div></div></div>
+    <div style="padding:0">${S.updates.length?`<table class="atbl"><thead><tr><th>유형</th><th>배너 노출</th><th>제목</th><th>날짜</th><th>갤러리</th><th>작업</th></tr></thead><tbody>${rows}</tbody></table>`:
+    '<div style="text-align:center;padding:40px;color:var(--am)">소식이 없습니다</div>'}</div>
+  </div>`;
+}
+
+let _galleryImages=[]; // 현재 편집중인 갤러리 이미지들
+
+function updForm(u){
+  _galleryImages = u?.gallery ? [...u.gallery] : [];
+  const posts=S.posts.filter(p=>p.status==='published');
+  return`
+    <div class="field"><label class="fl">유형</label>
+      <select class="fi" id="uT">
+        <option value="new" ${u?.type==='new'?'selected':''}>NEW — 새 기능</option>
+        <option value="fix" ${u?.type==='fix'?'selected':''}>개선 — 업데이트</option>
+        <option value="notice" ${u?.type==='notice'?'selected':''}>공지</option>
+      </select></div>
+    <div class="field"><label class="fl">제목</label><input class="fi" id="uTi" value="${x(u?.title||'')}" placeholder="소식 제목"></div>
+    <div class="field"><label class="fl">날짜 (예: '26.2)</label><input class="fi" id="uD" value="${x(u?.date||'')}" placeholder="'26.2" style="width:120px"></div>
+    <div class="field"><label class="fl">부제목</label><input class="fi" id="uSub" value="${x(u?.subtitle||'')}" placeholder="배너에 표시되는 한 줄 요약"></div>
+    <div class="field"><label class="fl">연결 게시글 (선택)</label>
+      <select class="fi" id="uArt">
+        <option value="">없음</option>
+        ${posts.map(p=>`<option value="${p.id}" ${u?.articleId===p.id?'selected':''}>${p.title}</option>`).join('')}
+      </select></div>
+    <div class="field"><label class="fl">본문 (업데이트 상세 페이지에 표시됩니다)</label>
+      <div class="rte-wrap" style="margin-top:4px">
+        <div class="rte-toolbar">
+          <button class="rtb" onclick="rteCmd('bold')" title="굵게"><b>B</b></button>
+          <button class="rtb" onclick="rteCmd('italic')" title="기울임"><i>I</i></button>
+          <span class="rte-sep"></span>
+          <button class="rtb" onclick="rteCmd('formatBlock','h2')" title="제목">H2</button>
+          <button class="rtb" onclick="rteCmd('formatBlock','h3')" title="소제목">H3</button>
+          <button class="rtb" onclick="rteCmd('formatBlock','p')" title="본문">¶</button>
+          <span class="rte-sep"></span>
+          <button class="rtb" onclick="rteCmd('insertUnorderedList')" title="목록">• 목록</button>
+          <button class="rtb" onclick="rteCmd('formatBlock','blockquote')" title="인용">❝</button>
+        </div>
+        <div class="rte-body" id="uBody" contenteditable="true" style="min-height:1120px">${u?.content||u?.body||''}</div>
+      </div>
+    </div>
+    <!-- 배너 이미지 -->
+    <div class="field">
+      <label class="fl">배너 배경 이미지 (선택)</label>
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-top:4px">
+        <div id="bnrImgPreview" style="width:120px;height:68px;border-radius:8px;border:1px solid var(--abdr);background:var(--as2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--am);overflow:hidden;flex-shrink:0">
+          ${u?.bannerImage?`<img src="${u.bannerImage}" style="width:100%;height:100%;object-fit:cover">`:'이미지 없음'}
+        </div>
+        <div style="flex:1">
+          <button class="btn btn-gh bxs" onclick="document.getElementById('bnrImgIn').click()" style="margin-bottom:6px">📁 이미지 선택</button>
+          <input type="file" id="bnrImgIn" accept="image/*" style="display:none" onchange="onBnrImgSelect(event)">
+          ${u?.bannerImage?`<button class="btn btn-rd bxs" onclick="clearBnrImg()" style="margin-left:6px">× 제거</button>`:''}
+          <div class="fhint" style="margin-top:4px">배너 배경에 이미지를 표시합니다. 미설정 시 기존 색상 배경 사용.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 갤러리 -->
+    <div class="field">
+      <label class="fl">갤러리 이미지</label>
+      <div class="img-drop" id="galleryDrop" onclick="document.getElementById('galleryFileIn').click()" ondragover="galDragOver(event)" ondrop="galDrop(event)">
+        <div class="img-drop-ic">🖼️</div>
+        <div class="img-drop-t">이미지를 드래그하거나 클릭해서 업로드</div>
+        <div class="img-drop-s">JPG, PNG, GIF · 최대 5MB · 여러 장 선택 가능</div>
+      </div>
+      <input type="file" id="galleryFileIn" accept="image/*" multiple style="display:none" onchange="galFileInput(event)">
+      <div class="img-preview-grid" id="galPreview">${renderGalPreview()}</div>
+      <div class="fhint">업로드한 이미지는 소식 배너 하단에 갤러리 형식으로 표시됩니다</div>
+    </div>`;
+}
+
+function renderGalPreview(){
+  return _galleryImages.map((img,i)=>`
+    <div class="img-thumb">
+      <img src="${img}" alt="">
+      <button class="img-thumb-rm" onclick="removeGalImg(${i})">×</button>
+    </div>`).join('');
+}
+function galDragOver(e){e.preventDefault();document.getElementById('galleryDrop').classList.add('over');}
+function galDrop(e){e.preventDefault();document.getElementById('galleryDrop').classList.remove('over');processGalFiles(e.dataTransfer.files);}
+function galFileInput(e){processGalFiles(e.target.files);}
+function processGalFiles(files){
+  Array.from(files).forEach(f=>{
+    if(!f.type.startsWith('image/'))return;
+    const r=new FileReader();
+    r.onload=(e)=>{_galleryImages.push(e.target.result);document.getElementById('galPreview').innerHTML=renderGalPreview();};
+    r.readAsDataURL(f);
+  });
+}
+function removeGalImg(i){_galleryImages.splice(i,1);document.getElementById('galPreview').innerHTML=renderGalPreview();}
+function galDragLeave(){document.getElementById('galleryDrop').classList.remove('over');}
+
+function openUpdModal(id){
+  _editUpdId=id||null;
+  _bnrImgData=null;
+  const u=id?S.updates.find(x=>x.id===id):null;
+  _galleryImages=u?.gallery?[...u.gallery]:[];
+
+  // pActs
+  document.getElementById('pActs').innerHTML=`
+    <button class="btn btn-gh" onclick="rBanner()">← 목록</button>
+    <button class="btn btn-bl" onclick="saveUpd('${id||''}')">💾 저장</button>`;
+
+  const posts=S.posts.filter(p=>p.status==='published');
+  document.getElementById('mainBody').innerHTML=`
+  <div>
+    <input id="uTitle" placeholder="소식 제목 입력..." value="${x(u?.title||'')}"
+      style="width:100%;font-size:22px;font-weight:700;color:var(--at);background:transparent;border:none;outline:none;font-family:inherit;padding:4px 0 16px;margin-bottom:4px;border-bottom:1px solid var(--abdr);display:block">
+
+    <!-- 메타 바 -->
+    <div style="display:grid;grid-template-columns:auto 1fr auto 90px;gap:8px 12px;padding:12px 0;margin-bottom:8px;border-bottom:1px solid var(--abdr);align-items:center">
+      <label style="font-size:12px;font-weight:500;color:var(--am)">유형</label>
+      <select class="fi" id="uT" style="width:100%">
+        <option value="new" ${!u||u.type==='new'?'selected':''}>NEW — 새 기능 출시</option>
+        <option value="fix" ${u?.type==='fix'?'selected':''}>개선 — 기능 업데이트</option>
+        <option value="notice" ${u?.type==='notice'?'selected':''}>공지 — 운영 안내</option>
+      </select>
+      <label style="font-size:12px;font-weight:500;color:var(--am)">날짜</label>
+      <input class="fi" id="uD" value="${x(u?.date||'')}" placeholder="'26.2" style="width:90px">
+      <label style="font-size:12px;font-weight:500;color:var(--am)">부제목</label>
+      <input class="fi" id="uSub" value="${x(u?.subtitle||'')}" placeholder="배너 하단에 표시되는 한 줄 요약 문구를 여기에 입력하세요" style="grid-column:2/-1">
+    </div>
+
+    <!-- RTE 에디터 (게시글 관리와 동일) -->
+    <div class="rte-wrap">
+      <div class="rte-toolbar" id="rteToolbar">
+        <select class="rtb-fs" onchange="rteCmd('formatBlock',this.value);this.blur()" title="블록 스타일">
+          <option value="p">본문</option><option value="h1">제목 1</option><option value="h2">제목 2</option>
+          <option value="h3">제목 3</option><option value="pre">코드 블록</option><option value="blockquote">인용</option>
+        </select>
+        <select class="rtb-fs" onchange="setFontSize(this.value);this.blur()" style="width:55px">
+          <option value="">크기</option><option value="12px">12</option><option value="13px">13</option>
+          <option value="14px">14</option><option value="16px">16</option><option value="18px">18</option>
+          <option value="20px">20</option><option value="24px">24</option><option value="28px">28</option>
+        </select>
+        <div class="rte-sep"></div>
+        <button class="rtb" onclick="rteCmd('bold')" title="굵게 (Ctrl+B)"><b>B</b></button>
+        <button class="rtb" onclick="rteCmd('italic')" title="기울기"><i>I</i></button>
+        <button class="rtb" onclick="rteCmd('underline')" title="밑줄"><u>U</u></button>
+        <button class="rtb" onclick="rteCmd('strikeThrough')" title="취소선"><s>S</s></button>
+        <div class="rte-sep"></div>
+        <button class="rtb" id="btnFontColor2" onclick="openColorPopup('fore',this)" title="글자 색">
+          <span style="display:flex;flex-direction:column;align-items:center;gap:1px">
+            <span style="font-weight:800;font-size:12px;line-height:1">A</span>
+            <span id="colorBar2" style="width:14px;height:3px;border-radius:2px;background:#4E8EF7"></span>
+          </span>
+        </button>
+        <button class="rtb" onclick="openColorPopup('back',this)" title="배경 색">
+          <span style="display:flex;flex-direction:column;align-items:center;gap:1px">
+            <span style="font-size:11px">▭</span>
+            <span style="width:14px;height:3px;border-radius:2px;background:#FCD34D"></span>
+          </span>
+        </button>
+        <div class="rte-sep"></div>
+        <button class="rtb" onclick="rteCmd('justifyLeft')" title="왼쪽">≡</button>
+        <button class="rtb" onclick="rteCmd('justifyCenter')" title="가운데">≡</button>
+        <button class="rtb" onclick="rteCmd('justifyRight')" title="오른쪽">≡</button>
+        <div class="rte-sep"></div>
+        <button class="rtb" onclick="rteCmd('insertUnorderedList')" title="글머리 목록">• ≡</button>
+        <button class="rtb" onclick="rteCmd('insertOrderedList')" title="번호 목록">1. ≡</button>
+        <div class="rte-sep"></div>
+        <button class="rtb" onclick="openLinkPopup(this)" title="링크">🔗</button>
+        <button class="rtb" onclick="rteCmd('insertHorizontalRule')" title="구분선">—</button>
+        <button class="rtb" onclick="openTblBuilder(this)" title="표 삽입">⊞</button>
+        <div class="rte-sep"></div>
+        <button class="rtb" onclick="document.getElementById('rteImgIn').click()" title="이미지">🖼️</button>
+        <button class="rtb" onclick="openGalleryInline()" title="갤러리">🖼️✦</button>
+        <div class="rte-sep"></div>
+        <button class="rtb" onclick="rteCmd('undo')" title="실행취소">↩</button>
+        <button class="rtb" onclick="rteCmd('redo')" title="다시실행">↪</button>
+        <div class="rte-sep"></div>
+        <button class="rtb" onclick="rteInsertCallout()" title="콜아웃">💡 콜아웃</button>
+        <button class="rtb" id="btnFullscreen" onclick="toggleEditorFullscreen()" title="전체화면">⛶ 전체화면</button>
+      </div>
+      <div class="rte-body" id="rteBody" contenteditable="true"
+        onkeydown="rteKeyDown(event)" onmouseup="saveRange()" onkeyup="saveRange()"
+        onclick="onRteImgClick(event)">
+        ${u?.content||u?.body||''}
+      </div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:var(--am)">💡 Ctrl+B 굵게 · Ctrl+I 기울기 · Ctrl+U 밑줄</div>
+
+    <!-- 하단: 배너 이미지 + 갤러리 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+      <div class="panel">
+        <div class="phd"><div class="phd-t">배너 배경 이미지</div></div>
+        <div class="pbody">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div id="bnrImgPreview" style="width:120px;height:68px;border-radius:8px;border:1px solid var(--abdr);background:var(--as2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--am);overflow:hidden;flex-shrink:0">
+              ${u?.bannerImage?`<img src="${u.bannerImage}" style="width:100%;height:100%;object-fit:cover">`:'이미지 없음'}
+            </div>
+            <div>
+              <button class="btn btn-gh bxs" onclick="document.getElementById('bnrImgIn').click()">📁 선택</button>
+              <input type="file" id="bnrImgIn" accept="image/*" style="display:none" onchange="onBnrImgSelect(event)">
+              ${u?.bannerImage?`<button class="btn btn-rd bxs" onclick="clearBnrImg()" style="margin-top:4px">× 제거</button>`:''}
+              <div class="fhint" style="margin-top:4px">미설정 시 색상 배경 사용</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">갤러리 이미지</div></div>
+        <div class="pbody">
+          <div class="img-drop" id="galleryDrop" onclick="document.getElementById('galleryFileIn').click()" ondragover="galDragOver(event)" ondrop="galDrop(event)" style="min-height:60px">
+            <div class="img-drop-ic" style="font-size:20px">🖼️</div>
+            <div class="img-drop-t">클릭 또는 드래그</div>
+          </div>
+          <input type="file" id="galleryFileIn" accept="image/*" multiple style="display:none" onchange="galFileInput(event)">
+          <div class="img-preview-grid" id="galPreview" style="margin-top:8px">${renderGalPreview()}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 연결 게시글 -->
+    <div class="panel" style="margin-top:16px">
+      <div class="phd"><div class="phd-t">연결 게시글 (선택)</div></div>
+      <div class="pbody">
+        <select class="fi" id="uArt">
+          <option value="">없음</option>
+          ${posts.map(p=>`<option value="${p.id}" ${u?.articleId===p.id?'selected':''}>${p.title}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>{document.getElementById('rteBody')?.focus();initTableResize();},80);
+}
+let _editUpdId=null;
+function editUpd(id){openUpdModal(id);}
+function saveUpd(id){
+  const _prevU=id?S.updates.find(x=>x.id===id):null;
+  const _bannerImg=_bnrImgData==='__clear__'?null:(_bnrImgData||_prevU?.bannerImage||null);
+  const d={id:id||'u'+Date.now(),type:document.getElementById('uT').value,title:(document.getElementById('uTi')||document.getElementById('uTitle'))?.value.trim()||'',date:document.getElementById('uD').value.trim(),subtitle:document.getElementById('uSub').value.trim(),articleId:document.getElementById('uArt').value,content:document.getElementById('uBody').innerHTML,body:document.getElementById('uBody').innerText,gallery:[..._galleryImages],bannerImage:_bannerImg};
+  if(!d.title){toast('제목을 입력하세요');return;}
+  if(id){const i=S.updates.findIndex(x=>x.id===id);if(i>=0)S.updates[i]=d;else S.updates.push(d);}
+  else S.updates.push(d);
+  save();closeModal();rBanner();toast('✓ 저장됨');
+}
+function delUpd(id){if(!confirm('삭제하시겠습니까?'))return;S.updates=S.updates.filter(x=>x.id!==id);save();rBanner();toast('삭제됨');}
+// 배너 이미지 관련
+let _bnrImgData = null; // 현재 편집 중인 배너 이미지
+function onBnrImgSelect(e){
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    _bnrImgData=ev.target.result;
+    const prev=document.getElementById('bnrImgPreview');
+    if(prev)prev.innerHTML=`<img src="${_bnrImgData}" style="width:100%;height:100%;object-fit:cover">`;
+  };
+  r.readAsDataURL(f);
+}
+function clearBnrImg(){
+  _bnrImgData='__clear__';
+  const prev=document.getElementById('bnrImgPreview');
+  if(prev)prev.innerHTML='<span style="font-size:11px;color:var(--am)">이미지 없음</span>';
+}
+function toggleBanner(id,val){const u=S.updates.find(x=>x.id===id);if(u){u.showInBanner=val;save();rBanner();toast(val?'✓ 배너 ON':'배너 OFF');}}
+
+
+/* ════════════════════════════════════
+   가이드 카드 관리 (= rGuide 동일)
+════════════════════════════════════ */
+function rGuideCats(){
+  document.getElementById('pActs').innerHTML=`<button class="ios-btn ios-btn-blue" onclick="openCatModal()">＋ 카드 추가</button>`;
+  const rows=[...S.categories].sort((a,b)=>(a.order??0)-(b.order??0)).map((c,i)=>{
+    const cnt=S.posts.filter(p=>p.category===c.id&&p.postType!=='service').length;
+    return`<tr>
+      <td style="color:var(--am);font-size:12px;width:30px">${i+1}</td>
+      <td style="font-size:20px">${c.emoji}</td>
+      <td style="font-weight:600">${c.name}</td>
+      <td style="font-size:12px;color:var(--am)">${c.desc}</td>
+      <td><span class="badge badge-pub" style="cursor:pointer" onclick="pg('guide-posts');filterCat='${c.id}';rPostsFiltered('guide')">${cnt}개 게시글 →</span></td>
+      <td><div style="display:flex;gap:5px"><button class="btn btn-gh bxs" onclick="editCat('${c.id}')">편집</button><button class="btn btn-rd bxs" onclick="delCat('${c.id}')">삭제</button></div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('mainBody').innerHTML=`
+  <div style="background:rgba(78,142,247,.08);border:1px solid rgba(78,142,247,.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:var(--abl)">
+    📚 가이드 카드는 홈 화면 사용 가이드 섹션에 표시됩니다. 카드를 클릭하면 해당 카테고리의 게시글 목록으로 이동합니다.
+  </div>
+  <div class="panel"><div style="padding:0"><table class="atbl"><thead><tr><th>#</th><th>이모지</th><th>이름</th><th>설명</th><th>게시글</th><th>작업</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+/* ════════════════════════════════════
+   서비스 카드 관리 (= rService 동일)
+════════════════════════════════════ */
+function rServiceCards(){
+  document.getElementById('pActs').innerHTML=`<button class="ios-btn ios-btn-blue" onclick="openSvcModal()">＋ 카드 추가</button>`;
+  const cardsHTML=S.services.map(s=>{
+    const page=S.servicePages&&S.servicePages[s.id];
+    const hasContent=page&&page.length>50;
+    return`<div class="cat-card" style="margin-bottom:12px">
+      <div class="cat-hd">
+        <div class="cat-hd-info">
+          <div class="cat-hd-name">${s.emoji} ${s.title}</div>
+          <div class="cat-hd-sub">${s.desc}</div>
+        </div>
+        <button class="ios-btn-sm ios-btn-gray" onclick="editSvc('${s.id}')">편집</button>
+        <button class="ios-btn-sm ios-btn-red" onclick="delSvc('${s.id}')">삭제</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('mainBody').innerHTML=`
+  <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:#C4B5FD">
+    ⚙️ 서비스 카드는 홈 화면 플랩의 서비스 섹션에 표시됩니다. 서비스 게시글은 [게시글 관리]에서 작성하세요.
+  </div>
+  <div class="posts-list">${cardsHTML}</div>`;
+}
+
+/* ════════════════════════════════════
+   게시글 목록 (타입별 필터링)
+════════════════════════════════════ */
+let filterCat='', filterSvc='';
+function rPostsFiltered(type){
+  const isGuide = type==='guide';
+  document.getElementById('pActs').innerHTML=`
+    <button class="ios-btn ios-btn-blue" onclick="openEditorTyped('${type}')">＋ 새 글 작성</button>`;
+
+  let posts = isGuide
+    ? S.posts.filter(p=>p.postType!=='service')
+    : S.posts.filter(p=>p.postType==='service');
+  if(!isGuide&&filterSvc) posts=posts.filter(p=>p.serviceId===filterSvc);
+
+  const DH=`<div class="drag-handle"><span></span><span></span><span></span></div>`;
+
+  // ── 가이드 ──
+  if(isGuide){
+    const catOrder=[...S.categories].sort((a,b)=>(a.order??0)-(b.order??0));
+
+    const groupsHTML=catOrder.map((cat,catIdx)=>{
+      const catKey=cat.id;
+      const catPosts=posts.filter(p=>p.category===catKey);
+      const subOrder=(S.subcategories&&S.subcategories[catKey])||[];
+      const subMap={};
+      catPosts.forEach(p=>{const sk=p.subCat||'기타';if(!subMap[sk])subMap[sk]=[];subMap[sk].push(p);});
+      Object.keys(subMap).forEach(sk=>{
+        const ord=(S.postOrder&&S.postOrder[catKey+'__'+sk])||[];
+        if(ord.length)subMap[sk].sort((a,b)=>{const ai=ord.indexOf(a.id),bi=ord.indexOf(b.id);return(ai<0?999:ai)-(bi<0?999:bi);});
+      });
+      const allSubs=subOrder.length?subOrder:Object.keys(subMap);
+
+      const subHTML=allSubs.map((subName,subIdx)=>{
+        const subPosts=subMap[subName]||[];
+        const sub64=btoa(unescape(encodeURIComponent(subName)));
+        return`<div class="sub-section"
+          ondragover="dragOver(event,'sub','${catKey}__${sub64}')"
+          ondragleave="dragLeave(event)"
+          ondrop="dragDrop(event,'sub','${catKey}__${sub64}')">
+          <div class="sub-hd">
+            <div class="drag-handle drag-section" draggable="true"
+              ondragstart="dragStart(event,'sub','${catKey}__${sub64}')"
+              ondragend="dragEnd(event)">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="sub-hd-name">${subName} <span class="sub-hd-cnt">(${subPosts.length})</span></span>
+            <button class="ios-btn-sm ios-btn-gray" onclick="renameSub('${catKey}','${subName}')">이름 변경</button>
+            <button class="ios-btn-sm ios-btn-red" onclick="deleteSub('${catKey}','${subName}')">삭제</button>
+          </div>
+          ${subPosts.map((p,pIdx)=>`
+          <div class="post-row"
+            ondragover="dragOver(event,'post','${p.id}','${catKey}','${subName}')"
+            ondragleave="dragLeave(event)"
+            ondrop="dragDrop(event,'post','${p.id}','${catKey}','${subName}')">
+            <div class="drag-handle" draggable="true"
+              ondragstart="dragStart(event,'post','${p.id}','${catKey}','${subName}')"
+              ondragend="dragEnd(event)">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="post-row-body">
+              <div class="post-row-title">${p.title}</div>
+              <div class="post-row-meta">
+                ${p.date?`<span class="meta-date">게시 ${fmtDate(p.date)}</span>`:''}
+                ${p.updatedAt?`<span class="meta-upd">수정 ${fmtDate(p.updatedAt)}</span>`:''}
+              </div>
+            </div>
+            <span class="badge badge-${p.status==='published'?'pub':'dft'}">${p.status==='published'?'발행':'임시저장'}</span>
+            <button class="ios-btn ios-btn-blue" onclick="openEditorTyped('guide','${p.id}')">편집</button>
+            <button class="ios-btn ios-btn-red" onclick="delPost('${p.id}','guide')">삭제</button>
+          </div>`).join('')}
+        </div>`;
+      }).join('');
+
+      return`<div class="cat-card" data-catid="${catKey}"
+        ondragover="dragOver(event,'cat','${catKey}')"
+        ondragleave="dragLeave(event)"
+        ondrop="dragDrop(event,'cat','${catKey}')">
+        <div class="cat-hd">
+          <div class="drag-handle drag-section" draggable="true"
+            ondragstart="dragStart(event,'cat','${catKey}')"
+            ondragend="dragEnd(event)">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="cat-hd-info">
+            <div class="cat-hd-name">${cat.emoji} ${cat.name}</div>
+            <div class="cat-hd-sub">${catPosts.length}개 게시글 · ${allSubs.length}개 카테고리</div>
+          </div>
+          <button class="ios-btn-sm ios-btn-gray" onclick="openCatModalInline('${catKey}')">편집</button>
+          <button class="ios-btn-sm ios-btn-gray" onclick="addSubInline('${catKey}')">+ 카테고리</button>
+          <button class="ios-btn-sm ios-btn-blue" onclick="filterCat='${catKey}';openEditorTyped('guide')">+ 새 글</button>
+        </div>
+        <div>${subHTML||'<div class="empty-sub">게시글이 없습니다</div>'}</div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('mainBody').innerHTML=`<div class="posts-list">${groupsHTML}
+      <div class="add-cat-row">
+        <button class="ios-btn ios-btn-gray" onclick="openCatModalInline()">＋ 새 카테고리 추가</button>
+      </div></div>`;
+    return;
+  }
+
+  // ── 서비스 게시글 목록 ──
+  if(!posts.length){
+    document.getElementById('mainBody').innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--am)">
+      <div style="font-size:32px;margin-bottom:12px">📝</div>
+      <div style="font-size:14px;font-weight:600;color:var(--at);margin-bottom:6px">서비스 게시글이 없습니다</div>
+      <div style="font-size:12.5px">＋ 새 글 작성 버튼으로 게시글을 추가하세요</div>
+    </div>`;
+    return;
+  }
+  // 서비스별 그룹핑
+  const svcMap={};
+  posts.forEach(p=>{const sid=p.serviceId||'기타';if(!svcMap[sid])svcMap[sid]=[];svcMap[sid].push(p);});
+  const svcGroupsHTML=Object.entries(svcMap).map(([sid,svcPosts])=>{
+    const svc=S.services.find(s=>s.id===sid);
+    const svcName=svc?`${svc.emoji} ${svc.title}`:'기타';
+    const rowsHTML=svcPosts.map(p=>`
+    <div class="post-row"
+      ondragover="dragOver(event,'svcpost','${p.id}')"
+      ondragleave="dragLeave(event)"
+      ondrop="dragDrop(event,'svcpost','${p.id}')">
+      <div class="drag-handle" draggable="true"
+        ondragstart="dragStart(event,'svcpost','${p.id}','svc','')"
+        ondragend="dragEnd(event)">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="post-row-body">
+        <div class="post-row-title">${p.title}</div>
+        <div class="post-row-meta">
+          ${p.date?`<span class="meta-date">게시 ${fmtDate(p.date)}</span>`:''}
+          ${p.updatedAt?`<span class="meta-upd">수정 ${fmtDate(p.updatedAt)}</span>`:''}
+        </div>
+      </div>
+      <span class="badge badge-${p.status==='published'?'pub':'dft'}">${p.status==='published'?'발행':'임시저장'}</span>
+      <button class="ios-btn ios-btn-blue" onclick="openEditorTyped('service','${p.id}')">편집</button>
+      <button class="ios-btn ios-btn-red" onclick="delPost('${p.id}','service')">삭제</button>
+    </div>`).join('');
+    return`<div class="cat-card" style="margin-bottom:12px">
+      <div class="cat-hd">
+        <div class="cat-hd-info">
+          <div class="cat-hd-name">${svcName}</div>
+          <div class="cat-hd-sub">${svcPosts.length}개 게시글</div>
+        </div>
+        <button class="ios-btn-sm ios-btn-blue" onclick="filterSvc='${sid}';openEditorTyped('service')">+ 새 글</button>
+      </div>
+      <div>${rowsHTML}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('mainBody').innerHTML=`<div class="posts-list">${svcGroupsHTML}</div>`;
+}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('ko-KR',{year:'2-digit',month:'2-digit',day:'2-digit'});}catch{return '';}}
+
+function onFilterChange(type){
+  if(type==='guide') filterCat=document.getElementById('filterSel')?.value||'';
+  else filterSvc=document.getElementById('filterSel')?.value||'';
+  rPostsFiltered(type);
+}
+
+/* ── 드래그앤드롭 순서 변경 ── */
+let _dragType=null, _dragId=null, _dragCat=null, _dragSub=null;
+
+function dragStart(e, type, id, cat, sub){
+  _dragType=type; _dragId=id; _dragCat=cat||null; _dragSub=sub||null;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>e.target.closest('[draggable]')?.classList.add('dragging-item'),0);
+}
+function dragEnd(e){
+  e.target.closest('[draggable]')?.classList.remove('dragging-item');
+  document.querySelectorAll('.drag-over-top,.drag-over-bot').forEach(el=>{
+    el.classList.remove('drag-over-top','drag-over-bot');
+  });
+}
+function dragOver(e, type, targetId){
+  if(_dragType!==type)return;
+  e.preventDefault(); e.stopPropagation();
+  e.dataTransfer.dropEffect='move';
+  const el=e.currentTarget;
+  const rect=el.getBoundingClientRect();
+  const isTop=(e.clientY-rect.top)<(rect.height/2);
+  document.querySelectorAll('.drag-over-top,.drag-over-bot').forEach(x=>{
+    if(x!==el){x.classList.remove('drag-over-top','drag-over-bot');}
+  });
+  el.classList.toggle('drag-over-top',isTop);
+  el.classList.toggle('drag-over-bot',!isTop);
+}
+function dragLeave(e){
+  // 자식 요소로 이동 시 무시
+  if(e.currentTarget.contains(e.relatedTarget))return;
+  e.currentTarget.classList.remove('drag-over-top','drag-over-bot');
+}
+function dragDrop(e, type, targetId, targetCat, targetSub){
+  e.preventDefault(); e.stopPropagation();
+  const el=e.currentTarget;
+  const isTop=el.classList.contains('drag-over-top');
+  el.classList.remove('drag-over-top','drag-over-bot');
+
+  if(type==='cat'&&_dragType==='cat'&&_dragId!==targetId){
+    // 카테고리 순서 변경
+    const arr=[...S.categories].sort((a,b)=>(a.order??0)-(b.order??0));
+    const fromIdx=arr.findIndex(c=>c.id===_dragId);
+    const toIdx=arr.findIndex(c=>c.id===targetId);
+    if(fromIdx<0||toIdx<0)return;
+    const [item]=arr.splice(fromIdx,1);
+    const insertAt=isTop?toIdx:toIdx+1;
+    arr.splice(insertAt<fromIdx?insertAt:Math.max(0,insertAt-1>fromIdx?insertAt-1:insertAt),0,item);
+    // order 재부여
+    arr.forEach((c,i)=>c.order=i);
+    S.categories=arr;
+    save();rPostsFiltered('guide');
+  } else if(type==='sub'&&_dragType==='sub'){
+    // 서브카테고리 순서 변경 (같은 카테고리 내)
+    const [dragCat,dragSub]=_dragId.split('__');
+    const [tgtCat,tgtSub]=targetId.split('__');
+    if(dragCat!==tgtCat||dragSub===tgtSub)return;
+    if(!S.subcategories)S.subcategories={};
+    if(!S.subcategories[dragCat]){
+      S.subcategories[dragCat]=[...new Set(S.posts.filter(p=>p.category===dragCat&&p.subCat).map(p=>p.subCat))];
+    }
+    const arr=S.subcategories[dragCat];
+    const fromIdx=arr.indexOf(dragSub);
+    const toIdx=arr.indexOf(tgtSub);
+    if(fromIdx<0||toIdx<0)return;
+    arr.splice(fromIdx,1);
+    arr.splice(isTop?toIdx:toIdx+1,0,dragSub);
+    save();rPostsFiltered('guide');
+  } else if(type==='post'&&_dragType==='post'){
+    // 게시글 순서 변경 (같은 서브카테고리 내)
+    if(_dragCat!==targetCat||_dragSub!==targetSub||_dragId===targetId)return;
+    if(!S.postOrder)S.postOrder={};
+    const orderKey=targetCat+'__'+targetSub;
+    const subPosts=S.posts.filter(p=>p.category===targetCat&&(p.subCat||'기타')===targetSub);
+    let order=S.postOrder[orderKey]||subPosts.map(p=>p.id);
+    subPosts.forEach(p=>{if(!order.includes(p.id))order.push(p.id);});
+    const fromIdx=order.indexOf(_dragId);
+    const toIdx=order.indexOf(targetId);
+    if(fromIdx<0||toIdx<0)return;
+    order.splice(fromIdx,1);
+    order.splice(isTop?toIdx:toIdx+1,0,_dragId);
+    S.postOrder[orderKey]=order;
+    save();rPostsFiltered('guide');
+  } else if(type==='svcpost'&&_dragType==='svcpost'){
+    // 서비스 게시글 순서 변경
+    if(!S.postOrder)S.postOrder={};
+    const orderKey='__svc__';
+    const svcPosts=S.posts.filter(p=>p.postType==='service');
+    let order=S.postOrder[orderKey]||svcPosts.map(p=>p.id);
+    svcPosts.forEach(p=>{if(!order.includes(p.id))order.push(p.id);});
+    const fromIdx=order.indexOf(_dragId);
+    const toIdx=order.indexOf(targetId);
+    if(fromIdx>=0&&toIdx>=0&&fromIdx!==toIdx){
+      const isTop=document.querySelector('[ondragover*="svcpost"]')?.classList.contains('drag-over-top')??true;
+      order.splice(fromIdx,1);
+      order.splice(isTop?toIdx:toIdx+1,0,_dragId);
+      S.postOrder[orderKey]=order;
+      save();rPostsFiltered('service');
+    }
+  }
+  _dragType=null;_dragId=null;_dragCat=null;_dragSub=null;
+}
+
+/* ── 순서 변경: 카테고리 ── */
+function moveCat(catId, dir){
+  const arr=[...S.categories].sort((a,b)=>(a.order??0)-(b.order??0));
+  const idx=arr.findIndex(c=>c.id===catId);
+  const swapIdx=idx+dir;
+  if(swapIdx<0||swapIdx>=arr.length)return;
+  const tmp=arr[idx].order??idx;
+  arr[idx].order=arr[swapIdx].order??swapIdx;
+  arr[swapIdx].order=tmp;
+  S.categories=arr;
+  save();rPostsFiltered('guide');
+}
+
+/* ── 순서 변경: 서브카테고리 ── */
+function moveSub(catKey, subName, dir){
+  if(!S.subcategories)S.subcategories={};
+  if(!S.subcategories[catKey]){
+    const existing=[...new Set(S.posts.filter(p=>p.category===catKey&&p.subCat).map(p=>p.subCat))];
+    S.subcategories[catKey]=existing;
+  }
+  const arr=S.subcategories[catKey];
+  const idx=arr.indexOf(subName);
+  if(idx<0)return;
+  const swapIdx=idx+dir;
+  if(swapIdx<0||swapIdx>=arr.length)return;
+  [arr[idx],arr[swapIdx]]=[arr[swapIdx],arr[idx]];
+  save();rPostsFiltered('guide');
+}
+
+/* ── 순서 변경: 게시글 ── */
+function movePost(postId, catKey, subName, dir){
+  if(!S.postOrder)S.postOrder={};
+  const orderKey=catKey+'__'+subName;
+  const subPosts=S.posts.filter(p=>p.category===catKey&&(p.subCat||'기타')===subName);
+  const order=S.postOrder[orderKey]||subPosts.map(p=>p.id);
+  subPosts.forEach(p=>{if(!order.includes(p.id))order.push(p.id);});
+  const idx=order.indexOf(postId);
+  if(idx<0)return;
+  const swapIdx=idx+dir;
+  if(swapIdx<0||swapIdx>=order.length)return;
+  [order[idx],order[swapIdx]]=[order[swapIdx],order[idx]];
+  S.postOrder[orderKey]=order;
+  save();rPostsFiltered('guide');
+}
+
+/* ── 카테고리 인라인 편집 ── */
+function openCatModalInline(id){
+  const c=id?S.categories.find(x=>x.id===id):null;
+  const btns=[{l:'취소',c:'btn-gh',f:'closeModal()'}];
+  if(id) btns.push({l:'삭제',c:'btn-rd',f:`deleteCatInline('${id}')`});
+  btns.push({l:'저장',c:'btn-bl',f:`saveCatInline('${id||''}')`});
+  openModal(c?'카테고리 편집':'새 카테고리 추가',catForm(c),btns);
+}
+function saveCatInline(id){
+  const d={id:id||'gc'+Date.now(),emoji:document.getElementById('cE').value.trim(),name:document.getElementById('cN').value.trim(),desc:document.getElementById('cD').value.trim(),cv:id?S.categories.find(x=>x.id===id)?.cv||'cv-bl':'cv-bl',order:parseInt(document.getElementById('cO').value)||S.categories.length};
+  if(!d.name){toast('이름을 입력하세요');return;}
+  if(id){const i=S.categories.findIndex(x=>x.id===id);if(i>=0)S.categories[i]=d;}else S.categories.push(d);
+  save();closeModal();rPostsFiltered('guide');toast('✓ 저장됨');
+}
+function deleteCatInline(id){
+  if(!confirm('카테고리를 삭제하면 해당 카테고리의 게시글이 미분류됩니다. 계속하시겠습니까?'))return;
+  S.categories=S.categories.filter(x=>x.id!==id);
+  save();closeModal();rPostsFiltered('guide');toast('삭제됨');
+}
+
+/* ── 서브카테고리 인라인 추가 ── */
+function addSubInline(catKey){
+  const name=prompt('새 카테고리명을 입력하세요:');
+  if(!name||!name.trim())return;
+  if(!S.subcategories)S.subcategories={};
+  if(!S.subcategories[catKey])S.subcategories[catKey]=[];
+  if(S.subcategories[catKey].includes(name.trim())){toast('이미 존재합니다');return;}
+  S.subcategories[catKey].push(name.trim());
+  save();rPostsFiltered('guide');toast('✓ 카테고리 추가됨');
+}
+
+/* ── 서브카테고리 삭제 ── */
+function deleteSub(catKey, subName){
+  const cnt=S.posts.filter(p=>p.category===catKey&&(p.subCat||'기타')===subName).length;
+  if(!confirm(`'${subName}'을 삭제하시겠습니까?${cnt?`\n(게시글 ${cnt}개는 '기타'로 이동됩니다.)`:''}`)  )return;
+  if(S.subcategories&&S.subcategories[catKey])S.subcategories[catKey]=S.subcategories[catKey].filter(s=>s!==subName);
+  S.posts.forEach(p=>{if(p.category===catKey&&p.subCat===subName)p.subCat='기타';});
+  save();rPostsFiltered('guide');toast('삭제됨');
+}
+
+function openEditorTyped(type,id){
+  _curPostType=type;
+  openEditor(id);
+}
+
+function delPost(id,type){
+  if(!confirm('삭제?'))return;
+  S.posts=S.posts.filter(p=>p.id!==id);
+  save();
+  if(type) rPostsFiltered(type);
+  else rPosts();
+  toast('삭제됨');
+}
+
+/* ════════════════════════════════════
+   ④ HOME GUIDE CARD
+════════════════════════════════════ */
+function rGuide(){
+  document.getElementById('pActs').innerHTML=`<button class="ios-btn ios-btn-blue" onclick="openCatModal()">＋ 카드 추가</button>`;
+  const cardsHTML=[...S.categories].sort((a,b)=>(a.order??0)-(b.order??0)).map((c,i)=>{
+    const heroBg=c.heroImage
+      ?`background:url(${c.heroImage}) center/cover no-repeat`
+      :`background:linear-gradient(135deg,#0A1929,#162234)`;
+    return`<div class="cat-card" style="margin-bottom:12px">
+      <div class="cat-hd">
+        <div style="width:56px;height:40px;border-radius:8px;flex-shrink:0;${heroBg};display:flex;align-items:center;justify-content:center;overflow:hidden">
+          ${c.heroImage?'':`<span style="font-size:20px">${c.emoji}</span>`}
+        </div>
+        <div class="cat-hd-info">
+          <div class="cat-hd-name">${c.emoji} ${c.name}</div>
+          <div class="cat-hd-sub">${c.desc}${c.heroImage?' · 🖼️ 배너 설정됨':''}</div>
+        </div>
+        <button class="ios-btn-sm ios-btn-gray" onclick="editCat('${c.id}')">편집</button>
+        <button class="ios-btn-sm ios-btn-red" onclick="delCat('${c.id}')">삭제</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('mainBody').innerHTML=`<div class="posts-list">${cardsHTML}</div>`;
+}
+function catForm(c){
+  const heroPreviewStyle=c?.heroImage?`background:url(${c.heroImage}) center/cover no-repeat;`:`background:linear-gradient(135deg,#1a1a2e,#16213e);`;
+  return`
+  <div class="field"><label class="fl">이모지</label><input class="fi" id="cE" value="${x(c?.emoji||'⚽')}" style="width:70px;font-size:20px"></div>
+  <div class="field"><label class="fl">이름</label><input class="fi" id="cN" value="${x(c?.name||'')}"></div>
+  <div class="field"><label class="fl">설명</label><input class="fi" id="cD" value="${x(c?.desc||'')}"></div>
+  <div class="field"><label class="fl">순서</label><input class="fi" id="cO" type="number" value="${c?.order??S.categories.length}" style="width:80px"></div>
+  <div class="field">
+    <label class="fl">상단 배너 이미지</label>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div id="catHeroPreview" style="width:100%;height:100px;border-radius:10px;${heroPreviewStyle}display:flex;align-items:center;justify-content:center;border:1.5px solid var(--abdr);overflow:hidden">
+        ${c?.heroImage?'':`<span style="color:rgba(255,255,255,.5);font-size:12px">미리보기</span>`}
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="ios-btn ios-btn-gray" onclick="document.getElementById('catHeroImgIn').click()" type="button">📁 이미지 선택</button>
+        ${c?.heroImage?`<button class="ios-btn ios-btn-red" onclick="clearCatHeroImg()" type="button">× 제거</button>`:''}
+        <input type="file" id="catHeroImgIn" accept="image/*" style="display:none" onchange="onCatHeroImgSelect(event)">
+        <input type="hidden" id="cHeroImg" value="${x(c?.heroImage||'')}">
+      </div>
+      <div style="font-size:11.5px;color:var(--am)">가이드 카테고리 페이지 상단에 표시되는 배너 이미지입니다. 미설정 시 기본 그라디언트 배경이 사용됩니다.</div>
+    </div>
+  </div>`;
+}
+
+function openCatModal(id){const c=id?S.categories.find(x=>x.id===id):null;openModal(c?'카드 편집':'카드 추가',catForm(c),[{l:'취소',c:'btn-gh',f:'closeModal()'},{l:'저장',c:'btn-bl',f:`saveCat('${id||''}')`}]);}
+function editCat(id){openCatModal(id);}
+function onCatHeroImgSelect(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=(ev)=>{
+    const data=ev.target.result;
+    document.getElementById('cHeroImg').value=data;
+    const prev=document.getElementById('catHeroPreview');
+    if(prev){
+      prev.style.background=`url(${data}) center/cover no-repeat`;
+      prev.innerHTML='';
+    }
+  };
+  r.readAsDataURL(f);
+}
+function clearCatHeroImg(){
+  document.getElementById('cHeroImg').value='';
+  const prev=document.getElementById('catHeroPreview');
+  if(prev){
+    prev.style.background='linear-gradient(135deg,#1a1a2e,#16213e)';
+    prev.innerHTML='<span style="color:rgba(255,255,255,.5);font-size:12px">미리보기</span>';
+  }
+}
+function saveCat(id){
+  const heroImg=document.getElementById('cHeroImg')?.value||'';
+  const d={
+    id:id||'gc'+Date.now(),
+    emoji:document.getElementById('cE').value.trim(),
+    name:document.getElementById('cN').value.trim(),
+    desc:document.getElementById('cD').value.trim(),
+    cv:id?S.categories.find(x=>x.id===id)?.cv||'cv-bl':'cv-bl',
+    order:parseInt(document.getElementById('cO').value)||0,
+    heroImage:heroImg||undefined
+  };
+  if(!d.name){toast('이름 입력');return;}
+  if(id){const i=S.categories.findIndex(x=>x.id===id);if(i>=0)S.categories[i]=d;}
+  else S.categories.push(d);
+  save();closeModal();rGuide();toast('✓ 저장됨');
+}
+function delCat(id){if(!confirm('삭제?'))return;S.categories=S.categories.filter(x=>x.id!==id);save();rGuide();toast('삭제됨');}
+
+/* ════════════════════════════════════
+   ⑤ HOME SERVICE CARD
+════════════════════════════════════ */
+/* ── 서비스 상세 페이지 편집 ── */
+function editSvcPage(svcId){
+  const svc = S.services.find(s=>s.id===svcId);
+  if(!svc) return;
+  if(!S.servicePages) S.servicePages={};
+  const content = S.servicePages[svcId] || '';
+
+  pg('service-cards'); // 현재 페이지 유지
+  document.getElementById('pActs').innerHTML=`
+    <span style="font-size:13px;color:var(--am)">서비스: <b style="color:var(--at)">${svc.emoji} ${svc.title}</b></span>
+    <button class="btn btn-bl" onclick="saveSvcPage('${svcId}')">💾 저장</button>
+    <button class="btn btn-gh" onclick="rServiceCards()">← 목록으로</button>`;
+
+  document.getElementById('mainBody').innerHTML=`
+  <div style="background:rgba(78,142,247,.08);border:1px solid rgba(78,142,247,.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:var(--abl)">
+    👁️ 아래 에디터에서 보이는 내용이 홈페이지 <b>${svc.emoji} ${svc.title}</b> 카드 클릭 시 그대로 표시됩니다. 직접 클릭해서 내용을 수정할 수 있습니다.
+  </div>
+  <div class="panel">
+    <div class="pbody" style="padding:0">
+      ${buildRteToolbar()}
+      <div class="rte-body" id="rteBody" contenteditable="true" spellcheck="false" onkeydown="rteTab(event)">${content}</div>
+    </div>
+  </div>`;
+  // 이미지 드랍
+  const rb=document.getElementById('rteBody');
+  rb.addEventListener('dragover',e=>e.preventDefault());
+  rb.addEventListener('drop',rteImgDrop);
+  // 전체화면 버튼 상태 초기화
+  _isFullscreen=false;
+}
+function saveSvcPage(svcId){
+  if(!S.servicePages) S.servicePages={};
+  S.servicePages[svcId]=document.getElementById('rteBody')?.innerHTML||'';
+  save();
+  toast('✓ 페이지 저장됨');
+  rServiceCards();
+}
+function rService(){
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="openSvcModal()">＋ 카드 추가</button>`;
+  const rows=S.services.map(s=>`<tr><td style="font-size:20px">${s.emoji}</td><td style="font-weight:600">${s.title}</td><td style="font-size:12px;color:var(--am)">${s.desc}</td><td><div style="display:flex;gap:5px"><button class="btn btn-gh bxs" onclick="editSvc('${s.id}')">편집</button><button class="btn btn-rd bxs" onclick="delSvc('${s.id}')">삭제</button></div></td></tr>`).join('');
+  document.getElementById('mainBody').innerHTML=`<div class="panel"><div style="padding:0"><table class="atbl"><thead><tr><th>이모지</th><th>제목</th><th>설명</th><th>작업</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function svcForm(s){const catOpts=S.categories.map(c=>`<option value="${c.id}" ${s?.link===c.id?'selected':''}>${c.name}</option>`).join('');return`<div class="field"><label class="fl">이모지</label><input class="fi" id="sE" value="${x(s?.emoji||'⚽')}" style="width:70px;font-size:20px"></div><div class="field"><label class="fl">제목</label><input class="fi" id="sT" value="${x(s?.title||'')}"></div><div class="field"><label class="fl">설명</label><textarea class="fi" id="sD" rows="12">${x(s?.desc||'')}</textarea></div><div class="field"><label class="fl">연결 카테고리</label><select class="fi" id="sL"><option value="">없음</option>${catOpts}</select></div>`;}
+function openSvcModal(id){const s=id?S.services.find(x=>x.id===id):null;openModal(s?'카드 편집':'카드 추가',svcForm(s),[{l:'취소',c:'btn-gh',f:'closeModal()'},{l:'저장',c:'btn-bl',f:`saveSvc('${id||''}')`}]);}
+function editSvc(id){openSvcModal(id);}
+function saveSvc(id){const d={id:id||'s'+Date.now(),emoji:document.getElementById('sE').value.trim(),title:document.getElementById('sT').value.trim(),desc:document.getElementById('sD').value.trim(),link:document.getElementById('sL').value};if(!d.title){toast('이름 입력');return;}if(id){const i=S.services.findIndex(x=>x.id===id);if(i>=0)S.services[i]=d;}else S.services.push(d);save();closeModal();rService();toast('✓ 저장됨');}
+function delSvc(id){if(!confirm('삭제?'))return;S.services=S.services.filter(x=>x.id!==id);save();rService();toast('삭제됨');}
+
+/* ════════════════════════════════════
+   ⑥ POSTS — RICH TEXT EDITOR
+════════════════════════════════════ */
+let _editId=null, _savedRange=null, _curPostType='guide';
+
+function rPosts(){
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="openEditor()">＋ 새 글 작성</button>`;
+  const rows=S.posts.map(p=>{
+    const cat=S.categories.find(c=>c.id===p.category);
+    return`<tr>
+      <td style="font-size:16px">${p.emoji||'📄'}</td>
+      <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.title}</td>
+      <td><span class="badge badge-${p.status==='published'?'pub':'dft'}">${p.status==='published'?'발행':'임시저장'}</span></td>
+      <td style="font-size:11.5px;color:var(--am)">${cat?.name||'–'}</td>
+      <td style="font-size:11.5px;color:var(--at);font-weight:600">${(p.views||0).toLocaleString()} 뷰</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="btn btn-bl bxs" onclick="openEditor('${p.id}')">편집</button>
+        <button class="btn btn-rd bxs" onclick="delPost('${p.id}')">삭제</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('mainBody').innerHTML=`
+  <div class="panel">
+    <div style="padding:0">${S.posts.length?`<table class="atbl"><thead><tr><th></th><th>제목</th><th>상태</th><th>카테고리</th><th>조회수</th><th>작업</th></tr></thead><tbody>${rows}</tbody></table>`:
+    '<div style="text-align:center;padding:40px;color:var(--am)">게시글이 없습니다</div>'}</div>
+  </div>`;
+}
+
+function openEditor(id){
+  _editId=id||null;
+  let p=id?S.posts.find(x=>x.id===id):null;
+  // sp-s* 게시글은 servicePages 최신 내용을 우선 로드
+  if(p&&p.id&&p.id.startsWith('sp-')&&p.serviceId&&S.servicePages?.[p.serviceId]){
+    p={...p, content:S.servicePages[p.serviceId]};
+  }
+  document.getElementById('pActs').innerHTML=`
+    <select class="fi" id="peStat" style="width:110px">
+      <option value="published" ${!p||p.status==='published'?'selected':''}>발행</option>
+      <option value="draft" ${p?.status==='draft'?'selected':''}>임시저장</option>
+    </select>
+    <button class="btn btn-gh" onclick="rPosts()">← 목록</button>
+    <button class="btn btn-bl" onclick="savePost()">저장</button>`;
+
+  const catOpts=S.categories.map(c=>`<option value="${c.id}" ${p?.category===c.id?'selected':''}>${c.emoji} ${c.name}</option>`).join('');
+  // 카테고리 변경 시 소그룹 목록 동적 갱신
+  setTimeout(()=>{
+    const catSel=document.getElementById('peCat');
+    if(catSel) catSel.addEventListener('change',()=>{
+      const catId=catSel.value;
+      const existing=[...new Set(S.posts.filter(pp=>pp.category===catId&&pp.subCat).map(pp=>pp.subCat))];
+      const subSel=document.getElementById('peSubCatSel');
+      if(!subSel)return;
+      subSel.innerHTML='<option value="">-- 카테고리 선택 --</option>'+
+        existing.map(sc=>`<option value="${sc}">${sc}</option>`).join('')+
+        '<option value="__new__">+ 카테고리 직접 입력</option>';
+      document.getElementById('peSubCat').value='';
+    });
+  },50);
+
+  document.getElementById('mainBody').innerHTML=`
+  <div>
+    <input id="peTitle" placeholder="게시글 제목 입력..." value="${x(p?.title||'')}"
+        style="width:100%;font-size:22px;font-weight:800;color:var(--at);background:transparent;border:none;outline:none;font-family:inherit;padding:4px 0 16px;margin-bottom:4px;border-bottom:1px solid var(--abdr);display:block">
+
+    <!-- 카테고리/카테고리 선택 바 -->
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;margin-bottom:8px;border-bottom:1px solid var(--abdr);flex-wrap:wrap">
+      ${_curPostType!=='service'?`
+      <label style="font-size:12px;font-weight:600;color:var(--am);white-space:nowrap">카테고리</label>
+      <select class="fi" id="peCat" style="width:160px" onchange="onCatChange()">
+        ${catOpts}
+      </select>
+      <label style="font-size:12px;font-weight:600;color:var(--am);white-space:nowrap">카테고리</label>
+      <select class="fi" id="peSubCat" style="width:180px">
+        ${(()=>{const catId=p?.category||S.categories[0]?.id;const subs=(S.subcategories&&S.subcategories[catId])||[...new Set(S.posts.filter(pp=>pp.category===catId&&pp.subCat).map(pp=>pp.subCat))];return subs.map(sc=>`<option value="${sc}" ${p?.subCat===sc?'selected':''}>${sc}</option>`).join('');})()}
+      </select>`:`
+      <label style="font-size:12px;font-weight:600;color:var(--am)">서비스</label>
+      <select class="fi" id="peSvc" style="width:180px">
+        ${S.services.map(s=>`<option value="${s.id}" ${p?.serviceId===s.id?'selected':''}>${s.emoji} ${s.title}</option>`).join('')}
+      </select>`}
+      <div style="flex:1"></div>
+      <select class="fi" id="peStat" style="width:100px">
+        <option value="published" ${!p||p.status==='published'?'selected':''}>발행</option>
+        <option value="draft" ${p?.status==='draft'?'selected':''}>임시저장</option>
+      </select>
+    </div>
+
+
+      <!-- Rich Text Editor -->
+      <div class="rte-wrap">
+        <!-- ── 툴바 ── -->
+        <div class="rte-toolbar" id="rteToolbar">
+          <!-- 서식 -->
+          <select class="rtb-fs" onchange="rteCmd('formatBlock',this.value);this.blur()" title="블록 스타일">
+            <option value="p">본문</option>
+            <option value="h1">제목 1</option>
+            <option value="h2">제목 2</option>
+            <option value="h3">제목 3</option>
+            <option value="pre">코드 블록</option>
+            <option value="blockquote">인용</option>
+          </select>
+
+          <!-- 폰트 크기 -->
+          <select class="rtb-fs" onchange="setFontSize(this.value);this.blur()" style="width:55px" title="폰트 크기">
+            <option value="">크기</option>
+            <option value="12px">12</option>
+            <option value="13px">13</option>
+            <option value="14px">14</option>
+            <option value="16px">16</option>
+            <option value="18px">18</option>
+            <option value="20px">20</option>
+            <option value="24px">24</option>
+            <option value="28px">28</option>
+          </select>
+
+          <div class="rte-sep"></div>
+
+          <!-- Bold / Italic / Underline / Strike -->
+          <button class="rtb" onclick="rteCmd('bold')" title="굵게 (Ctrl+B)"><b>B</b></button>
+          <button class="rtb" onclick="rteCmd('italic')" title="기울기 (Ctrl+I)"><i>I</i></button>
+          <button class="rtb" onclick="rteCmd('underline')" title="밑줄 (Ctrl+U)"><u>U</u></button>
+          <button class="rtb" onclick="rteCmd('strikeThrough')" title="취소선"><s>S</s></button>
+
+          <div class="rte-sep"></div>
+
+          <!-- 글자 색 / 배경색 -->
+          <button class="rtb" id="btnFontColor" onclick="openColorPopup('fore',this)" title="글자 색">
+            <span style="display:flex;flex-direction:column;align-items:center;gap:1px">
+              <span style="font-weight:800;font-size:12px;line-height:1">A</span>
+              <span id="colorBar" style="width:14px;height:3px;border-radius:2px;background:#4E8EF7"></span>
+            </span>
+          </button>
+          <button class="rtb" onclick="openColorPopup('back',this)" title="배경 색">
+            <span style="display:flex;flex-direction:column;align-items:center;gap:1px">
+              <span style="font-size:11px">▭</span>
+              <span style="width:14px;height:3px;border-radius:2px;background:#FCD34D"></span>
+            </span>
+          </button>
+
+          <div class="rte-sep"></div>
+
+          <!-- 정렬 -->
+          <button class="rtb" onclick="rteCmd('justifyLeft')" title="왼쪽 정렬">≡</button>
+          <button class="rtb" onclick="rteCmd('justifyCenter')" title="가운데 정렬" style="letter-spacing:.5px">≡</button>
+          <button class="rtb" onclick="rteCmd('justifyRight')" title="오른쪽 정렬">≡</button>
+
+          <div class="rte-sep"></div>
+
+          <!-- 목록 -->
+          <button class="rtb" onclick="rteCmd('insertUnorderedList')" title="글머리 목록">• ≡</button>
+          <button class="rtb" onclick="rteCmd('insertOrderedList')" title="번호 목록">1. ≡</button>
+
+          <div class="rte-sep"></div>
+
+          <!-- 링크 / 구분선 / 표 -->
+          <button class="rtb" onclick="openLinkPopup(this)" title="링크 삽입">🔗</button>
+          <button class="rtb" onclick="rteCmd('insertHorizontalRule')" title="구분선">—</button>
+          <button class="rtb" onclick="openTblBuilder(this)" title="표 삽입">⊞</button>
+
+          <div class="rte-sep"></div>
+
+          <!-- 이미지 첨부 / 갤러리 삽입 -->
+          <button class="rtb" onclick="document.getElementById('rteImgIn').click()" title="이미지 1장 삽입">🖼️</button>
+          <button class="rtb" onclick="openGalleryInline()" title="갤러리 그리드 삽입 (여러 장)">🖼️✦</button>
+          <input type="file" id="rteImgIn" accept="image/*" style="display:none" multiple onchange="rteInsertImages(event)">
+          <input type="file" id="rteGalIn" accept="image/*" style="display:none" multiple onchange="rteInsertGallery(event)">
+
+          <div class="rte-sep"></div>
+
+          <!-- 실행 취소 / 다시 실행 -->
+          <button class="rtb" onclick="rteCmd('undo')" title="실행 취소 (Ctrl+Z)">↩</button>
+          <button class="rtb" onclick="rteCmd('redo')" title="다시 실행 (Ctrl+Y)">↪</button>
+
+          <div class="rte-sep"></div>
+
+          <!-- 콜아웃 / 전체화면 -->
+          <button class="rtb" onclick="rteInsertCallout()" title="콜아웃 블록">💡 콜아웃</button>
+          <button class="rtb" id="btnFullscreen" onclick="toggleEditorFullscreen()" title="전체화면 전환">⛶ 전체화면</button>
+        </div>
+
+        <!-- ── 에디터 본문 ── -->
+        <div class="rte-body" id="rteBody" contenteditable="true"
+          onkeydown="rteKeyDown(event)"
+          onmouseup="saveRange()"
+          onkeyup="saveRange()"
+          onclick="onRteImgClick(event)">
+          ${p?.content||''}
+        </div>
+      </div>
+
+      <div style="margin-top:8px;font-size:11px;color:var(--am)">
+        💡 Ctrl+B 굵게 · Ctrl+I 기울기 · Ctrl+U 밑줄 · 전체화면으로 넓게 작성하세요
+      </div>
+    </div>
+  </div>`;
+
+  // 에디터 포커스
+  setTimeout(()=>document.getElementById('rteBody')?.focus(),50);
+}
+
+/* ── 전체화면 에디터 ── */
+let _isFullscreen=false;
+function toggleEditorFullscreen(){
+  const wrap=document.getElementById('rteBody')?.closest('.rte-wrap');
+  const editorArea=document.getElementById('mainBody');
+  const btn=document.getElementById('btnFullscreen');
+  if(!wrap)return;
+  _isFullscreen=!_isFullscreen;
+  if(_isFullscreen){
+    // 전체화면 컨테이너 생성
+    const fs=document.createElement('div');
+    fs.id='editorFS';
+    fs.className='editor-fullscreen';
+    // 헤더 (제목 + 닫기)
+    const titleVal=document.getElementById('peTitle')?.value||'';
+    fs.innerHTML=`<div class="editor-fullscreen-hd">
+      <input id="fsTitleInp" value="${titleVal}" placeholder="제목 입력..." oninput="syncFsTitle(this.value)">
+      <button class="btn btn-gh bxs" onclick="toggleEditorFullscreen()">✕ 전체화면 종료</button>
+      <button class="btn btn-bl bxs" onclick="savePost();toggleEditorFullscreen()">💾 저장</button>
+    </div>`;
+    // 기존 rte-wrap 이동
+    fs.appendChild(wrap.cloneNode(true));
+    document.body.appendChild(fs);
+    // 복제된 에디터에 내용 채우기
+    const fsBody=fs.querySelector('.rte-body');
+    if(fsBody){
+      fsBody.id='rteBodyFS';
+      const orig=document.getElementById('rteBody');
+      fsBody.innerHTML=orig?orig.innerHTML:'';
+      fsBody.contentEditable='true';
+      fsBody.setAttribute('onkeydown','rteKeyDown(event)');
+      fsBody.setAttribute('onmouseup','saveRange()');
+      fsBody.setAttribute('onkeyup','saveRange()');
+      // 툴바 버튼들이 rteBody를 참조하므로 id 교체
+      fsBody.id='rteBody'; // 오버라이드
+      setTimeout(()=>fsBody.focus(),50);
+    }
+    if(btn)btn.textContent='✕ 전체화면 종료';
+  } else {
+    const fs=document.getElementById('editorFS');
+    if(fs){
+      // 내용 원복
+      const fsBody=fs.querySelector('#rteBody');
+      const orig=document.getElementById('rteBody');
+      if(fsBody&&orig&&orig!==fsBody) orig.innerHTML=fsBody.innerHTML;
+      // 제목 원복
+      const fsTi=document.getElementById('fsTitleInp');
+      const origTi=document.getElementById('peTitle');
+      if(fsTi&&origTi) origTi.value=fsTi.value;
+      fs.remove();
+    }
+    if(btn)btn.textContent='⛶ 전체화면';
+  }
+}
+function syncFsTitle(val){
+  const t=document.getElementById('peTitle');
+  if(t)t.value=val;
+}
+
+/* ── 콜아웃 삽입 ── */
+function rteInsertCallout(){
+  document.getElementById('rteBody').focus();
+  restoreRange();
+  const html=`<div class="callout" contenteditable="true"><span class="callout-icon">💡</span><div class="callout-text"><p>여기에 내용을 입력하세요</p></div></div><p><br></p>`;
+  document.execCommand('insertHTML',false,html);
+  saveRange();
+}
+
+/* ── RTE 헬퍼 ── */
+function rteCmd(cmd,val){
+  document.getElementById('rteBody').focus();
+  restoreRange();
+  document.execCommand(cmd,false,val||null);
+  saveRange();
+}
+function updateSubcatInput(){
+  const sel=document.getElementById('peSubCatSel');
+  const inp=document.getElementById('peSubCat');
+  if(!sel||!inp)return;
+  if(sel.value==='__new__'){inp.value='';inp.focus();}
+  else if(sel.value) inp.value=sel.value;
+}
+function onCatChange(){
+  const catId=document.getElementById('peCat')?.value;
+  if(!catId)return;
+  const subSel=document.getElementById('peSubCat');
+  if(!subSel)return;
+  const subs=(S.subcategories&&S.subcategories[catId])||[...new Set(S.posts.filter(p=>p.category===catId&&p.subCat).map(p=>p.subCat))];
+  subSel.innerHTML=subs.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+function saveRange(){
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount){
+    const r=sel.getRangeAt(0);
+    const body=document.getElementById('rteBody');
+    if(body&&body.contains(r.commonAncestorContainer))_savedRange=r.cloneRange();
+  }
+}
+function restoreRange(){
+  if(!_savedRange)return;
+  const sel=window.getSelection();
+  sel.removeAllRanges();sel.addRange(_savedRange);
+}
+
+function setFontSize(sz){
+  if(!sz)return;
+  document.getElementById('rteBody').focus();
+  restoreRange();
+  document.execCommand('fontSize',false,'7');
+  document.querySelectorAll('#rteBody [size="7"]').forEach(el=>{
+    el.removeAttribute('size');el.style.fontSize=sz;
+  });
+  saveRange();
+}
+
+function rteKeyDown(e){
+  if(e.key==='Tab'){e.preventDefault();document.execCommand('insertHTML',false,'&nbsp;&nbsp;&nbsp;&nbsp;');}
+}
+
+/* 이미지 삽입 */
+/* ── 이미지 크기 조절 ── */
+let _selImg=null;
+function onRteImgClick(e){
+  const img=e.target;
+  if(img.tagName!=='IMG')return;
+  // 기존 선택 해제
+  document.querySelectorAll('#rteBody img.img-selected').forEach(i=>i.classList.remove('img-selected'));
+  img.classList.add('img-selected');
+  _selImg=img;
+  // 원본 너비 기준 슬라이더
+  const naturalW=img.naturalWidth||img.offsetWidth;
+  const parentW=img.closest('.rte-body')?.offsetWidth||600;
+  const curW=img.offsetWidth||parentW;
+  const pct=Math.round((curW/parentW)*100);
+  const bar=document.getElementById('imgResizeBar');
+  const rect=img.getBoundingClientRect();
+  bar.style.top=(rect.bottom+8)+'px';
+  bar.style.left=Math.max(8,rect.left)+'px';
+  document.getElementById('imgResizeSlider').value=Math.min(100,pct);
+  document.getElementById('imgResizePct').textContent=Math.min(100,pct)+'%';
+  document.getElementById('imgResizeInfo').textContent=`${img.naturalWidth||'?'}×${img.naturalHeight||'?'}px`;
+  bar.classList.add('show');
+  e.stopPropagation();
+}
+function onImgResize(val){
+  if(!_selImg)return;
+  _selImg.style.width=val+'%';
+  _selImg.style.maxWidth='100%';
+  _selImg.style.height='auto';
+  document.getElementById('imgResizePct').textContent=val+'%';
+}
+function closeImgResize(){
+  document.getElementById('imgResizeBar').classList.remove('show');
+  if(_selImg)_selImg.classList.remove('img-selected');
+  _selImg=null;
+}
+// 에디터 외부 클릭 시 리사이즈 바 숨기기
+document.addEventListener('click',e=>{
+  const bar=document.getElementById('imgResizeBar');
+  if(bar&&!bar.contains(e.target)&&!e.target.matches('#rteBody img')){
+    closeImgResize();
+  }
+});
+
+function rteInsertImages(e){
+  Array.from(e.target.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=ev=>{
+      document.getElementById('rteBody').focus();
+      restoreRange();
+      document.execCommand('insertHTML',false,`<img src="${ev.target.result}" style="max-width:100%;border-radius:8px;margin:8px 0">`);
+      saveRange();
+    };
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+function openGalleryInline(){
+  saveRange();
+  document.getElementById('rteGalIn').click();
+}
+function rteInsertGallery(e){
+  const files=Array.from(e.target.files);
+  if(!files.length)return;
+  const readers=files.map(f=>new Promise(res=>{
+    const r=new FileReader();
+    r.onload=ev=>res(ev.target.result);
+    r.readAsDataURL(f);
+  }));
+  Promise.all(readers).then(srcs=>{
+    const imgs=srcs.map(src=>`<img src="${src}" style="border-radius:6px;aspect-ratio:4/3;object-fit:cover;width:100%">`).join('');
+    const cols=srcs.length===1?1:srcs.length<=4?2:3;
+    const galleryHtml=`<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:6px;margin:10px 0">${imgs}</div>`;
+    document.getElementById('rteBody').focus();
+    restoreRange();
+    document.execCommand('insertHTML',false,galleryHtml);
+    saveRange();
+  });
+  e.target.value='';
+}
+function sideImgOver(e){e.preventDefault();}
+function sideImgDrop(e){e.preventDefault();Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')).forEach(f=>{const r=new FileReader();r.onload=ev=>{document.getElementById('rteBody').focus();restoreRange();document.execCommand('insertHTML',false,`<img src="${ev.target.result}" style="max-width:100%;border-radius:8px;margin:8px 0">`);saveRange();};r.readAsDataURL(f);});}
+
+/* ── 색상 팝업 ── */
+let _colorMode='fore';
+function openColorPopup(mode,btn){
+  _colorMode=mode;
+  saveRange();
+  const popup=document.getElementById('colorPopup');
+  const rect=btn.getBoundingClientRect();
+  popup.style.top=(rect.bottom+6)+'px';
+  popup.style.left=rect.left+'px';
+  popup.classList.add('open');
+  setTimeout(()=>document.addEventListener('click',()=>popup.classList.remove('open'),{once:true}),50);
+}
+function applyColor(c){
+  document.getElementById('rteBody').focus();
+  restoreRange();
+  if(_colorMode==='fore'){
+    document.execCommand('foreColor',false,c);
+    document.getElementById('colorBar').style.background=c;
+  } else {
+    document.execCommand('hiliteColor',false,c);
+  }
+  saveRange();
+}
+
+/* ── 링크 팝업 ── */
+let _linkRange=null;
+function openLinkPopup(btn){
+  saveRange();_linkRange=_savedRange;
+  const popup=document.getElementById('linkPopup');
+  const rect=btn.getBoundingClientRect();
+  popup.style.top=(rect.bottom+6)+'px';popup.style.left=rect.left+'px';
+  popup.classList.add('open');
+  document.getElementById('linkUrl').focus();
+  setTimeout(()=>document.addEventListener('mousedown',(e)=>{if(!popup.contains(e.target))popup.classList.remove('open')},{once:true}),50);
+}
+function closeLinkPopup(){document.getElementById('linkPopup').classList.remove('open');}
+function insertLink(){
+  const url=document.getElementById('linkUrl').value.trim();
+  const text=document.getElementById('linkText').value.trim();
+  if(!url)return;
+  document.getElementById('rteBody').focus();
+  if(_linkRange){const sel=window.getSelection();sel.removeAllRanges();sel.addRange(_linkRange);}
+  if(text)document.execCommand('insertHTML',false,`<a href="${url}" target="_blank">${text}</a>`);
+  else document.execCommand('createLink',false,url);
+  closeLinkPopup();
+  document.getElementById('linkUrl').value='';document.getElementById('linkText').value='';
+  saveRange();
+}
+
+/* ── 고급 표 빌더 ── */
+let _tblHeaderColor='#1E2840';
+function selectTblHeaderColor(c){
+  _tblHeaderColor=c;
+  document.querySelectorAll('#tblHeaderColors [data-color]').forEach(el=>{
+    el.style.borderColor=el.dataset.color===c?'var(--abl)':'transparent';
+  });
+  document.getElementById('tblHeaderColorPicker').value=c;
+}
+function openTblBuilder(btn){
+  const builder=document.getElementById('tblBuilder');
+  const rect=btn.getBoundingClientRect();
+  const left=Math.min(rect.left,window.innerWidth-340);
+  builder.style.top=(rect.bottom+6)+'px';builder.style.left=left+'px';
+  builder.classList.add('open');
+  saveRange();
+  setTimeout(()=>document.addEventListener('click',(e)=>{if(!builder.contains(e.target))builder.classList.remove('open')},{once:true}),50);
+}
+/* ── 표 열/행 드래그 리사이즈 ── */
+function initTableResize(){
+  const body=document.getElementById('rteBody');
+  if(!body)return;
+  body.addEventListener('mousedown',e=>{
+    const th=e.target.closest('th,td');
+    if(!th)return;
+    const table=th.closest('table');
+    if(!table)return;
+    const rect=th.getBoundingClientRect();
+    // 오른쪽 끝 6px → 열 리사이즈
+    if(e.clientX>rect.right-8){
+      e.preventDefault();
+      const startX=e.clientX;
+      const startW=th.offsetWidth;
+      const onMove=ev=>{
+        const newW=Math.max(40,startW+(ev.clientX-startX));
+        th.style.width=newW+'px';
+        th.style.minWidth=newW+'px';
+      };
+      const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+      return;
+    }
+    // 아래쪽 끝 6px → 행 리사이즈
+    if(e.clientY>rect.bottom-8){
+      e.preventDefault();
+      const startY=e.clientY;
+      const row=th.closest('tr');
+      const startH=row.offsetHeight;
+      const onMove=ev=>{
+        const newH=Math.max(24,startH+(ev.clientY-startY));
+        Array.from(row.cells).forEach(c=>c.style.height=newH+'px');
+      };
+      const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+    }
+  });
+  // 리사이즈 커서 표시
+  body.addEventListener('mousemove',e=>{
+    const th=e.target.closest('th,td');
+    if(!th){body.style.cursor='';return;}
+    const rect=th.getBoundingClientRect();
+    if(e.clientX>rect.right-8) th.style.cursor='col-resize';
+    else if(e.clientY>rect.bottom-8) th.style.cursor='row-resize';
+    else th.style.cursor='';
+  });
+}
+
+function insertTableAdv(){
+  const rows=Math.max(1,Math.min(30,parseInt(document.getElementById('tblRowInp').value)||3));
+  const cols=Math.max(1,Math.min(20,parseInt(document.getElementById('tblColInp').value)||3));
+  const hasHeader=document.getElementById('tblHasHeader').checked;
+  const hColor=_tblHeaderColor||'#1E2840';
+  let html=`<table style="border-collapse:collapse;width:100%;margin:10px 0;table-layout:fixed"><colgroup>${Array(cols).fill(`<col style="width:${Math.round(100/cols)}%">`).join('')}</colgroup><tbody>`;
+  for(let r=0;r<rows;r++){
+    html+='<tr>';
+    for(let c=0;c<cols;c++){
+      if(r===0&&hasHeader){
+        html+=`<th contenteditable="true" style="border:1px solid var(--abdr);padding:8px 10px;background:${hColor};font-size:13px;color:#fff;font-weight:700;text-align:left;min-width:60px;resize:horizontal;overflow:auto">제목 ${c+1}</th>`;
+      } else {
+        html+=`<td contenteditable="true" style="border:1px solid var(--abdr);padding:8px 10px;font-size:13px;min-width:60px;text-align:left;vertical-align:top"> </td>`;
+      }
+    }
+    html+='</tr>';
+  }
+  html+='</tbody></table><p><br></p>';
+  document.getElementById('tblBuilder').classList.remove('open');
+  document.getElementById('rteBody').focus();
+  restoreRange();
+  document.execCommand('insertHTML',false,html);
+  saveRange();
+}
+// 표 셀 색상 변경 - 에디터에서 셀 선택 후 우클릭
+function applyTableCellColor(color){
+  const sel=window.getSelection();
+  if(!sel.rangeCount)return;
+  let el=sel.getRangeAt(0).startContainer;
+  while(el&&el!==document.getElementById('rteBody')){
+    if(el.tagName==='TD'||el.tagName==='TH'){el.style.background=color;break;}
+    el=el.parentElement;
+  }
+}
+
+function savePost(){
+  const title=document.getElementById('peTitle')?.value.trim();
+  if(!title){toast('제목을 입력하세요');return;}
+  const content=document.getElementById('rteBody')?.innerHTML||'';
+  const d={
+    id:_editId||'p'+Date.now(),title,postType:_curPostType==='service'?'service':'guide',
+    category:_curPostType!=='service'?(document.getElementById('peCat')?.value||'gc1'):'',
+    serviceId:_curPostType==='service'?(document.getElementById('peSvc')?.value||''):'',
+    postType:_curPostType==='service'?'service':'guide',
+    subCat:(document.getElementById('peSubCat')?.value||document.getElementById('peSubCat')?.options?.[document.getElementById('peSubCat')?.selectedIndex]?.value||'').trim(),
+    emoji:p?.emoji||'📄',
+    excerpt:document.getElementById('peExcerpt')?.value.trim()||'',
+    author:document.getElementById('peAuthor')?.value.trim()||'플랩팀',
+    status:document.getElementById('peStat')?.value||'published',
+    content,subCnt:3,
+    date:_editId?S.posts.find(p=>p.id===_editId)?.date||new Date().toISOString():new Date().toISOString(),
+    updatedAt:new Date().toISOString(),
+    views:_editId?S.posts.find(p=>p.id===_editId)?.views||0:0,
+  };
+  if(_editId){const i=S.posts.findIndex(p=>p.id===_editId);if(i>=0)S.posts[i]=d;else S.posts.push(d);}
+  else S.posts.push(d);
+  // sp-s* 게시글 저장 시 servicePages도 동시 업데이트 → 홈페이지 반영
+  if(d.serviceId&&d.id.startsWith('sp-')){
+    if(!S.servicePages) S.servicePages={};
+    S.servicePages[d.serviceId]=content;
+  }
+  save();
+  toast('✓ 저장됨');
+  if(_curPostType==='service') rPostsFiltered('service');
+}
+function delPost(id){if(!confirm('삭제?'))return;S.posts=S.posts.filter(p=>p.id!==id);save();rPosts();toast('삭제됨');}
+
+/* ════════════════════════════════════
+   ⑦ CATEGORIES
+════════════════════════════════════ */
+function rCats(){
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="openCatModal()">＋ 카테고리 추가</button>`;
+  const rows=[...S.categories].sort((a,b)=>(a.order??0)-(b.order??0)).map(c=>{
+    const cnt=S.posts.filter(p=>p.category===c.id).length;
+    return`<tr><td style="font-size:20px">${c.emoji}</td><td style="font-weight:600">${c.name}</td><td style="font-size:12px;color:var(--am)">${c.desc}</td><td><span class="badge badge-pub">${cnt}개</span></td><td><div style="display:flex;gap:5px"><button class="btn btn-gh bxs" onclick="editCat('${c.id}')">편집</button><button class="btn btn-rd bxs" onclick="delCat('${c.id}')">삭제</button></div></td></tr>`;
+  }).join('');
+  document.getElementById('mainBody').innerHTML=`<div class="panel"><div style="padding:0"><table class="atbl"><thead><tr><th>이모지</th><th>이름</th><th>설명</th><th>게시글</th><th>작업</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+/* ════════════════════════════════════
+   ⑧ SETTINGS
+════════════════════════════════════ */
+/* ── 카테고리 관리 ── */
+function rSubcats(){
+  if(!S.subcategories) S.subcategories = {};
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="saveSubcats()">💾 저장</button>`;
+  const rows = S.categories.map(cat=>{
+    const subs = (S.subcategories[cat.id] || []);
+    return `<div class="panel" style="margin-bottom:12px">
+      <div class="phd">
+        <div><div class="phd-t">${cat.emoji} ${cat.name}</div><div class="phd-s">소그룹을 쉼표(,)로 구분해 입력하세요</div></div>
+      </div>
+      <div class="pbody">
+        <div class="field">
+          <label class="fl">소그룹 목록</label>
+          <input class="fi" id="sub_${cat.id}" value="${subs.join(', ')}" placeholder="예: 매치 시작하기, 매치 운영">
+          <div class="fhint">입력 순서대로 게시글 목록에 표시됩니다</div>
+        </div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px" id="subPreview_${cat.id}">
+          ${subs.map(s=>`<span style="background:var(--as2);border:1px solid var(--abdr);border-radius:100px;padding:3px 10px;font-size:11.5px;color:var(--am)">${s}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('mainBody').innerHTML=`
+    <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:#FCD34D">
+      🏷️ 소그룹은 각 카테고리 안의 게시글을 묶는 단위입니다. 게시글 작성 시 소그룹을 선택하면 이 목록에서 표시됩니다.
+    </div>
+    ${rows}`;
+}
+function saveSubcats(){
+  if(!S.subcategories) S.subcategories={};
+  S.categories.forEach(cat=>{
+    const inp=document.getElementById('sub_'+cat.id);
+    if(inp){
+      S.subcategories[cat.id]=inp.value.split(',').map(s=>s.trim()).filter(Boolean);
+    }
+  });
+  save();
+  toast('✓ 소그룹 저장됨');
+  rSubcats();
+}
+
+/* 게시글 목록에서 소그룹 변경 */
+function changePostSubCat(postId, catKey, newSub){
+  if(newSub==='__new__'){
+    const name=prompt('새 소그룹 이름을 입력하세요');
+    if(!name)return;
+    if(!S.subcategories)S.subcategories={};
+    if(!S.subcategories[catKey])S.subcategories[catKey]=[];
+    if(!S.subcategories[catKey].includes(name))S.subcategories[catKey].push(name);
+    const p=S.posts.find(x=>x.id===postId);
+    if(p)p.subCat=name;
+    save();toast('✓ 소그룹 변경됨');rPostsFiltered('guide');
+    return;
+  }
+  const p=S.posts.find(x=>x.id===postId);
+  if(p){p.subCat=newSub;save();toast('✓ 소그룹 변경됨');rPostsFiltered('guide');}
+}
+
+/* 카테고리명 변경 (게시글 목록 내) */
+function renameSub(catKey, oldName){
+  const newName=prompt(`"${oldName}" 소그룹 이름을 변경합니다:`, oldName);
+  if(!newName||newName===oldName)return;
+  if(!S.subcategories)S.subcategories={};
+  if(!S.subcategories[catKey])S.subcategories[catKey]=[];
+  // subcategories 배열에서 이름 변경
+  const idx=S.subcategories[catKey].indexOf(oldName);
+  if(idx>=0)S.subcategories[catKey][idx]=newName;
+  else S.subcategories[catKey].push(newName);
+  // 해당 카테고리 모든 게시글 subCat 업데이트
+  S.posts.forEach(p=>{if(p.category===catKey&&p.subCat===oldName)p.subCat=newName;});
+  save();toast('✓ 카테고리명 변경됨');rPostsFiltered('guide');
+}
+
+/* 카테고리 추가 (카테고리 패널 헤더에서) */
+function addSubcatInline(catKey){
+  const name=prompt('추가할 소그룹 이름을 입력하세요');
+  if(!name)return;
+  if(!S.subcategories)S.subcategories={};
+  if(!S.subcategories[catKey])S.subcategories[catKey]=[];
+  if(S.subcategories[catKey].includes(name)){toast('이미 있는 소그룹입니다');return;}
+  S.subcategories[catKey].push(name);
+  save();toast(`✓ 소그룹 "${name}" 추가됨`);rPostsFiltered('guide');
+}
+
+/* ── 푸터 편집 ── */
+function rFooterEdit(){
+  const f=(S.settings.footer||{});
+  const links=(f.links||[{label:'홈페이지',url:'#'},{label:'이용약관',url:'#'},{label:'개인정보처리방침',url:'#'}]);
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="saveFooter()">💾 저장</button>`;
+  document.getElementById('mainBody').innerHTML=`
+  <div class="split">
+    <div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">링크 메뉴</div><div class="phd-s">푸터 상단 링크 (최대 6개)</div></div>
+        <div class="pbody" id="ftLinksWrap">
+          ${links.map((l,i)=>`
+            <div style="display:flex;gap:8px;margin-bottom:8px" id="ftl_${i}">
+              <input class="fi" id="ftLabel_${i}" value="${x(l.label)}" placeholder="링크명" style="flex:1">
+              <input class="fi" id="ftUrl_${i}" value="${x(l.url)}" placeholder="URL" style="flex:2">
+              <button class="btn btn-rd bxs" onclick="rmFtLink(${i})">✕</button>
+            </div>`).join('')}
+        </div>
+        <div style="padding:0 20px 16px"><button class="btn btn-gh" onclick="addFtLink()">+ 링크 추가</button></div>
+      </div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">사업자 정보</div></div>
+        <div class="pbody">
+          <div class="field"><label class="fl">사업자 정보 (줄바꿈 구분)</label><textarea class="fi" id="ftBiz" rows="20">${x(f.biz||'')}</textarea></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">연락처</div></div>
+        <div class="pbody">
+          <div class="field"><label class="fl">연락처 (줄바꿈 구분)</label><textarea class="fi" id="ftContact" rows="16">${x(f.contact||'')}</textarea></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">SNS 링크</div></div>
+        <div class="pbody">
+          <div class="field"><label class="fl">Instagram URL</label><input class="fi" id="ftIg" value="${x(f.instagram||'')}"></div>
+          <div class="field"><label class="fl">YouTube URL</label><input class="fi" id="ftYt" value="${x(f.youtube||'')}"></div>
+          <div class="field"><label class="fl">App Store URL</label><input class="fi" id="ftApp" value="${x(f.appstore||'')}"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="phd"><div class="phd-t">하단 저작권 문구</div></div>
+        <div class="pbody">
+          <div class="field"><label class="fl">Copyright</label><input class="fi" id="ftCopy" value="${x(f.copyright||'')}"></div>
+        </div>
+      </div>
+      <div class="panel" style="background:rgba(255,255,255,.02)">
+        <div class="phd"><div class="phd-t">미리보기</div></div>
+        <div class="pbody" style="font-size:11.5px;color:var(--am);line-height:1.9">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+            ${links.map(l=>`<span style="color:var(--abl)">${l.label}</span>`).join(' · ')}
+          </div>
+          <div style="font-size:11px">${(f.biz||'').replace(/\n/g,'<br>')}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+let _ftLinkCount = 0;
+function addFtLink(){
+  const wrap=document.getElementById('ftLinksWrap');if(!wrap)return;
+  const i=wrap.children.length;
+  const div=document.createElement('div');
+  div.style.cssText='display:flex;gap:8px;margin-bottom:8px';
+  div.id='ftl_'+i;
+  div.innerHTML=`<input class="fi" id="ftLabel_${i}" placeholder="링크명" style="flex:1"><input class="fi" id="ftUrl_${i}" placeholder="URL" style="flex:2"><button class="btn btn-rd bxs" onclick="rmFtLink(${i})">✕</button>`;
+  wrap.appendChild(div);
+}
+function rmFtLink(i){const el=document.getElementById('ftl_'+i);if(el)el.remove();}
+function saveFooter(){
+  if(!S.settings.footer) S.settings.footer={};
+  // 링크 수집
+  const links=[];
+  document.querySelectorAll('[id^="ftLabel_"]').forEach(el=>{
+    const i=el.id.replace('ftLabel_','');
+    const url=document.getElementById('ftUrl_'+i);
+    if(el.value.trim()) links.push({label:el.value.trim(),url:url?.value.trim()||'#'});
+  });
+  S.settings.footer.links=links;
+  S.settings.footer.biz=document.getElementById('ftBiz')?.value||'';
+  S.settings.footer.contact=document.getElementById('ftContact')?.value||'';
+  S.settings.footer.instagram=document.getElementById('ftIg')?.value||'';
+  S.settings.footer.youtube=document.getElementById('ftYt')?.value||'';
+  S.settings.footer.appstore=document.getElementById('ftApp')?.value||'';
+  S.settings.footer.copyright=document.getElementById('ftCopy')?.value||'';
+  save();toast('✓ 푸터 저장됨');
+}
+
+function rSettings(){
+  document.getElementById('pActs').innerHTML=`<button class="btn btn-bl" onclick="saveSets()">💾 저장</button>`;
+  const s=S.settings;
+  document.getElementById('mainBody').innerHTML=`
+  <div class="split">
+    <div>
+      <div class="panel"><div class="phd"><div class="phd-t">사이트 기본 설정</div></div><div class="pbody">
+        <div class="field"><label class="fl">사이트명</label><input class="fi" id="sSite" value="${x(s.siteName)}"></div>
+      </div></div>
+      <div class="panel"><div class="phd"><div class="phd-t">관리자 계정</div></div><div class="pbody">
+        <div class="field"><label class="fl">이메일</label><input class="fi" id="sEm" value="${x(s.adminEmail)}"></div>
+        <div class="field"><label class="fl">비밀번호 변경</label><input class="fi" id="sPw" type="password" placeholder="변경할 비밀번호 (비우면 유지)"></div>
+      </div></div>
+      <div class="panel"><div class="phd"><div class="phd-t">데이터 관리</div></div><div class="pbody" style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-gh" onclick="exportData()">📤 JSON 내보내기</button>
+        <button class="btn btn-rd" onclick="resetData()">초기화</button>
+      </div></div>
+    </div>
+    <div class="panel"><div class="phd"><div class="phd-t">사용 가이드</div></div><div class="pbody" style="font-size:12.5px;color:var(--am);line-height:2">
+      <p>• Hero 영역: 홈 상단 제목·카피 편집</p>
+      <p>• 업데이트 소식: 배너 슬라이드 (최대 3개)</p>
+      <p>• 게시글 에디터: Bold/Italic/폰트크기/색상/표/이미지 지원</p>
+      <p>• 갤러리: 소식 편집에서 이미지 여러 장 추가 가능</p>
+      <p>• 대시보드: GA4 연동 전 샘플 데이터 표시</p>
+    </div></div>
+  </div>`;
+}
+function saveSets(){S.settings.siteName=document.getElementById('sSite').value.trim();S.settings.adminEmail=document.getElementById('sEm').value.trim();const pw=document.getElementById('sPw').value;if(pw)S.settings.adminPw=pw;save();toast('✓ 설정 저장됨');}
+function exportData(){const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='plab-cms.json';a.click();}
+function resetData(){if(!confirm('초기화하시겠습니까?'))return;S=JSON.parse(JSON.stringify(DEF));save();pg('dashboard');toast('초기화됨');}
+
+/* ════════════════════════════════════
+   MODAL
+════════════════════════════════════ */
+function openModal(title,body,buttons){
+  document.getElementById('mTitle').textContent=title;
+  document.getElementById('mBody').innerHTML=body;
+  document.getElementById('mFt').innerHTML=buttons.map(b=>`<button class="btn ${b.c}" onclick="${b.f}">${b.l}</button>`).join('');
+  document.getElementById('mback').classList.add('open');
+}
+function closeModal(){document.getElementById('mback').classList.remove('open');}
+
+/* ── UTILS ── */
+function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
