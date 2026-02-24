@@ -1726,11 +1726,21 @@ document.addEventListener('click',e=>{
 });
 function initHome(){
   /* Firebase 데이터 로드 후 홈 화면 재렌더링 */
+async function init(){
+  const fbData = await window._fbLoad();
+  if(fbData){
+    S = JSON.parse(fbData);
+    localStorage.setItem('plab_v5', fbData);
+  }
+
   renderUpdList();
   renderGGrid();
   renderSvcRow();
   renderGGrid2();
   renderSvcRow2();
+}
+
+init();
 }
 function goHome(){
   hAll();
