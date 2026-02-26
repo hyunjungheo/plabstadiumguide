@@ -994,6 +994,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
     if(parsed.subcategories)S.subcategories={...S.subcategories,...parsed.subcategories};
     if(parsed.servicePages)S.servicePages={...S.servicePages,...parsed.servicePages};
     /* 화면 재렌더링 */
+    renderHome(); // hero + footer + services + guide 모두 포함
     if(typeof initHome==='function')initHome();
     console.log('✅ Firebase 데이터 반영됨');
   }catch(e){console.warn('Firebase 데이터 적용 실패',e);}
@@ -1049,10 +1050,12 @@ window.addEventListener('DOMContentLoaded',async()=>{
           <!-- 좌: 큰 제목 + Whenever 카피 -->
           <div class="hero-l">
             <h1 class="h-h1" id="hH1">플랩 이용 가이드</h1>
-            <div class="hero-copy-line">더 많은 사람들이 풋살을 즐길 수 있도록</div>
-            <div class="hero-copy-line">더 많은 구장이 플랩의 80만 유저에게 닿도록</div>
-            <div class="hero-copy-line">더 많은 구장이 매출을 늘릴 수 있도록</div>
-            <div class="hero-copy-sig">언제, 어디서나 플랩입니다</div>
+            <div id="heroCopyWrap">
+              <div class="hero-copy-line">더 많은 사람들이 풋살을 즐길 수 있도록</div>
+              <div class="hero-copy-line">더 많은 구장이 플랩의 80만 유저에게 닿도록</div>
+              <div class="hero-copy-line">더 많은 구장이 매출을 늘릴 수 있도록</div>
+              <div class="hero-copy-sig">언제, 어디서나 플랩입니다</div>
+            </div>
           </div>
           <!-- 우: 검색창 (워딩이 placeholder에 통합) -->
           <div class="hero-r">
@@ -1185,41 +1188,41 @@ window.addEventListener('DOMContentLoaded',async()=>{
   </div>
 
   <!-- FOOTER -->
-  <footer class="site-footer">
+  <footer class="site-footer" id="siteFooter">
     <div class="ft-inner">
       <div class="ft-col ft-brand">
-        <ul class="ft-links">
+        <ul class="ft-links" id="ftLinksEl">
           <li><a href="#">홈페이지</a></li>
           <li><a href="#">이용약관</a></li>
           <li><a href="#">개인정보처리방침</a></li>
           <li><a href="#">사업자 정보</a></li>
         </ul>
       </div>
-      <div class="ft-col ft-biz">
+      <div class="ft-col ft-biz" id="ftBizEl">
         <div>주식회사 마이플레이컴퍼니</div>
         <div>사업자등록번호 650-81-00575</div>
         <div>서울시 마포구 잔다리로31 제우피스빌딩 2층</div>
         <div>신고 2020-서울마포-4411</div>
       </div>
-      <div class="ft-col ft-contact">
-        <div><span class="ft-cl">대표 메일</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e1edecf6e3e1f6c2f2eee3e0e4ededf6e0e3eeeeace1edef">[email&#160;protected]</a></div>
-        <div><span class="ft-cl">마케팅</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b565a49505e4f52555c7b4b575a595d54544f595a575715585456">[email&#160;protected]</a></div>
-        <div><span class="ft-cl">언론, 연구</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="275342464a67574b46454148485345464b4b0944484a">[email&#160;protected]</a></div>
+      <div class="ft-col ft-contact" id="ftContactEl">
+        <div><span class="ft-cl">대표 메일</span> <a href="mailto:contact@plab.kr">contact@plab.kr</a></div>
+        <div><span class="ft-cl">마케팅</span> <a href="mailto:marketing@plab.kr">marketing@plab.kr</a></div>
+        <div><span class="ft-cl">언론, 연구</span> <a href="mailto:pr@plab.kr">pr@plab.kr</a></div>
       </div>
-      <div class="ft-col ft-sns">
-        <a class="ft-icon" href="#" title="Instagram">
+      <div class="ft-col ft-sns" id="ftSnsEl">
+        <a class="ft-icon" id="ftIgEl" href="https://instagram.com/plabfootball" title="Instagram">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
         </a>
-        <a class="ft-icon" href="#" title="YouTube">
+        <a class="ft-icon" id="ftYtEl" href="#" title="YouTube">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.97C18.88 4 12 4 12 4s-6.88 0-8.59.45A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 0 0 1.95-1.98A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
         </a>
-        <a class="ft-icon" href="#" title="App Store">
+        <a class="ft-icon" id="ftAppEl" href="#" title="App Store">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 17l4-8 4 8M9.5 14h5"/></svg>
         </a>
       </div>
     </div>
     <div class="ft-bottom">
-      <span>© Myplaycompany All Rights Reserved.</span>
+      <span id="ftCopyEl">© Myplaycompany All Rights Reserved.</span>
       <button class="ft-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲<br><span>TOP</span></button>
     </div>
   </footer>
@@ -1899,6 +1902,63 @@ initTheme();
 /* ── RENDER HOME ── */
 function renderHome(){
   renderUpdList();renderGGrid();renderSvcRow();
+  renderHero();renderFooter();
+}
+
+function renderHero(){
+  const s=S.settings;
+  // 제목
+  const h1=document.getElementById('hH1');
+  if(h1&&s.heroTitle) h1.innerHTML=s.heroTitle.replace(/\n/g,'<br>');
+  // 카피 라인
+  const wrap=document.getElementById('heroCopyWrap');
+  if(wrap&&s.heroCopy){
+    const lines=s.heroCopy.split('\n').filter(l=>l.trim());
+    if(lines.length){
+      const last=lines[lines.length-1];
+      wrap.innerHTML=lines.slice(0,-1).map(l=>`<div class="hero-copy-line">${l}</div>`).join('')
+        +`<div class="hero-copy-sig">${last}</div>`;
+    }
+  }
+}
+
+function renderFooter(){
+  const ft=S.settings?.footer;
+  if(!ft)return;
+  // 링크
+  const linksEl=document.getElementById('ftLinksEl');
+  if(linksEl&&ft.links&&ft.links.length){
+    linksEl.innerHTML=ft.links.map(l=>`<li><a href="${l.url||'#'}">${l.label}</a></li>`).join('');
+  }
+  // 사업자 정보
+  const bizEl=document.getElementById('ftBizEl');
+  if(bizEl&&ft.biz){
+    bizEl.innerHTML=ft.biz.split('\n').map(l=>`<div>${l}</div>`).join('');
+  }
+  // 연락처
+  const contactEl=document.getElementById('ftContactEl');
+  if(contactEl&&ft.contact){
+    contactEl.innerHTML=ft.contact.split('\n').map(l=>{
+      const sep=l.indexOf(':');
+      if(sep>-1){
+        const lbl=l.slice(0,sep).trim();
+        const val=l.slice(sep+1).trim();
+        const isEmail=val.includes('@');
+        return`<div><span class="ft-cl">${lbl}</span> ${isEmail?`<a href="mailto:${val}">${val}</a>`:val}</div>`;
+      }
+      return`<div>${l}</div>`;
+    }).join('');
+  }
+  // SNS
+  const igEl=document.getElementById('ftIgEl');
+  const ytEl=document.getElementById('ftYtEl');
+  const appEl=document.getElementById('ftAppEl');
+  if(igEl&&ft.instagram) igEl.href=ft.instagram;
+  if(ytEl&&ft.youtube)   ytEl.href=ft.youtube;
+  if(appEl&&ft.appstore) appEl.href=ft.appstore;
+  // 저작권
+  const copyEl=document.getElementById('ftCopyEl');
+  if(copyEl&&ft.copyright) copyEl.textContent=ft.copyright;
 }
 let _bi=0;
 const _BNR_BG=['#EDE97A','#A8D4A4','#A8C8E0','#F0C890','#C0B4DC','#90CFC0'];
@@ -2115,19 +2175,24 @@ function renderGGrid2(){
   }).join('');
 }
 function renderSvcRow(){
-  const SV=[
-    {id:'gc1',nm:'소셜 매치',ds:'내가 하고 싶을 때, 하고 싶은 곳에서, 하고 싶은 사람들과 하는 원데이 소셜 풋살',
-     svg:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/>'},
-    {id:'gc2',nm:'구장 예약',ds:'원하는 시간, 구장을 한 번에 확인하고 바로 예약',
-     svg:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/>'},
-    {id:'gc6',nm:'팀',ds:'우리 팀과 팀리그, 게스트 모집 참여하기',
-     svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>'},
-  ];
-  document.getElementById('srowEl').innerHTML=SV.map(s=>
+  // SVG 아이콘 매핑 (서비스 id 기준)
+  const SVG_MAP={
+    's1':'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/>',
+    's2':'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/>',
+    's3':'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    's4':'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+    // 레거시 gc id 지원
+    'gc1':'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/>',
+    'gc2':'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/>',
+    'gc6':'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  };
+  const DEF_SVG='<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/>';
+  const svcList=S.services&&S.services.length?S.services:[];
+  document.getElementById('srowEl').innerHTML=svcList.map(s=>
     `<div class="schip" onclick="goSvcDetailPage('${s.id}','home')">` +
-    `<div class="schip-ic"><svg viewBox="0 0 24 24">${s.svg}</svg></div>` +
-    `<div class="schip-nm">${s.nm}</div>` +
-    `<div class="schip-ds">${s.ds}</div>` +
+    `<div class="schip-ic"><svg viewBox="0 0 24 24">${SVG_MAP[s.id]||DEF_SVG}</svg></div>` +
+    `<div class="schip-nm">${s.title||s.nm}</div>` +
+    `<div class="schip-ds">${s.desc||s.ds}</div>` +
     `<button class="schip-cta" onclick="goSvcDetailPage('${s.id}','home')">자세히 보기 <span class="schip-ar">→</span></button>` +
     `</div>`
   ).join('');
@@ -2137,16 +2202,14 @@ function renderSvcRow(){
 function goSvcDetailPage(svcId,fromView){
   // svcId는 gc1,gc2,gc6 형식 또는 s1,s2... 형식 모두 지원
   // SV 매핑 (renderSvcRow 기준)
-  const SV_META={
-    gc1:{nm:'소셜 매치',ds:'내가 하고 싶을 때, 하고 싶은 곳에서, 하고 싶은 사람들과 하는 원데이 소셜 풋살',icon:'⚽',pageKey:'s1'},
-    gc2:{nm:'구장 예약',ds:'원하는 시간, 구장을 한 번에 확인하고 바로 예약',icon:'🏟️',pageKey:'s2'},
-    gc6:{nm:'팀',ds:'우리 팀과 팀리그, 게스트 모집 참여하기',icon:'👥',pageKey:'s3'},
-    s1:{nm:'소셜 매치',ds:'간편 신청으로 5분 만에 레벨에 맞는 상대와 매치를 즐기세요.',icon:'⚽',pageKey:'s1'},
-    s2:{nm:'구장 예약',ds:'원하는 날짜와 시간에 구장을 예약하세요.',icon:'🏟️',pageKey:'s2'},
-    s3:{nm:'런드리',ds:'유니폼 세탁부터 수거·반납까지 한 번에 관리하세요.',icon:'👕',pageKey:'s3'},
-    s4:{nm:'마케팅 지원',ds:'80만 유저에게 구장을 알릴 수 있는 홍보 도구를 제공합니다.',icon:'📣',pageKey:'s4'},
-  };
-  const meta = SV_META[svcId] || {nm:'서비스',ds:'',icon:'⚙️',pageKey:svcId};
+  // S.services 기반 동적 매핑 + 레거시 gc id 지원
+  const gcToSid={gc1:'s1',gc2:'s2',gc6:'s3'};
+  const resolvedId=gcToSid[svcId]||svcId;
+  const svcObj=S.services&&S.services.find(s=>s.id===resolvedId);
+  const ICON_MAP={s1:'⚽',s2:'🏟️',s3:'👥',s4:'📣',gc1:'⚽',gc2:'🏟️',gc6:'👥'};
+  const meta=svcObj
+    ?{nm:svcObj.title,ds:svcObj.desc,icon:ICON_MAP[resolvedId]||'⚙️',pageKey:resolvedId}
+    :{nm:'서비스',ds:'',icon:'⚙️',pageKey:svcId};
   const pageKey = meta.pageKey;
   // 어드민에서 작성된 페이지 내용 (pageKey 또는 svcId로 조회)
   const pageContent = (S.servicePages && (S.servicePages[pageKey] || S.servicePages[svcId])) || '';
