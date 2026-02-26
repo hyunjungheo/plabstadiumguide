@@ -1205,9 +1205,9 @@ window.addEventListener('DOMContentLoaded',async()=>{
         <div>신고 2020-서울마포-4411</div>
       </div>
       <div class="ft-col ft-contact" id="ftContactEl">
-        <div><span class="ft-cl">대표 메일</span> <a href="mailto:contact@plab.kr">contact@plab.kr</a></div>
-        <div><span class="ft-cl">마케팅</span> <a href="mailto:marketing@plab.kr">marketing@plab.kr</a></div>
-        <div><span class="ft-cl">언론, 연구</span> <a href="mailto:pr@plab.kr">pr@plab.kr</a></div>
+        <div><span class="ft-cl">대표 메일</span> contact@plab.kr</div>
+        <div><span class="ft-cl">마케팅</span> marketing@plab.kr</div>
+        <div><span class="ft-cl">언론, 연구</span> pr@plab.kr</div>
       </div>
       <div class="ft-col ft-sns" id="ftSnsEl">
         <a class="ft-icon" id="ftIgEl" href="https://instagram.com/plabfootball" title="Instagram">
@@ -1944,7 +1944,7 @@ function renderFooter(){
         const lbl=l.slice(0,sep).trim();
         const val=l.slice(sep+1).trim();
         const isEmail=val.includes('@');
-        return`<div><span class="ft-cl">${lbl}</span> ${isEmail?`<a href="mailto:${val}">${val}</a>`:val}</div>`;
+        return`<div><span class="ft-cl">${lbl}</span> ${val}</div>`;
       }
       return`<div>${l}</div>`;
     }).join('');
