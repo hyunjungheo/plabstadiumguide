@@ -1254,9 +1254,6 @@ window.addEventListener('DOMContentLoaded',async()=>{
         <div>신고 2020-서울마포-4411</div>
       </div>
       <div class="ft-col ft-contact" id="ftContactBox">
-        <div id="ftC1"></div>
-        <div id="ftC2"></div>
-        <div id="ftC3"></div>
       </div>
       <div class="ft-col ft-sns">
         <a class="ft-icon" href="#" title="Instagram">
@@ -2776,27 +2773,22 @@ renderHome();
 
 
 function renderFooterContact(){
+  const box = document.getElementById('ftContactBox');
+  if(!box) return;
   const contact = (S.settings&&S.settings.footer&&S.settings.footer.contact)||'';
-  const lines = contact.split('\n').map(l=>l.trim()).filter(Boolean);
-  const ids = ['ftC1','ftC2','ftC3'];
-  ids.forEach(function(id){ const el=document.getElementById(id); if(el) el.innerHTML=''; });
-  lines.forEach(function(line, idx){
-    if(idx>=3) return;
-    const el = document.getElementById('ftC'+(idx+1));
-    if(!el) return;
+  const lines = contact.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  box.innerHTML = lines.map(function(line){
     const colon = line.indexOf(':');
     if(colon>=0){
       const label = line.slice(0,colon).trim();
       const val   = line.slice(colon+1).trim();
-      // 이메일 주소를 문자 단위로 분리 → Cloudflare 난독화 우회
       const safe  = val.split('').map(function(c){
-        return c==='@' ? '<span>&#64;</span>' : c==='.' ? '<span>&#46;</span>' : c;
+        return c==='@'?'<span>&#64;</span>':c==='.'?'<span>&#46;</span>':c;
       }).join('');
-      el.innerHTML = '<span class="ft-cl">'+label+'</span> <span style="color:var(--muted)">'+safe+'</span>';
-    } else {
-      el.textContent = line;
+      return '<div><span class="ft-cl">'+label+'</span> <span style="color:var(--muted)">'+safe+'</span></div>';
     }
-  });
+    return '<div>'+line+'</div>';
+  }).join('');
 }
 </script>
 </body>
