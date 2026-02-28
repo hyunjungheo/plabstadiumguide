@@ -1029,6 +1029,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
     if(parsed.servicePages)S.servicePages={...S.servicePages,...parsed.servicePages};
     /* 화면 재렌더링 */
     if(typeof initHome==='function')initHome();
+    renderFooterContact();
     // OG 메타 동적 업데이트
     if(S.settings?.ogImage){
       let m=document.querySelector('meta[property="og:image"]');
@@ -1252,10 +1253,10 @@ window.addEventListener('DOMContentLoaded',async()=>{
         <div>서울시 마포구 잔다리로31 제우피스빌딩 2층</div>
         <div>신고 2020-서울마포-4411</div>
       </div>
-      <div class="ft-col ft-contact">
-        <div><span class="ft-cl">대표 메일</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e1edecf6e3e1f6c2f2eee3e0e4ededf6e0e3eeeeace1edef">[email&#160;protected]</a></div>
-        <div><span class="ft-cl">마케팅</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b565a49505e4f52555c7b4b575a595d54544f595a575715585456">[email&#160;protected]</a></div>
-        <div><span class="ft-cl">언론, 연구</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="275342464a67574b46454148485345464b4b0944484a">[email&#160;protected]</a></div>
+      <div class="ft-col ft-contact" id="ftContactBox">
+        <div id="ftC1"></div>
+        <div id="ftC2"></div>
+        <div id="ftC3"></div>
       </div>
       <div class="ft-col ft-sns">
         <a class="ft-icon" href="#" title="Instagram">
@@ -1794,6 +1795,7 @@ async function init(){
   renderSvcRow();
   renderGGrid2();
   renderSvcRow2();
+  renderFooterContact();
 }
 
 init();
@@ -2772,6 +2774,30 @@ renderHome();
   _startAuto();
 })();
 
+
+function renderFooterContact(){
+  const contact = (S.settings&&S.settings.footer&&S.settings.footer.contact)||'';
+  const lines = contact.split('\n').map(l=>l.trim()).filter(Boolean);
+  const ids = ['ftC1','ftC2','ftC3'];
+  ids.forEach(function(id){ const el=document.getElementById(id); if(el) el.innerHTML=''; });
+  lines.forEach(function(line, idx){
+    if(idx>=3) return;
+    const el = document.getElementById('ftC'+(idx+1));
+    if(!el) return;
+    const colon = line.indexOf(':');
+    if(colon>=0){
+      const label = line.slice(0,colon).trim();
+      const val   = line.slice(colon+1).trim();
+      // 이메일 주소를 문자 단위로 분리 → Cloudflare 난독화 우회
+      const safe  = val.split('').map(function(c){
+        return c==='@' ? '<span>&#64;</span>' : c==='.' ? '<span>&#46;</span>' : c;
+      }).join('');
+      el.innerHTML = '<span class="ft-cl">'+label+'</span> <span style="color:var(--muted)">'+safe+'</span>';
+    } else {
+      el.textContent = line;
+    }
+  });
+}
 </script>
 </body>
 </html>
