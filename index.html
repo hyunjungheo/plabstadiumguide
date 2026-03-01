@@ -364,6 +364,9 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .abody{max-width:720px;margin:0 auto;padding:0 24px 70px}
 .abody h2{font-size:21px;font-weight:800;letter-spacing:-.3px;margin:34px 0 11px;color:var(--txt)}
 .abody h3{font-size:16.5px;font-weight:700;margin:24px 0 8px}
+.abody h4{font-size:15px;font-weight:700;margin:20px 0 7px;color:var(--txt)}
+.abody h5{font-size:14px;font-weight:700;margin:16px 0 6px;color:var(--txt)}
+.abody h6{font-size:13px;font-weight:700;margin:14px 0 5px;color:var(--txt)}
 .abody p{font-size:15px;line-height:1.85;color:#2D3748;margin-bottom:15px}
 .abody ul,.abody ol{padding-left:20px;margin-bottom:15px}
 .abody li{font-size:14.5px;line-height:1.72;color:#374151;margin-bottom:5px}
@@ -371,6 +374,32 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .abody .ib{background:#F0F7FF;border:1px solid #C3DFFE;border-radius:9px;padding:14px 18px;margin:18px 0}
 .abody .ib-l{font-weight:800;font-size:12.5px;color:var(--blue);margin-bottom:5px}
 .abody .ib p{font-size:13.5px;margin:0;color:#374151}
+/* ── 어드민 인라인 스타일 그대로 반영 ── */
+.abody strong,.abody b{font-weight:700;color:inherit}
+.abody em,.abody i{font-style:italic}
+.abody u{text-decoration:underline}
+.abody s{text-decoration:line-through}
+/* 텍스트 정렬 — execCommand가 저장하는 모든 형태 지원 */
+.abody [style*="text-align: center"],.abody [style*="text-align:center"]{text-align:center!important}
+.abody [style*="text-align: right"],.abody [style*="text-align:right"]{text-align:right!important}
+.abody [style*="text-align: left"],.abody [style*="text-align:left"]{text-align:left!important}
+.abody [align="center"]{text-align:center!important}
+.abody [align="right"]{text-align:right!important}
+/* 글씨 크기 인라인 허용 — CSS specificity 확보 */
+.abody span[style*="font-size"]{font-size:revert}
+.abody p[style*="font-size"]{font-size:revert}
+.abody div[style*="font-size"]{font-size:revert}
+/* 글씨색 인라인 허용 */
+.abody span[style*="color"]{color:revert}
+.abody p[style*="color"]{color:revert}
+/* 배경색 인라인 허용 (흰색 포함) */
+.abody span[style*="background"]{background:revert;padding:1px 2px;border-radius:2px}
+.abody p[style*="background"]{background:revert}
+.abody div[style*="background"]{background:revert}
+.abody h1[style*="background"],.abody h2[style*="background"],.abody h3[style*="background"]{background:revert}
+/* 볼드 인라인 */
+.abody [style*="font-weight: bold"],.abody [style*="font-weight:bold"]{font-weight:700!important}
+.abody [style*="font-weight: 700"],.abody [style*="font-weight:700"]{font-weight:700!important}
 
 /* ── SEARCH ── */
 .sov{position:fixed;inset:0;background:rgba(10,25,41,.5);backdrop-filter:blur(6px);z-index:600;display:none;align-items:flex-start;justify-content:center;padding-top:90px}
@@ -769,6 +798,14 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .svc-page-body img{max-width:100%;border-radius:10px;margin:10px 0;display:block}
 .svc-page-body hr{border:none;border-top:1px solid var(--bdr);margin:20px 0}
 .svc-page-body pre{background:var(--bg);border-radius:8px;padding:14px 18px;font-family:monospace;font-size:13px;overflow-x:auto;margin:10px 0}
+/* svc-page-body 인라인 스타일 반영 */
+.svc-page-body [style*="text-align: center"],.svc-page-body [style*="text-align:center"]{text-align:center!important}
+.svc-page-body [style*="text-align: right"],.svc-page-body [style*="text-align:right"]{text-align:right!important}
+.svc-page-body [align="center"]{text-align:center!important}
+.svc-page-body span[style*="font-size"]{font-size:revert}
+.svc-page-body span[style*="color"]{color:revert}
+.svc-page-body [style*="background"]{background:revert}
+.svc-page-body [style*="font-weight: bold"],.svc-page-body [style*="font-weight:bold"]{font-weight:700!important}
 /* ── DARK MODE EXTRAS ── */
 html.dark .ph{background:#0D111A;border-bottom-color:rgba(255,255,255,.05)}
 html.dark .hero{background:var(--hero-bg)}
