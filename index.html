@@ -400,6 +400,19 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 /* 볼드 인라인 */
 .abody [style*="font-weight: bold"],.abody [style*="font-weight:bold"]{font-weight:700!important}
 .abody [style*="font-weight: 700"],.abody [style*="font-weight:700"]{font-weight:700!important}
+/* ── 다단 컬럼 레이아웃 (어드민 에디터 출력) ── */
+.col-layout{display:grid;gap:16px;margin:12px 0;width:100%}
+.col-layout.cols-2{grid-template-columns:repeat(2,1fr)}
+.col-layout.cols-3{grid-template-columns:repeat(3,1fr)}
+.col-layout.cols-4{grid-template-columns:repeat(4,1fr)}
+.col-layout.cols-5{grid-template-columns:repeat(5,1fr)}
+.col-layout.cols-6{grid-template-columns:repeat(6,1fr)}
+.col-item{padding:10px 12px;border-radius:8px}
+.col-layout-del{display:none}
+@media(max-width:600px){
+  .col-layout.cols-2,.col-layout.cols-3,.col-layout.cols-4,
+  .col-layout.cols-5,.col-layout.cols-6{grid-template-columns:1fr}
+}
 
 /* ── SEARCH ── */
 .sov{position:fixed;inset:0;background:rgba(10,25,41,.5);backdrop-filter:blur(6px);z-index:600;display:none;align-items:flex-start;justify-content:center;padding-top:90px}
