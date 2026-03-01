@@ -784,7 +784,7 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
   .site-footer{padding:28px 16px 0}
 }
 
-.svc-page-body{max-width:720px;font-size:14.5px;line-height:1.85;color:var(--txt)}
+.svc-page-body{max-width:720px;font-size:14.5px;line-height:1.85;color:var(--txt);word-break:keep-all;overflow-wrap:break-word}
 .svc-page-body h1{font-size:26px;font-weight:800;margin:20px 0 10px;color:var(--txt)}
 .svc-page-body h2{font-size:20px;font-weight:700;margin:18px 0 8px;color:var(--txt)}
 .svc-page-body h3{font-size:16px;font-weight:700;margin:14px 0 6px;color:var(--txt)}
@@ -961,14 +961,14 @@ html.dark .gl-item:hover .gl-item-arr{color:var(--abl)}
 .sp-hero{text-align:center;padding:32px 20px 24px;border-bottom:1px solid var(--bdr)}
 .sp-hero-icon{font-size:48px;margin-bottom:12px;line-height:1}
 .sp-title{font-size:24px;font-weight:800;color:var(--txt);letter-spacing:-.02em;margin-bottom:8px}
-.sp-lead{font-size:14.5px;color:var(--muted);line-height:1.6;max-width:360px;margin:0 auto}
-.sp-section{padding:24px 20px;border-bottom:1px solid var(--bdr)}
+.sp-lead{font-size:14.5px;color:var(--muted);line-height:1.6;margin:0 auto;word-break:keep-all;word-wrap:break-word;padding:0 4px}
+.sp-section{padding:24px 20px;border-bottom:1px solid var(--bdr);word-break:keep-all}
 .sp-section:last-child{border-bottom:none}
-.sp-section h2{font-size:17px;font-weight:700;color:var(--txt);margin-bottom:10px;letter-spacing:-.01em}
+.sp-section h2{font-size:17px;font-weight:700;color:var(--txt);margin-bottom:10px;letter-spacing:-.01em;word-break:keep-all}
 .sp-section p{font-size:14px;color:var(--txt2);line-height:1.7;margin-bottom:12px}
 .sp-section p:last-child{margin-bottom:0}
 .sp-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-@media(max-width:480px){.sp-card-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.sp-card-grid{grid-template-columns:repeat(3,1fr);gap:6px}.sp-card{padding:10px 6px}.sp-card-title{font-size:11px}.sp-card-desc{font-size:10.5px;line-height:1.4}.sp-card-icon{font-size:22px}}
 .sp-card{background:var(--surf2);border-radius:14px;padding:16px;text-align:center}
 .sp-card-icon{font-size:28px;margin-bottom:8px}
 .sp-card-title{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:4px}
