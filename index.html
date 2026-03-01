@@ -653,10 +653,11 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 
 /* ── 공통 페이지 헤더 (업데이트 소식 기준으로 통일) ── */
 .pg-hd{
-  display:flex;align-items:center;gap:16px;
   margin-bottom:32px;padding-bottom:20px;
   border-bottom:1px solid var(--bdr);
 }
+.pg-hd .pg-bk{display:block;margin-bottom:12px}
+.pg-hd .pg-ttl{display:block}
 .pg-bk{
   border:none;background:none;cursor:pointer;
   font-size:13px;color:var(--muted);font-family:inherit;
@@ -679,7 +680,8 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .unote-inner [style*="background"]{background:revert}
 .unote-inner [style*="color:"]{color:revert}
 .unote-inner [style*="font-size"]{font-size:revert}
-.unote-hd{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--bdr)}
+.unote-hd{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--bdr)}
+.unote-hd .unote-bk{display:block;margin-bottom:12px}
 .unote-bk{border:none;background:none;cursor:pointer;font-size:13px;color:var(--muted);font-family:inherit;padding:0;transition:color .13s}
 .unote-bk:hover{color:var(--txt)}
 .unote-pg-ttl{font-size:20px;font-weight:800;color:var(--txt);letter-spacing:-.3px}
@@ -807,6 +809,16 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .svc-page-body img{max-width:100%;border-radius:10px;margin:10px 0;display:block}
 .svc-page-body hr{border:none;border-top:1px solid var(--bdr);margin:20px 0}
 .svc-page-body pre{background:var(--bg);border-radius:8px;padding:14px 18px;font-family:monospace;font-size:13px;overflow-x:auto;margin:10px 0}
+/* 인라인 코드 — 노션 스타일 */
+code{background:rgba(135,131,120,.15);color:inherit;border-radius:4px;padding:2px 6px;font-family:'SFMono-Regular',Consolas,monospace;font-size:0.88em;font-weight:500}
+code[style*='background']{background:revert}
+pre code{background:none;color:inherit;padding:0;border-radius:0;font-size:inherit}
+.abody code{background:rgba(135,131,120,.15);color:inherit;border-radius:4px;padding:2px 6px;font-family:'SFMono-Regular',Consolas,monospace;font-size:0.88em}
+.abody code[style]{background:revert;color:revert}
+.abody pre{background:#f7f6f3;border:1px solid #e8e8e5;border-radius:6px;padding:14px 18px;font-family:'SFMono-Regular',Consolas,monospace;font-size:13px;overflow-x:auto;margin:12px 0}
+.abody pre code{background:none;color:#374151;padding:0;border-radius:0}
+.unote-inner code{background:rgba(135,131,120,.15);color:inherit;border-radius:4px;padding:2px 6px;font-size:0.88em;font-family:'SFMono-Regular',Consolas,monospace}
+.unote-inner pre{background:#f7f6f3;border:1px solid #e8e8e5;border-radius:6px;padding:14px 18px;font-size:13px;overflow-x:auto;margin:12px 0}
 /* svc-page-body 인라인 스타일 반영 */
 .svc-page-body [style*="text-align: center"],.svc-page-body [style*="text-align:center"]{text-align:center!important}
 .svc-page-body [style*="text-align: right"],.svc-page-body [style*="text-align:right"]{text-align:right!important}
@@ -866,7 +878,7 @@ html.dark .pl-logo{color:#fff}
   font-size:13px;font-weight:600;color:#6B7280;
   border:none;background:none;cursor:pointer;margin-bottom:22px;
   transition:color .13s;padding:0;font-family:inherit;
-}
+;margin-bottom:12px}
 .gl-bk:hover{color:var(--blue)}
 
 /* 페이지 대제목 */
