@@ -2017,7 +2017,8 @@ function renderUpdList(){
     const ha=u.articleId&&S.posts.find(p=>p.id===u.articleId&&p.status==='published');
     const artId=ha?u.articleId:'';
     const sub=u.subtitle||(u.body?u.body.split('\n')[0]:'');
-    const koDate=fmtKoDate(u.date);
+    // 상세 페이지: dateISO 있으면 년·월·일 전체, 없으면 기존 date 문자열 그대로
+  const koDate=u.dateISO ? fmtKoDateFull(u.dateISO) : (u.date||'');
     const bg=_BNR_BG[i%_BNR_BG.length];
     const _bStyle=u.bannerImage?`background:url('${u.bannerImage}') center/cover no-repeat;`:`background:${bg};`;
       return`<div class="bnr-slide ${u.bannerImage?'has-img':''}" style="${_bStyle}cursor:pointer" data-artid="${artId}" data-updid="${u.id}" onclick="_bnrSlideClick(this)">`
@@ -2074,7 +2075,8 @@ function openUpdArt(updId, fromView){
   _prevUpdFrom=fromView||'updNotes';
   const LTYPE={new:'업데이트',fix:'개선',notice:'공지'};
   const lbl=LTYPE[u.type]||'노트';
-  const koDate=fmtKoDate(u.date);
+  // 상세 페이지: dateISO 있으면 년·월·일 전체, 없으면 기존 date 문자열 그대로
+  const koDate=u.dateISO ? fmtKoDateFull(u.dateISO) : (u.date||'');
   let bodyHtml='';
   if(u.content){
     bodyHtml=u.content;
@@ -2435,6 +2437,11 @@ function closeArt(){
 /* ── UTILS ── */
 
 /* 날짜 한국어 포맷 유틸 */
+function fmtKoDateFull(iso){
+  if(!iso)return '';
+  const [y,m,d]=iso.split('-').map(Number);
+  return `${y}.${String(m).padStart(2,'0')}.${String(d).padStart(2,'0')}`;
+}
 function fmtKoDate(dateStr){
   /* '25.3 → 2025년 3월 | '26.1 → 2026년 1월 | ISO → YYYY년 M월 D일 */
   if(!dateStr)return dateStr;
