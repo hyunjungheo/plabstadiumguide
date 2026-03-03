@@ -353,10 +353,21 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .apg{background:var(--bg);min-height:100vh;overflow-x:hidden;width:100%;box-sizing:border-box}
 .ahd{max-width:720px;margin:0 auto;padding:28px 24px 20px}
 @media(max-width:480px){
-  .ahd{padding:20px 16px 16px}
-  .abody{padding:0 16px 60px!important}
-  .related-section{padding:0 16px 60px!important}
+  .ahd{padding:20px 20px 16px}
+  .abody{padding:0 20px 60px!important}
+  .related-section{padding:0 20px 60px!important}
   .abk{font-size:13px}
+  .a-h1{font-size:24px;margin-bottom:16px;padding-bottom:16px}
+  .abody h2{font-size:18px;margin:28px 0 10px}
+  .abody h3{font-size:15.5px;margin:20px 0 8px}
+  .abody p{font-size:14.5px;line-height:1.8;margin-bottom:12px}
+  .abody li{font-size:14px;line-height:1.72}
+  .abody blockquote{padding:11px 14px;font-size:13.5px}
+  .abody .callout{padding:12px 14px}
+  .abody .callout-text p{font-size:13.5px}
+  .abody .img-link-card{max-height:none}
+  .abody .img-link-card-img{width:100px;min-height:70px}
+  .related-section-title{font-size:14px}
 }
 .abk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;margin-bottom:20px;transition:color .13s;padding:0}
 .abk:hover{color:var(--blue)}
@@ -1849,6 +1860,32 @@ function showAdmin(){pg('adminPage');initAdmin()}
 
 /* ── PUBLIC VIEWS ── */
 function hAll(){['homeV','guideV','artV','updNoteV','updArtV','guideHomeV','svcPageV'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'})}
+
+/* ── 브라우저 뒤로가기 지원 (History API) ── */
+let _skipPush=false;
+function _navPush(state){
+  if(_skipPush)return;
+  history.pushState(state,'',' ');
+}
+function _navReplace(state){
+  history.replaceState(state,'',' ');
+}
+window.addEventListener('popstate',function(e){
+  _skipPush=true;
+  const st=e.state;
+  if(!st||st.view==='home'){goHome();}
+  else if(st.view==='guidePage'){goGuidePage();}
+  else if(st.view==='guide'&&st.catId){showGuide(st.catId,st.from||'guideHome');}
+  else if(st.view==='art'&&st.artId){openArt(st.artId,st.from||'home');}
+  else if(st.view==='updNotes'){goUpdNotes(true);}
+  else if(st.view==='updArt'&&st.updId){openUpdArt(st.updId,st.from||'updNotes');}
+  else if(st.view==='svcPage'){goSvcPage();}
+  else if(st.view==='svcDetail'&&st.svcId){goSvcDetailPage(st.svcId,st.from||'svcPage');}
+  else{goHome();}
+  _skipPush=false;
+});
+/* 초기 상태 */
+_navReplace({view:'home'});
 function toggleMobileNav(){
   const n=document.getElementById('mobNav');
   const b=document.getElementById('hbgBtn');
@@ -1916,6 +1953,7 @@ function goHome(){
   document.getElementById('homeV').style.display='';
   renderHome();window.scrollTo(0,0);
   setNavOn('navHome');
+  _navPush({view:'home'});
 }
 function scrl(id){goHome();setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'}),110)}
 function goGuidePage(){
@@ -1924,6 +1962,7 @@ function goGuidePage(){
   if(ghv){ghv.style.display='';const bk=ghv.querySelector('.pg-bk');if(bk)bk.style.visibility='hidden';}
   renderGGrid2();window.scrollTo(0,0);
   setNavOn('navGuide');
+  _navPush({view:'guidePage'});
 }
 function goSvcPage(){
   hAll();
@@ -1944,6 +1983,7 @@ function goSvcPage(){
   }
   renderSvcRow2();window.scrollTo(0,0);
   setNavOn('navSvc');
+  _navPush({view:'svcPage'});
 }
 function renderSvcRow2(){
   const el=document.getElementById('srowEl2');
@@ -2185,10 +2225,12 @@ function openUpdArt(updId, fromView){
   hAll();
   document.getElementById('updArtV').style.display='';
   window.scrollTo(0,0);
+  _navPush({view:'updArt',updId:updId,from:fromView});
 }
 let _prevUpdFrom='updNotes';
 function closeUpdArt(){
-  if(_prevUpdFrom==='home') goHome();
+  if(history.state&&history.state.view==='updArt') history.back();
+  else if(_prevUpdFrom==='home') goHome();
   else goUpdNotes();
 }
 function _bnrClick(id){
@@ -2208,6 +2250,7 @@ function goUpdNotes(fromMenu){
     _renderNotes();window.scrollTo(0,0);
   }
   setNavOn('navUpd');
+  _navPush({view:'updNotes'});
 }
 function _renderNotes(){
   const grid=document.getElementById('unGrid');if(!grid)return;
@@ -2349,11 +2392,12 @@ function goSvcDetailPage(svcId,fromView){
   const pgBk=v.querySelector('.pg-bk');
   if(pgTtl) pgTtl.textContent=meta.nm||'서비스 소개';
   if(pgBk){
-    if(fromView==='home'){pgBk.textContent='← 홈으로';pgBk.onclick=()=>goHome();}
-    else{pgBk.textContent='← 서비스 소개';pgBk.onclick=()=>goSvcPage();}
+    if(fromView==='home'){pgBk.textContent='← 홈으로';pgBk.onclick=()=>{if(history.state&&history.state.view==='svcDetail')history.back();else goHome();};}
+    else{pgBk.textContent='← 서비스 소개';pgBk.onclick=()=>{if(history.state&&history.state.view==='svcDetail')history.back();else goSvcPage();};}
   }
   window.scrollTo(0,0);
   setNavOn('navSvc');
+  _navPush({view:'svcDetail',svcId:svcId,from:fromView});
 
   document.getElementById('svcPageContent').innerHTML=`
 
@@ -2383,10 +2427,10 @@ function showGuide(catId,fromView){
   const bkBtn=document.getElementById('glBk');
   if(_prevView==='home'){
     bkBtn.textContent='← 홈으로';
-    bkBtn.onclick=()=>goHome();
+    bkBtn.onclick=()=>{if(history.state&&history.state.view==='guide')history.back();else goHome();};
   } else {
     bkBtn.textContent='← 이용 가이드';
-    bkBtn.onclick=()=>goGuidePage();
+    bkBtn.onclick=()=>{if(history.state&&history.state.view==='guide')history.back();else goGuidePage();};
   }
 
   /* 페이지 대제목 + 히어로 배너 */
@@ -2456,6 +2500,7 @@ function showGuide(catId,fromView){
     </div>`).join('');
 
   window.scrollTo(0,0);
+  _navPush({view:'guide',catId:catId,from:fromView});
 }
 function glOpenArt(id){
   // fromView 보존: 홈에서 왔으면 artBk→홈, 가이드메뉴에서 왔으면 artBk→목록
@@ -2514,13 +2559,17 @@ function openArt(id,fromView){
   }
   document.getElementById('artBk').onclick=()=>closeArt();
   window.scrollTo(0,0);
+  _navPush({view:'art',artId:id,from:fromView||_prevView});
 }
 function closeArt(){
-  if(_prevView==='updNotes')goUpdNotes();
-  else if(_prevView==='guide_from_home'&&curCat)showGuide(curCat,'home');
-  else if(_prevView==='guide'&&curCat)showGuide(curCat,'guideHome');
-  else if(_prevView==='guidePage')goGuidePage();
-  else goHome();
+  if(history.state&&history.state.view==='art') history.back();
+  else{
+    if(_prevView==='updNotes')goUpdNotes();
+    else if(_prevView==='guide_from_home'&&curCat)showGuide(curCat,'home');
+    else if(_prevView==='guide'&&curCat)showGuide(curCat,'guideHome');
+    else if(_prevView==='guidePage')goGuidePage();
+    else goHome();
+  }
 }
 
 /* ── UTILS ── */
