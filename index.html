@@ -1886,10 +1886,21 @@ function initHome(){
 async function init(){
   const fbData = await window._fbLoad();
   if(fbData){
-    S = JSON.parse(fbData);
+    try{
+      const parsed=JSON.parse(fbData);
+      if(parsed.updates)   S.updates   =parsed.updates;
+      if(parsed.posts)     S.posts     =parsed.posts;
+      if(parsed.categories)S.categories=parsed.categories;
+      if(parsed.services)  S.services  =parsed.services;
+      if(parsed.settings)  S.settings  ={...S.settings,...parsed.settings};
+      if(parsed.subcategories)S.subcategories={...S.subcategories,...parsed.subcategories};
+      if(parsed.servicePages)S.servicePages={...S.servicePages,...parsed.servicePages};
+      if(parsed.updateTypes)S.updateTypes=parsed.updateTypes;
+    }catch(e){console.warn('initHome parse error',e);}
     localStorage.setItem('plab_v5', fbData);
   }
 
+  renderHero();
   renderUpdList();
   renderGGrid();
   renderSvcRow();
