@@ -889,14 +889,16 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
   .site-footer{padding:28px 16px 0}
 }
 
-.svc-page-body{max-width:720px;font-size:14.5px;line-height:1.85;color:var(--txt);word-break:keep-all;overflow-wrap:break-word}
-.svc-page-body h1{font-size:26px;font-weight:800;margin:20px 0 10px;color:var(--txt)}
-.svc-page-body h2{font-size:20px;font-weight:700;margin:18px 0 8px;color:var(--txt)}
-.svc-page-body h3{font-size:16px;font-weight:700;margin:14px 0 6px;color:var(--txt)}
-.svc-page-body p{margin:6px 0;color:var(--muted)}
-.svc-page-body ul,.svc-page-body ol{margin:8px 0 8px 22px}
-.svc-page-body li{margin:4px 0;color:var(--muted)}
-.svc-page-body blockquote{border-left:3px solid var(--blue);padding:10px 16px;background:var(--bg);border-radius:0 8px 8px 0;margin:12px 0;color:var(--muted)}
+.svc-page-body{max-width:720px;font-size:14px;line-height:1.75;color:var(--txt);word-break:keep-all;overflow-wrap:break-word}
+.svc-page-body h1{font-size:24px;font-weight:800;margin:16px 0 8px}
+.svc-page-body h2{font-size:19px;font-weight:700;margin:14px 0 6px}
+.svc-page-body h3{font-size:16px;font-weight:700;margin:12px 0 5px}
+.svc-page-body p{margin:4px 0}
+.svc-page-body ul,.svc-page-body ol{margin:4px 0;padding-left:24px}
+.svc-page-body li{margin:1px 0;line-height:1.7}
+.svc-page-body ul li{list-style-type:disc}
+.svc-page-body ul ul li{list-style-type:circle}
+.svc-page-body blockquote{border-left:3px solid var(--blue);padding:8px 14px;margin:10px 0;font-style:italic}
 .svc-page-body table{border-collapse:collapse;width:100%;margin:12px 0;border-radius:8px;overflow:hidden}
 .svc-page-body table td,.svc-page-body table th{border:1px solid var(--bdr);padding:8px 12px;font-size:13.5px}
 .svc-page-body table th{background:var(--bg);font-weight:700;color:var(--txt)}
@@ -2478,6 +2480,21 @@ function goSvcDetailPage(svcId,fromView){
         </div>`
     }
   `;
+  /* 서비스 페이지 내 링크 카드 클릭 처리 */
+  const svcBody=document.querySelector('#svcPageContent .svc-page-body');
+  if(svcBody){
+    svcBody.querySelectorAll('[contenteditable]').forEach(function(el){el.removeAttribute('contenteditable');});
+    svcBody.querySelectorAll('.img-link-card[data-post-id]').forEach(function(card){
+      card.removeAttribute('target');
+      card.onclick=function(e){
+        e.preventDefault();
+        var pid=card.getAttribute('data-post-id');
+        var post=S.posts.find(function(p){return p.id===pid;});
+        if(post){openArt(pid,'svcDetail');}
+      };
+    });
+    svcBody.querySelectorAll('.callout-color-btn').forEach(function(btn){btn.remove();});
+  }
 }
 
 /* ── GUIDE LIST ── */
@@ -2635,7 +2652,8 @@ function openArt(id,fromView){
 function closeArt(){
   if(history.state&&history.state.view==='art') history.back();
   else{
-    if(_prevView==='updNotes')goUpdNotes();
+    if(_prevView==='svcDetail')goSvcPage();
+    else if(_prevView==='updNotes')goUpdNotes();
     else if(_prevView==='guide_from_home'&&curCat)showGuide(curCat,'home');
     else if(_prevView==='guide'&&curCat)showGuide(curCat,'guideHome');
     else if(_prevView==='guidePage')goGuidePage();
@@ -2651,7 +2669,10 @@ function buildToc(bodyId,sidebarId,listId){
   var wrap=sidebar?.closest('.art-wrap');
   if(!body||!sidebar||!list)return;
 
-  var headings=Array.from(body.querySelectorAll('h1,h2,h3'));
+  var headings=Array.from(body.querySelectorAll('h1,h2,h3')).filter(function(el){
+    /* 50자 이상인 heading은 본문을 heading 스타일로 작성한 것으로 간주하여 제외 */
+    return el.textContent.trim().length>0 && el.textContent.trim().length<=50;
+  });
   if(headings.length<2){
     sidebar.style.display='none';
     if(wrap)wrap.style.gridTemplateColumns='1fr';
@@ -2666,6 +2687,7 @@ function buildToc(bodyId,sidebarId,listId){
     var tag=el.tagName.toLowerCase();
     var cls=tag==='h1'?'h1':tag==='h2'?'h2':'h3';
     var txt=el.textContent.trim();
+    if(txt.length>30) txt=txt.slice(0,28)+'…';
     return'<button class="toc-btn '+cls+'" data-id="'+el.id+'" onclick="tocScroll(this.dataset.id)">'+txt+'</button>';
   }).join('');
 
