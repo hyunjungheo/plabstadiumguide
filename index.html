@@ -351,10 +351,11 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 
 /* ── ARTICLE ── */
 .apg{background:var(--bg);min-height:100vh;overflow-x:hidden;width:100%;box-sizing:border-box}
-.ahd{max-width:720px;margin:0 auto;padding:28px 20px 20px}
+.ahd{max-width:720px;margin:0 auto;padding:28px 24px 20px}
 @media(max-width:480px){
   .ahd{padding:20px 16px 16px}
   .abody{padding:0 16px 60px!important}
+  .related-section{padding:0 16px 60px!important}
   .abk{font-size:13px}
 }
 .abk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;margin-bottom:20px;transition:color .13s;padding:0}
@@ -362,7 +363,7 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .a-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:100px;font-size:11.5px;font-weight:700;background:var(--blue-lt);color:var(--blue);margin-bottom:13px}
 .a-h1{font-size:30px;font-weight:900;line-height:1.3;letter-spacing:-.6px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--bdr)}
 
-.abody{max-width:720px;margin:0 auto;padding:0 20px 70px;overflow-x:hidden;word-break:break-word}
+.abody{max-width:720px;margin:0 auto;padding:0 24px 70px;overflow-x:hidden;word-break:break-word}
 .abody h2{font-size:21px;font-weight:800;letter-spacing:-.3px;margin:34px 0 11px;color:var(--txt)}
 .abody h3{font-size:16.5px;font-weight:700;margin:24px 0 8px}
 .abody h4{font-size:15px;font-weight:700;margin:20px 0 7px;color:var(--txt)}
@@ -1198,12 +1199,14 @@ window.addEventListener('DOMContentLoaded',async()=>{
       <div class="hi">
         <div class="hero-row">
           <!-- 좌: 큰 제목 + Whenever 카피 -->
-          <div class="hero-l">
+          <div class="hero-l" id="heroL">
             <h1 class="h-h1" id="hH1">플랩 이용 가이드</h1>
+            <div id="heroCopyWrap">
             <div class="hero-copy-line">더 많은 사람들이 풋살을 즐길 수 있도록</div>
             <div class="hero-copy-line">더 많은 구장이 플랩의 80만 유저에게 닿도록</div>
             <div class="hero-copy-line">더 많은 구장이 매출을 늘릴 수 있도록</div>
             <div class="hero-copy-sig">언제, 어디서나 플랩입니다</div>
+            </div>
           </div>
           <!-- 우: 검색창 (워딩이 placeholder에 통합) -->
           <div class="hero-r">
@@ -2045,7 +2048,29 @@ initTheme();
 
 /* ── RENDER HOME ── */
 function renderHome(){
-  renderUpdList();renderGGrid();renderSvcRow();
+  renderHero();renderUpdList();renderGGrid();renderSvcRow();
+}
+function renderHero(){
+  const s=S.settings||{};
+  /* 제목 */
+  const h1=document.getElementById('hH1');
+  if(h1&&s.heroTitle) h1.innerHTML=s.heroTitle.replace(/\n/g,'<br>');
+  /* 카피 */
+  const wrap=document.getElementById('heroCopyWrap');
+  if(wrap&&s.heroCopy){
+    const lines=s.heroCopy.split('\n').filter(l=>l.trim());
+    if(lines.length){
+      const last=lines[lines.length-1];
+      const body=lines.slice(0,-1);
+      wrap.innerHTML=body.map(l=>'<div class="hero-copy-line">'+l+'</div>').join('')
+        +'<div class="hero-copy-sig">'+last+'</div>';
+    }
+  }
+  /* 서브텍스트 → 검색 placeholder */
+  if(s.heroDesc){
+    const inp=document.getElementById('heroSearchInp');
+    if(inp) inp.placeholder=s.heroDesc;
+  }
 }
 let _bi=0;
 const _BNR_BG=['#EDE97A','#A8D4A4','#A8C8E0','#F0C890','#C0B4DC','#90CFC0'];
