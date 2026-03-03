@@ -6,6 +6,7 @@
 <title>플랩 이용 가이드</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <style>
+html,body{overflow-x:hidden;max-width:100vw}
 :root{
   --blue:#1466F5;--blue-dk:#0E52CC;--blue-lt:#EBF1FF;
   --dark:#1a1d21;--dark2:#23272e;
@@ -349,67 +350,11 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .gp-em2-ic{font-size:36px;margin-bottom:10px}
 
 /* ── ARTICLE ── */
-.apg{background:var(--bg);min-height:100vh}
-
-/* ── ARTICLE TOC (목차 사이드바) ── */
-.art-wrap{
-  display:grid;
-  grid-template-columns:1fr 220px;
-  gap:40px;
-  max-width:960px;
-  margin:0 auto;
-  padding:0 20px;
-  align-items:start;
-}
-.art-main{min-width:0}
-.art-main .abody{max-width:100%;margin:0;padding:0 0 70px}
-.art-main .ahd-inner{max-width:100%;margin:0;padding:28px 0 20px}
-.toc-sidebar{
-  position:sticky;
-  top:calc(var(--hh) + 20px);
-  align-self:start;
-  max-height:calc(100vh - var(--hh) - 40px);
-  overflow-y:auto;
-}
-.toc-sidebar::-webkit-scrollbar{width:3px}
-.toc-sidebar::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
-.toc-box{background:none;border:none;border-radius:0;padding:0}
-.toc-label{display:none}
-.toc-list{
-  display:flex;flex-direction:column;gap:0;
-  border-left:2px solid var(--bdr);
-}
-.toc-btn{
-  display:block;width:100%;text-align:left;
-  font-size:12px;color:var(--muted);line-height:1.5;
-  padding:5px 0 5px 14px;border-radius:0;
-  border:none;border-left:2px solid transparent;
-  margin-left:-2px;
-  background:none;cursor:pointer;
-  font-family:inherit;transition:color .13s,border-color .13s;
-  word-break:keep-all;
-}
-.toc-btn:hover{color:var(--txt)}
-.toc-btn.active{color:var(--blue);font-weight:600;border-left-color:var(--blue)}
-.toc-btn.h1{padding-left:14px;font-size:12.5px;font-weight:500}
-.toc-btn.h2{padding-left:22px;font-size:12px}
-.toc-btn.h3{padding-left:30px;font-size:11.5px;color:var(--muted2)}
-.toc-btn.h3:hover{color:var(--txt)}
-.toc-btn.h3.active{color:var(--blue)}
-@media(max-width:860px){
-  .art-wrap{grid-template-columns:1fr;padding:0}
-  .toc-sidebar{display:none!important}
-  .art-main .abody{padding:0 24px 70px}
-  .art-main .ahd-inner{padding:28px 20px 20px}
-}
-@media(max-width:480px){
-  .art-main .abody{padding:0 16px 60px}
-}
-
+.apg{background:var(--bg);min-height:100vh;overflow-x:hidden;width:100%;box-sizing:border-box}
 .ahd{max-width:720px;margin:0 auto;padding:28px 20px 20px}
 @media(max-width:480px){
   .ahd{padding:20px 16px 16px}
-  .abody{padding:0 16px 60px}
+  .abody{padding:0 16px 60px!important}
   .abk{font-size:13px}
 }
 .abk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;margin-bottom:20px;transition:color .13s;padding:0}
@@ -417,7 +362,7 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .a-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:100px;font-size:11.5px;font-weight:700;background:var(--blue-lt);color:var(--blue);margin-bottom:13px}
 .a-h1{font-size:30px;font-weight:900;line-height:1.3;letter-spacing:-.6px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--bdr)}
 
-.abody{max-width:720px;margin:0 auto;padding:0 24px 70px}
+.abody{max-width:720px;margin:0 auto;padding:0 20px 70px;overflow-x:hidden;word-break:break-word}
 .abody h2{font-size:21px;font-weight:800;letter-spacing:-.3px;margin:34px 0 11px;color:var(--txt)}
 .abody h3{font-size:16.5px;font-weight:700;margin:24px 0 8px}
 .abody h4{font-size:15px;font-weight:700;margin:20px 0 7px;color:var(--txt)}
@@ -430,6 +375,24 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .abody .ib{background:#F0F7FF;border:1px solid #C3DFFE;border-radius:9px;padding:14px 18px;margin:18px 0}
 .abody .ib-l{font-weight:800;font-size:12.5px;color:var(--blue);margin-bottom:5px}
 .abody .ib p{font-size:13.5px;margin:0;color:#374151}
+/* 표 — 모바일 가로 스크롤 */
+.abody table{width:100%;border-collapse:collapse;margin:8px 0;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.abody table tbody,.abody table thead{display:table;width:100%}
+.abody td,.abody th{border:1px solid var(--bdr);padding:8px 10px;font-size:13px;white-space:nowrap}
+.abody th{font-weight:600;background:var(--bg)}
+/* 이미지 — 절대 넘치지 않도록 */
+.abody img{max-width:100%;height:auto;border-radius:6px;margin:8px 0;display:block}
+/* 링크 카드 */
+.abody .img-link-card{display:flex;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:10px 0;cursor:pointer;text-decoration:none;color:inherit;transition:box-shadow .15s;max-height:130px}
+.abody .img-link-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.12)}
+.abody .img-link-card-img{width:130px;min-height:90px;object-fit:cover;flex-shrink:0;background:#f3f4f6}
+.abody .img-link-card-body{flex:1;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.abody .img-link-card-title{font-size:14px;font-weight:600;color:var(--txt);margin-bottom:3px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abody .img-link-card-desc{font-size:12px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.abody .img-link-card-url{font-size:11px;color:var(--muted2);margin-top:5px;display:flex;align-items:center;gap:4px}
+.abody .img-link-card-url::before{content:'🔗';font-size:10px}
+/* 콜아웃 색상 버튼 프론트엔드에서 숨기기 */
+.abody .callout-color-btn{display:none}
 /* ── 어드민 인라인 스타일 그대로 반영 ── */
 .abody strong,.abody b{font-weight:700;color:inherit}
 .abody em,.abody i{font-style:italic}
@@ -695,6 +658,7 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
   font-size:12.5px;font-weight:700;color:rgba(0,0,0,.75);
   cursor:pointer;font-family:inherit;
   transition:all .16s;letter-spacing:.01em;
+  margin-top:auto;
 }
 .bnr-cta:hover{background:rgba(255,255,255,.38);border-color:rgba(255,255,255,.5);transform:translateX(2px)}
 .bnr-cta-dis{opacity:.6;cursor:default}
@@ -710,13 +674,18 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .bnr-btn,.bnr-counter{display:none}
 @media(max-width:680px){
   .bnr-slide{height:auto;min-height:160px;padding:20px 20px}
-  .bnr-ttl{font-size:16px;line-height:1.4}
-  .bnr-sub{font-size:12px;-webkit-line-clamp:2}
+  .bnr-ttl{font-size:16px;line-height:1.4;margin-bottom:8px}
+  .bnr-sub{font-size:12px;-webkit-line-clamp:2;margin-bottom:10px}
   .bnr-wrap{border-radius:10px}
+  .bnr-cta{padding:6px 14px;font-size:11.5px}
+  .abody .img-link-card{max-height:none}
+  .abody .img-link-card-img{width:100px;min-height:70px}
 }
 @media(max-width:400px){
   .bnr-slide{min-height:140px;padding:16px}
   .bnr-ttl{font-size:15px}
+  .abody .img-link-card{flex-direction:column;max-height:none}
+  .abody .img-link-card-img{width:100%;height:120px}
 }
 
 
@@ -1036,6 +1005,14 @@ html.dark .pl-logo{color:#fff}
 
 /* 다크모드 */
 html.dark .gl-pg{background:var(--bg)}
+@media(max-width:480px){
+  .gl-pg{padding:20px 14px 60px}
+  .gl-group-hd{padding:16px 16px 12px;font-size:16px}
+  .gl-item{padding:14px 16px}
+  .gl-item-ttl{font-size:14px}
+  .gl-item-cnt{font-size:12px}
+  .gl-hd{font-size:22px}
+}
 html.dark .gl-group{background:var(--white);border-color:var(--bdr)}
 html.dark .gl-group-line{background:var(--bdr)}
 html.dark .gl-item{border-bottom-color:rgba(255,255,255,.06)}
@@ -1071,8 +1048,8 @@ html.dark .gl-item:hover .gl-item-arr{color:var(--abl)}
 .svc-page-body{padding-bottom:40px}
 
 /* ── 관련 자료 섹션 ── */
-.related-section{padding:0 0 60px}
-.related-section-title{font-size:15px;font-weight:700;color:#111827;margin-bottom:10px}
+.related-section{max-width:720px;margin:0 auto;padding:0 24px 60px}
+.related-section-title{font-size:15px;font-weight:700;color:var(--body);margin-bottom:10px;padding-left:2px}
 .related-list{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden}
 .related-item{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:background .15s,color .15s;text-decoration:none}
 .related-item:last-child{border-bottom:none}
@@ -1082,19 +1059,10 @@ html.dark .gl-item:hover .gl-item-arr{color:var(--abl)}
 .related-item-title{flex:1;font-size:14px;color:#1f2937;line-height:1.4}
 .related-item-meta{font-size:12px;color:#9ca3af;margin-right:8px;white-space:nowrap}
 .related-item-arrow{font-size:18px;color:#9ca3af;line-height:1;transition:color .15s,transform .15s}
-html.dark .related-section-title{color:var(--txt)}
-html.dark .related-list{border-color:var(--bdr);background:var(--white)}
-html.dark .related-item{border-bottom-color:rgba(255,255,255,.06)}
-html.dark .related-item:hover{background:rgba(20,102,245,.1)}
-html.dark .related-item:hover .related-item-title{color:var(--abl)}
-html.dark .related-item:hover .related-item-arrow{color:var(--abl)}
-html.dark .related-item-title{color:var(--txt)}
-html.dark .related-item-arrow{color:rgba(255,255,255,.2)}
 
 /* ── 콜아웃 (노션 스타일) ── */
 .abody .callout{
   display:flex;align-items:flex-start;gap:10px;
-  background:#f1f1ef;
   border-radius:4px;
   padding:14px 16px;
   margin:4px 0 8px;
@@ -1210,19 +1178,16 @@ window.addEventListener('DOMContentLoaded',async()=>{
       <button class="pnav-btn" id="navSvc" onclick="goSvcPage();closeMobileNav()">서비스 소개</button>
     </nav>
     <div class="ph-r">
-      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="다크/라이트 모드">🌙</button>
       <button class="hbg-btn" id="hbgBtn" onclick="toggleMobileNav()" aria-label="메뉴">
         <span class="hbg-line"></span><span class="hbg-line"></span><span class="hbg-line"></span>
       </button>
     </div>
     <!-- 모바일 드롭다운 메뉴 -->
     <div class="mob-nav" id="mobNav">
-      <button class="mob-nav-btn" id="mnHome" onclick="goHome();closeMobileNav()">🏠 홈</button>
-      <button class="mob-nav-btn" id="mnUpd" onclick="goUpdNotes(true);closeMobileNav()">📢 업데이트 소식</button>
-      <button class="mob-nav-btn" id="mnGuide" onclick="goGuidePage();closeMobileNav()">📚 이용 가이드</button>
-      <button class="mob-nav-btn" id="mnSvc" onclick="goSvcPage();closeMobileNav()">⚙️ 서비스 소개</button>
-      <div class="mob-nav-div"></div>
-      <button class="mob-nav-btn" onclick="toggleTheme();closeMobileNav()">🌙 다크/라이트 모드</button>
+      <button class="mob-nav-btn" id="mnHome" onclick="goHome();closeMobileNav()">홈</button>
+      <button class="mob-nav-btn" id="mnUpd" onclick="goUpdNotes(true);closeMobileNav()">업데이트 소식</button>
+      <button class="mob-nav-btn" id="mnGuide" onclick="goGuidePage();closeMobileNav()">이용 가이드</button>
+      <button class="mob-nav-btn" id="mnSvc" onclick="goSvcPage();closeMobileNav()">서비스 소개</button>
     </div>
   </header>
 
@@ -1363,21 +1328,12 @@ window.addEventListener('DOMContentLoaded',async()=>{
   </div>
 
   <div id="artV" style="display:none;" class="apg fd">
-    <div class="art-wrap">
-      <div class="art-main">
-        <div class="ahd-inner">
-          <button class="abk" id="artBk" onclick="closeArt()">← 목록으로</button>
-          <div id="artMeta"></div>
-        </div>
-        <div class="abody" id="artBody"></div>
-        <div id="artRelated"></div>
-      </div>
-      <aside class="toc-sidebar" id="tocSidebar" style="display:none">
-        <div class="toc-box">
-          <div class="toc-list" id="tocList"></div>
-        </div>
-      </aside>
+    <div class="ahd">
+      <button class="abk" id="artBk" onclick="closeArt()">← 목록으로</button>
+      <div id="artMeta"></div>
     </div>
+    <div class="abody" id="artBody"></div>
+    <div id="artRelated"></div>
   </div>
 
   <!-- FOOTER -->
@@ -2078,19 +2034,11 @@ function getAnalytics(){
 
 
 /* ══ THEME ══ */
-function toggleTheme(){
-  const dark=document.documentElement.classList.toggle('dark');
-  document.getElementById('themeBtn').textContent=dark?'☀️':'🌙';
-  try{localStorage.setItem('plab_theme',dark?'dark':'light')}catch{}
-}
+function toggleTheme(){}
 function initTheme(){
   try{
-    const t=localStorage.getItem('plab_theme')||'light';
-    if(t==='dark'){
-      document.documentElement.classList.add('dark');
-      const btn=document.getElementById('themeBtn');
-      if(btn)btn.textContent='☀️';
-    }
+    document.documentElement.classList.remove('dark');
+    localStorage.removeItem('plab_theme');
   }catch{}
 }
 initTheme();
@@ -2426,7 +2374,7 @@ function showGuide(catId,fromView){
   }
 
   /* 해당 카테고리의 게시글 */
-  const posts=S.posts.filter(p=>p.category===catId&&p.status==='published');
+  const posts=S.posts.filter(p=>p.category===catId&&p.status==='published'&&!p.parentId);
   const list=document.getElementById('glList');
   const em=document.getElementById('glEmpty');
 
@@ -2502,6 +2450,13 @@ function openArt(id,fromView){
     ${cat?`<div class="a-badge">${cat.emoji} ${cat.name}</div>`:''}
     <h1 class="a-h1">${p.title}</h1>`;
   document.getElementById('artBody').innerHTML=p.content;
+  /* 내부 링크 카드 클릭 처리 */
+  document.querySelectorAll('#artBody .img-link-card[data-post-id]').forEach(function(card){
+    card.removeAttribute('target');
+    card.onclick=function(e){e.preventDefault();openArt(card.getAttribute('data-post-id'),'art');};
+  });
+  /* 콜아웃 🎨 버튼 숨기기 */
+  document.querySelectorAll('#artBody .callout-color-btn').forEach(function(btn){btn.remove();});
   // ── 관련 자료 렌더링 ──
   var relBox=document.getElementById('artRelated');
   if(relBox){
@@ -2522,8 +2477,6 @@ function openArt(id,fromView){
       : '';
   }
   document.getElementById('artBk').onclick=()=>closeArt();
-  // TOC 생성
-  buildToc();
   window.scrollTo(0,0);
 }
 function closeArt(){
@@ -2532,64 +2485,6 @@ function closeArt(){
   else if(_prevView==='guide'&&curCat)showGuide(curCat,'guideHome');
   else if(_prevView==='guidePage')goGuidePage();
   else goHome();
-}
-
-/* ── TOC 목차 ── */
-function buildToc(){
-  var body=document.getElementById('artBody');
-  var sidebar=document.getElementById('tocSidebar');
-  var list=document.getElementById('tocList');
-  var wrap=document.querySelector('.art-wrap');
-  if(!body||!sidebar||!list)return;
-
-  var headings=Array.from(body.querySelectorAll('h1,h2,h3'));
-  if(headings.length<2){
-    sidebar.style.display='none';
-    if(wrap)wrap.style.gridTemplateColumns='1fr';
-    return;
-  }
-
-  headings.forEach(function(el,i){
-    if(!el.id)el.id='toc-h-'+i;
-  });
-
-  list.innerHTML=headings.map(function(el){
-    var tag=el.tagName.toLowerCase();
-    var cls=tag==='h1'?'h1':tag==='h2'?'h2':'h3';
-    var txt=el.textContent.trim();
-    return'<button class="toc-btn '+cls+'" data-id="'+el.id+'" onclick="tocScroll(this.dataset.id)">'+txt+'</button>';
-  }).join('');
-
-  if(wrap)wrap.style.gridTemplateColumns='1fr 220px';
-  sidebar.style.display='';
-
-  var ahdInner=document.querySelector('.ahd-inner');
-  if(ahdInner){
-    var hh=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hh')||'56');
-    var ahdH=ahdInner.getBoundingClientRect().height;
-    sidebar.style.top=(hh+ahdH+8)+'px';
-    sidebar.style.maxHeight='calc(100vh - '+(hh+ahdH+24)+'px)';
-  }
-
-  if(window._tocObserver)window._tocObserver.disconnect();
-  window._tocObserver=new IntersectionObserver(function(entries){
-    entries.forEach(function(en){
-      var btn=list.querySelector('[data-id="'+en.target.id+'"]');
-      if(btn&&en.isIntersecting){
-        list.querySelectorAll('.toc-btn').forEach(function(b){b.classList.remove('active');});
-        btn.classList.add('active');
-      }
-    });
-  },{rootMargin:'-5% 0px -75% 0px',threshold:0});
-  headings.forEach(function(el){window._tocObserver.observe(el);});
-}
-
-function tocScroll(id){
-  var el=document.getElementById(id);
-  if(!el)return;
-  var offset=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hh')||'56')+16;
-  var top=el.getBoundingClientRect().top+window.scrollY-offset;
-  window.scrollTo({top:top,behavior:'smooth'});
 }
 
 /* ── UTILS ── */
@@ -2647,7 +2542,7 @@ function doS(){
   const q=document.getElementById('sinpEl').value.trim().toLowerCase();
   const r=document.getElementById('sresEl');
   if(!q){r.innerHTML='<div class="s-none">검색어를 입력하세요</div>';return}
-  const f=S.posts.filter(p=>p.status==='published'&&(p.title.toLowerCase().includes(q)||p.excerpt.toLowerCase().includes(q)));
+  const f=S.posts.filter(p=>p.status==='published'&&!p.parentId&&(p.title.toLowerCase().includes(q)||p.excerpt.toLowerCase().includes(q)));
   if(!f.length){r.innerHTML='<div class="s-none">검색 결과가 없습니다</div>';return}
   r.innerHTML=f.map(p=>{const c=S.categories.find(x=>x.id===p.category);return`<div class="sri" onclick="closeS();curCat='${p.category}';openArt('${p.id}')"><div class="sri-em">${p.emoji}</div><div><div class="sri-t">${p.title}</div><div class="sri-c">${c?c.name:''}</div></div></div>`}).join('');
 }
