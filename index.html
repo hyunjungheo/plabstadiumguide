@@ -2572,13 +2572,34 @@ function goSvcDetailPage(svcId,fromView){
   if(svcBody){
     repairLinkCards(svcBody);
     svcBody.querySelectorAll('[contenteditable]').forEach(function(el){el.removeAttribute('contenteditable');});
-    svcBody.querySelectorAll('.img-link-card[data-post-id]').forEach(function(card){
+    svcBody.querySelectorAll('.img-link-card').forEach(function(card){
       card.removeAttribute('target');
       card.onclick=function(e){
         e.preventDefault();
+        /* data-post-id 우선 */
         var pid=card.getAttribute('data-post-id');
-        var post=S.posts.find(function(p){return p.id===pid;});
-        if(post){openArt(pid,'svcDetail');}
+        /* href에서 추출 */
+        if(!pid){
+          var href=card.getAttribute('href')||'';
+          var m=href.match(/#post:(.+)/);
+          if(m) pid=m[1];
+        }
+        /* 제목으로 검색 */
+        if(!pid){
+          var titleEl=card.querySelector('.img-link-card-title');
+          if(titleEl){
+            var t=titleEl.textContent.trim();
+            var post=S.posts.find(function(p){return p.title===t;});
+            if(post) pid=post.id;
+          }
+        }
+        if(pid){
+          var post=S.posts.find(function(p){return p.id===pid;});
+          if(post){openArt(pid,'svcDetail');return;}
+        }
+        /* 외부 링크 */
+        var href2=card.getAttribute('href')||'';
+        if(href2&&href2.indexOf('http')===0) window.open(href2,'_blank');
       };
     });
     svcBody.querySelectorAll('.callout-color-btn').forEach(function(btn){btn.remove();});
@@ -2708,9 +2729,17 @@ function openArt(id,fromView){
   /* contenteditable 속성 제거 (어드민용) */
   document.querySelectorAll('#artBody [contenteditable]').forEach(function(el){el.removeAttribute('contenteditable');});
   /* 내부 링크 카드 클릭 처리 */
-  document.querySelectorAll('#artBody .img-link-card[data-post-id]').forEach(function(card){
+  document.querySelectorAll('#artBody .img-link-card').forEach(function(card){
     card.removeAttribute('target');
-    card.onclick=function(e){e.preventDefault();openArt(card.getAttribute('data-post-id'),'art');};
+    card.onclick=function(e){
+      e.preventDefault();
+      var pid=card.getAttribute('data-post-id');
+      if(!pid){var href=card.getAttribute('href')||'';var m=href.match(/#post:(.+)/);if(m)pid=m[1];}
+      if(!pid){var tEl=card.querySelector('.img-link-card-title');if(tEl){var t=tEl.textContent.trim();var fp=S.posts.find(function(p){return p.title===t;});if(fp)pid=fp.id;}}
+      if(pid){openArt(pid,'art');return;}
+      var href2=card.getAttribute('href')||'';
+      if(href2&&href2.indexOf('http')===0) window.open(href2,'_blank');
+    };
   });
   /* 콜아웃 🎨 버튼 숨기기 */
   document.querySelectorAll('#artBody .callout-color-btn').forEach(function(btn){btn.remove();});
@@ -2816,35 +2845,42 @@ function tocScroll(id){
 /* ── 깨진 링크카드 복구 ── */
 function repairLinkCards(container){
   if(!container)return;
+
+  /* 제목으로 게시글 찾기 헬퍼 */
+  function _findPostByTitle(title){
+    if(!title)return null;
+    var t=title.trim();
+    return S.posts.find(function(p){return p.title===t;})||
+           S.posts.find(function(p){return p.title&&p.title.indexOf(t)===0;})||null;
+  }
+
   /* 1) img-link-card-body가 <a class="img-link-card"> 안에 없는 경우 복구 */
   container.querySelectorAll('.img-link-card-body').forEach(function(body){
     var parent=body.parentElement;
     if(parent&&parent.classList.contains('img-link-card'))return; /* 정상 */
-    /* 부모가 카드가 아님 → 래퍼 생성 */
     var titleEl=body.querySelector('.img-link-card-title');
-    var urlEl=body.querySelector('.img-link-card-url');
     var title=titleEl?titleEl.textContent.trim():'';
-    var urlText=urlEl?urlEl.textContent.trim():'';
+    var post=_findPostByTitle(title);
     var a=document.createElement('a');
     a.className='img-link-card';
-    a.href='#';
+    a.href=post?'#post:'+post.id:'#';
+    if(post) a.setAttribute('data-post-id',post.id);
     a.setAttribute('contenteditable','false');
-    a.style.cssText='';
     body.parentNode.insertBefore(a,body);
     a.appendChild(body);
   });
   /* 2) img-link-card-title이 직접 컨테이너에 있는 경우 (body 래퍼도 없음) */
   container.querySelectorAll('.img-link-card-title').forEach(function(titleEl){
-    if(titleEl.closest('.img-link-card'))return; /* 이미 카드 안 */
+    if(titleEl.closest('.img-link-card'))return;
     var title=titleEl.textContent.trim();
-    /* 바로 다음 형제에서 url 요소 찾기 */
     var urlEl=null;
     var next=titleEl.nextElementSibling;
     if(next&&next.classList.contains('img-link-card-url')){urlEl=next;}
-    /* 카드 구조 생성 */
+    var post=_findPostByTitle(title);
     var a=document.createElement('a');
     a.className='img-link-card';
-    a.href='#';
+    a.href=post?'#post:'+post.id:'#';
+    if(post) a.setAttribute('data-post-id',post.id);
     a.setAttribute('contenteditable','false');
     var body=document.createElement('div');
     body.className='img-link-card-body';
@@ -2856,21 +2892,23 @@ function repairLinkCards(container){
   /* 3) img-link-card-url이 단독으로 있는 경우 (title 없이) */
   container.querySelectorAll('.img-link-card-url').forEach(function(urlEl){
     if(urlEl.closest('.img-link-card'))return;
-    /* 바로 이전 형제가 볼드 텍스트 → title로 간주 */
     var prev=urlEl.previousElementSibling;
     var title='';
     if(prev&&(prev.tagName==='B'||prev.tagName==='STRONG'||prev.tagName==='H3'||prev.tagName==='H2')){
       title=prev.textContent.trim();
     }
+    var displayTitle=title||urlEl.textContent.trim();
+    var post=_findPostByTitle(displayTitle);
     var a=document.createElement('a');
     a.className='img-link-card';
-    a.href='#';
+    a.href=post?'#post:'+post.id:'#';
+    if(post) a.setAttribute('data-post-id',post.id);
     a.setAttribute('contenteditable','false');
     var body=document.createElement('div');
     body.className='img-link-card-body';
     var titleDiv=document.createElement('div');
     titleDiv.className='img-link-card-title';
-    titleDiv.textContent=title||urlEl.textContent.trim();
+    titleDiv.textContent=displayTitle;
     body.appendChild(titleDiv);
     body.appendChild(urlEl.cloneNode(true));
     if(prev&&title)prev.parentNode.removeChild(prev);
