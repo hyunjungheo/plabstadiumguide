@@ -1932,16 +1932,94 @@ function hAll(){['homeV','guideV','artV','updNoteV','updArtV','guideHomeV','svcP
 
 /* ── 브라우저 뒤로가기 지원 (History API) ── */
 let _skipPush=false;
+/* ── 해시 기반 URL 라우팅 ── */
+function _stateToHash(state){
+  if(!state)return '#/';
+  switch(state.view){
+    case 'home': return '#/';
+    case 'guidePage': return '#/guide';
+    case 'guide': return '#/guide/'+(state.catId||'');
+    case 'art': return '#/article/'+(state.artId||'');
+    case 'updNotes': return '#/updates';
+    case 'updArt': return '#/update/'+(state.updId||'');
+    case 'svcPage': return '#/service';
+    case 'svcDetail': return '#/service/'+(state.svcId||'');
+    default: return '#/';
+  }
+}
+function _stateToTitle(state){
+  var base=S.settings?.siteName||'플랩 이용 가이드';
+  if(!state)return base;
+  switch(state.view){
+    case 'home': return base;
+    case 'guidePage': return '이용 가이드 | '+base;
+    case 'guide':{
+      var c=S.categories.find(function(x){return x.id===state.catId;});
+      return (c?c.name:'카테고리')+' | '+base;
+    }
+    case 'art':{
+      var p=S.posts.find(function(x){return x.id===state.artId;});
+      return (p?p.title:'게시글')+' | '+base;
+    }
+    case 'updNotes': return '업데이트 소식 | '+base;
+    case 'updArt':{
+      var u=S.updates.find(function(x){return x.id===state.updId;});
+      return (u?u.title:'업데이트')+' | '+base;
+    }
+    case 'svcPage': return '서비스 소개 | '+base;
+    case 'svcDetail':{
+      var SV_NM={gc1:'소셜 매치',gc2:'구장 예약',gc6:'팀',s1:'소셜 매치',s2:'구장 예약',s3:'런드리',s4:'마케팅 지원'};
+      return (SV_NM[state.svcId]||'서비스')+' | '+base;
+    }
+    default: return base;
+  }
+}
+function _hashToState(hash){
+  var h=(hash||'#/').replace(/^#\/?/,'');
+  var parts=h.split('/');
+  var p0=parts[0]||'';
+  var p1=parts[1]||'';
+  if(!p0||p0==='home') return {view:'home'};
+  if(p0==='guide'&&!p1) return {view:'guidePage'};
+  if(p0==='guide'&&p1) return {view:'guide',catId:p1};
+  if(p0==='article'&&p1) return {view:'art',artId:p1};
+  if(p0==='updates'&&!p1) return {view:'updNotes'};
+  if(p0==='update'&&p1) return {view:'updArt',updId:p1};
+  if(p0==='service'&&!p1) return {view:'svcPage'};
+  if(p0==='service'&&p1) return {view:'svcDetail',svcId:p1};
+  return {view:'home'};
+}
 function _navPush(state){
   if(_skipPush)return;
-  history.pushState(state,'',' ');
+  var hash=_stateToHash(state);
+  document.title=_stateToTitle(state);
+  history.pushState(state,'',hash);
 }
 function _navReplace(state){
-  history.replaceState(state,'',' ');
+  var hash=_stateToHash(state);
+  document.title=_stateToTitle(state);
+  history.replaceState(state,'',hash);
+}
+function _routeFromHash(){
+  var st=_hashToState(location.hash);
+  _skipPush=true;
+  if(st.view==='home') goHome();
+  else if(st.view==='guidePage') goGuidePage();
+  else if(st.view==='guide'&&st.catId) showGuide(st.catId,'guideHome');
+  else if(st.view==='art'&&st.artId) openArt(st.artId,'home');
+  else if(st.view==='updNotes') goUpdNotes(true);
+  else if(st.view==='updArt'&&st.updId) openUpdArt(st.updId,'updNotes');
+  else if(st.view==='svcPage') goSvcPage();
+  else if(st.view==='svcDetail'&&st.svcId) goSvcDetailPage(st.svcId,'svcPage');
+  else goHome();
+  _skipPush=false;
+  /* 현재 해시에 맞는 state를 history에 연결 */
+  history.replaceState(st,'',_stateToHash(st));
+  document.title=_stateToTitle(st);
 }
 window.addEventListener('popstate',function(e){
   _skipPush=true;
-  const st=e.state;
+  var st=e.state||_hashToState(location.hash);
   if(!st||st.view==='home'){goHome();}
   else if(st.view==='guidePage'){goGuidePage();}
   else if(st.view==='guide'&&st.catId){showGuide(st.catId,st.from||'guideHome');}
@@ -1953,8 +2031,7 @@ window.addEventListener('popstate',function(e){
   else{goHome();}
   _skipPush=false;
 });
-/* 초기 상태 */
-_navReplace({view:'home'});
+/* 초기 라우팅은 데이터 로드 후 실행 (DOMContentLoaded 내부) */
 function toggleMobileNav(){
   const n=document.getElementById('mobNav');
   const b=document.getElementById('hbgBtn');
@@ -2013,6 +2090,13 @@ async function init(){
   renderGGrid2();
   renderSvcRow2();
   renderFooterContact();
+
+  /* 해시 라우팅: 데이터 로드 완료 후 URL 해시에 해당하는 페이지로 이동 */
+  if(location.hash && location.hash!=='#/' && location.hash!=='#'){
+    _routeFromHash();
+  } else {
+    _navReplace({view:'home'});
+  }
 }
 
 init();
