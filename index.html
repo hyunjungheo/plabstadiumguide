@@ -2293,6 +2293,7 @@ function openUpdArt(updId, fromView){
   `;
   hAll();
   document.getElementById('updArtV').style.display='';
+  repairLinkCards(document.getElementById('updArtContent'));
   // TOC 생성 (업데이트 소식)
   buildToc('updArtContent','updTocSidebar','updTocList');
   window.scrollTo(0,0);
@@ -2485,6 +2486,7 @@ function goSvcDetailPage(svcId,fromView){
   /* 서비스 페이지 내 링크 카드 클릭 처리 */
   const svcBody=document.querySelector('#svcPageContent .svc-page-body');
   if(svcBody){
+    repairLinkCards(svcBody);
     svcBody.querySelectorAll('[contenteditable]').forEach(function(el){el.removeAttribute('contenteditable');});
     svcBody.querySelectorAll('.img-link-card[data-post-id]').forEach(function(card){
       card.removeAttribute('target');
@@ -2617,6 +2619,8 @@ function openArt(id,fromView){
     ${cat?`<div class="a-badge">${cat.emoji} ${cat.name}</div>`:''}
     <h1 class="a-h1">${p.title}</h1>`;
   document.getElementById('artBody').innerHTML=p.content;
+  /* 깨진 링크카드 복구 */
+  repairLinkCards(document.getElementById('artBody'));
   /* contenteditable 속성 제거 (어드민용) */
   document.querySelectorAll('#artBody [contenteditable]').forEach(function(el){el.removeAttribute('contenteditable');});
   /* 내부 링크 카드 클릭 처리 */
@@ -2723,6 +2727,73 @@ function tocScroll(id){
   var offset=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hh')||'56')+16;
   var top=el.getBoundingClientRect().top+window.scrollY-offset;
   window.scrollTo({top:top,behavior:'smooth'});
+}
+
+/* ── 깨진 링크카드 복구 ── */
+function repairLinkCards(container){
+  if(!container)return;
+  /* 1) img-link-card-body가 <a class="img-link-card"> 안에 없는 경우 복구 */
+  container.querySelectorAll('.img-link-card-body').forEach(function(body){
+    var parent=body.parentElement;
+    if(parent&&parent.classList.contains('img-link-card'))return; /* 정상 */
+    /* 부모가 카드가 아님 → 래퍼 생성 */
+    var titleEl=body.querySelector('.img-link-card-title');
+    var urlEl=body.querySelector('.img-link-card-url');
+    var title=titleEl?titleEl.textContent.trim():'';
+    var urlText=urlEl?urlEl.textContent.trim():'';
+    var a=document.createElement('a');
+    a.className='img-link-card';
+    a.href='#';
+    a.setAttribute('contenteditable','false');
+    a.style.cssText='';
+    body.parentNode.insertBefore(a,body);
+    a.appendChild(body);
+  });
+  /* 2) img-link-card-title이 직접 컨테이너에 있는 경우 (body 래퍼도 없음) */
+  container.querySelectorAll('.img-link-card-title').forEach(function(titleEl){
+    if(titleEl.closest('.img-link-card'))return; /* 이미 카드 안 */
+    var title=titleEl.textContent.trim();
+    /* 바로 다음 형제에서 url 요소 찾기 */
+    var urlEl=null;
+    var next=titleEl.nextElementSibling;
+    if(next&&next.classList.contains('img-link-card-url')){urlEl=next;}
+    /* 카드 구조 생성 */
+    var a=document.createElement('a');
+    a.className='img-link-card';
+    a.href='#';
+    a.setAttribute('contenteditable','false');
+    var body=document.createElement('div');
+    body.className='img-link-card-body';
+    titleEl.parentNode.insertBefore(a,titleEl);
+    body.appendChild(titleEl);
+    if(urlEl)body.appendChild(urlEl);
+    a.appendChild(body);
+  });
+  /* 3) img-link-card-url이 단독으로 있는 경우 (title 없이) */
+  container.querySelectorAll('.img-link-card-url').forEach(function(urlEl){
+    if(urlEl.closest('.img-link-card'))return;
+    /* 바로 이전 형제가 볼드 텍스트 → title로 간주 */
+    var prev=urlEl.previousElementSibling;
+    var title='';
+    if(prev&&(prev.tagName==='B'||prev.tagName==='STRONG'||prev.tagName==='H3'||prev.tagName==='H2')){
+      title=prev.textContent.trim();
+    }
+    var a=document.createElement('a');
+    a.className='img-link-card';
+    a.href='#';
+    a.setAttribute('contenteditable','false');
+    var body=document.createElement('div');
+    body.className='img-link-card-body';
+    var titleDiv=document.createElement('div');
+    titleDiv.className='img-link-card-title';
+    titleDiv.textContent=title||urlEl.textContent.trim();
+    body.appendChild(titleDiv);
+    body.appendChild(urlEl.cloneNode(true));
+    if(prev&&title)prev.parentNode.removeChild(prev);
+    urlEl.parentNode.insertBefore(a,urlEl);
+    urlEl.parentNode.removeChild(urlEl);
+    a.appendChild(body);
+  });
 }
 
 /* ── UTILS ── */
