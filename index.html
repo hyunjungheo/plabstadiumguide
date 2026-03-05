@@ -2561,7 +2561,7 @@ function goSvcDetailPage(svcId,fromView){
   const meta = SV_META[svcId] || {nm:'서비스',ds:'',icon:'⚙️',pageKey:svcId};
   const pageKey = meta.pageKey;
   // 어드민에서 작성된 페이지 내용 (pageKey 또는 svcId로 조회)
-  const pageContent = (S.servicePages && (S.servicePages[pageKey] || S.servicePages[svcId])) || '';
+  const pageContent = _convertSpToPlain((S.servicePages && (S.servicePages[pageKey] || S.servicePages[svcId])) || '');
   const svc = {title:meta.nm, desc:meta.ds};
   const icon = meta.icon;
   const _ = null; // unused placeholder
@@ -2888,6 +2888,57 @@ function tocScroll(id){
 }
 
 /* ── 깨진 링크카드 복구 ── */
+/* ── sp- 템플릿 → 일반 HTML 변환 ── */
+function _convertSpToPlain(html){
+  if(!html||!/<[^>]+class="sp-/.test(html))return html;
+  var tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  tmp.querySelectorAll('.sp-hero').forEach(function(hero){
+    var frag=document.createDocumentFragment();
+    var title=hero.querySelector('.sp-title');
+    var lead=hero.querySelector('.sp-lead');
+    if(title){var h=document.createElement('h2');h.innerHTML=title.innerHTML;frag.appendChild(h);}
+    if(lead){var p=document.createElement('p');p.innerHTML=lead.innerHTML;frag.appendChild(p);}
+    hero.replaceWith(frag);
+  });
+  tmp.querySelectorAll('.sp-card-grid').forEach(function(grid){
+    var cols=grid.querySelectorAll('.sp-card');
+    var colHtml=Array.from(cols).map(function(c){
+      var icon=c.querySelector('.sp-card-icon');
+      var title=c.querySelector('.sp-card-title');
+      var desc=c.querySelector('.sp-card-desc');
+      return '<div style="text-align:center;padding:16px">'
+        +(icon?'<div style="font-size:36px;margin-bottom:8px">'+icon.innerHTML+'</div>':'')
+        +(title?'<div style="font-weight:700;margin-bottom:4px">'+title.innerHTML+'</div>':'')
+        +(desc?'<div style="font-size:13px;color:var(--muted)">'+desc.innerHTML+'</div>':'')
+        +'</div>';
+    }).join('');
+    var wrap=document.createElement('div');
+    wrap.style.cssText='display:grid;grid-template-columns:repeat('+(cols.length||3)+',1fr);gap:10px;margin:14px 0';
+    wrap.innerHTML=colHtml;
+    grid.replaceWith(wrap);
+  });
+  tmp.querySelectorAll('.sp-steps').forEach(function(steps){
+    var items=steps.querySelectorAll('.sp-step');
+    var ol=document.createElement('ol');
+    ol.style.cssText='padding-left:24px;margin:8px 0';
+    items.forEach(function(s){
+      var li=document.createElement('li');li.style.cssText='margin:6px 0';
+      var inner=s.querySelector('div');
+      li.innerHTML=inner?inner.innerHTML:s.innerHTML;
+      ol.appendChild(li);
+    });
+    steps.replaceWith(ol);
+  });
+  tmp.querySelectorAll('.sp-section').forEach(function(sec){
+    var frag=document.createDocumentFragment();
+    while(sec.firstChild) frag.appendChild(sec.firstChild);
+    sec.replaceWith(frag);
+  });
+  tmp.querySelectorAll('[class*="sp-"]').forEach(function(el){el.removeAttribute('class');});
+  return tmp.innerHTML;
+}
+
 /* ── 표 스크롤 래퍼 (모바일 가로 스크롤) ── */
 function _wrapTables(container){
   if(!container)return;
