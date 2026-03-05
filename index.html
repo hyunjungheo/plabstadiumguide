@@ -2126,6 +2126,9 @@ function goSvcPage(){
   const v=document.getElementById('svcPageV');
   if(!v)return;
   v.style.display='';
+  /* 카드 목록: 배경을 기본(alt)으로 복원 */
+  var sec=v.querySelector('.sec');
+  if(sec) sec.style.background='';
   // 헤더: 상단메뉴 접근이므로 홈으로 버튼 숨김
   const pgHd=v.querySelector('.pg-hd');
   const pgTtl=v.querySelector('.pg-ttl');
@@ -2548,7 +2551,9 @@ function goSvcDetailPage(svcId,fromView){
   const v=document.getElementById('svcPageV');
   if(!v)return;
   v.style.display='';
-  // 헤더의 제목·뒤로가기 업데이트 (접근 경로에 따라 변경)
+  /* 상세 페이지 배경을 흰색으로 변경 */
+  var sec=v.querySelector('.sec');
+  if(sec) sec.style.background='var(--white)';
   const pgTtl=v.querySelector('.pg-ttl');
   const pgBk=v.querySelector('.pg-bk');
   if(pgTtl) pgTtl.textContent=meta.nm||'서비스 소개';
