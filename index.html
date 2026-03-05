@@ -443,11 +443,11 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .abody .ib-l{font-weight:800;font-size:12.5px;color:var(--blue);margin-bottom:5px}
 .abody .ib p{font-size:13.5px;margin:0}
 /* 표 — 모바일 가로 스크롤 */
-.abody table{border-collapse:collapse;margin:8px 0;min-width:100%}
-.abody table td,.abody table th{border:1px solid var(--bdr);padding:8px 12px;font-size:13.5px;white-space:normal;word-break:keep-all}
-.abody table th{background:var(--bg);font-weight:700;color:var(--txt)}
+.abody table{border-collapse:collapse;width:100%;margin:8px 0}
+.abody table td,.abody table th{border:1px solid var(--bdr);padding:7px 12px;font-size:13px;min-width:60px;vertical-align:top;line-height:1.5}
+.abody table th{background:var(--bg);font-weight:600;color:var(--txt);font-size:12.5px}
 .abody .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0}
-.abody .tbl-wrap table{margin:0;min-width:100%;width:max-content}
+.abody .tbl-wrap table{margin:0}
 /* 이미지 — 일관된 표시 */
 .abody img{max-width:100%;height:auto;border-radius:8px;margin:12px auto;display:block}
 .abody video{max-width:100%;border-radius:10px;margin:12px 0;display:block}
@@ -904,11 +904,11 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .svc-page-body ul li{list-style-type:disc}
 .svc-page-body ul ul li{list-style-type:circle}
 .svc-page-body blockquote{border-left:3px solid var(--blue);padding:8px 14px;margin:10px 0;font-style:italic}
-.svc-page-body table{border-collapse:collapse;min-width:100%;margin:12px 0}
+.svc-page-body table{border-collapse:collapse;width:100%;margin:12px 0}
 .svc-page-body .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0}
-.svc-page-body .tbl-wrap table{margin:0;min-width:100%;width:max-content}
-.svc-page-body table td,.svc-page-body table th{border:1px solid var(--bdr);padding:8px 12px;font-size:13.5px}
-.svc-page-body table th{background:var(--bg);font-weight:700;color:var(--txt)}
+.svc-page-body .tbl-wrap table{margin:0}
+.svc-page-body table td,.svc-page-body table th{border:1px solid var(--bdr);padding:7px 12px;font-size:13px;min-width:60px;vertical-align:top;line-height:1.5}
+.svc-page-body table th{background:var(--bg);font-weight:600;color:var(--txt);font-size:12.5px}
 .svc-page-body img{max-width:100%;border-radius:10px;margin:10px 0;display:block}
 .svc-page-body video{max-width:100%;border-radius:10px;margin:10px 0;display:block}
 .svc-page-body .rte-video-wrap{margin:12px 0;border-radius:10px;overflow:hidden;background:#000}
@@ -2866,11 +2866,6 @@ function _wrapTables(container){
   if(!container)return;
   container.querySelectorAll('table').forEach(function(tbl){
     if(tbl.parentElement&&tbl.parentElement.classList.contains('tbl-wrap'))return;
-    /* table-layout:fixed → auto로 변경 (셀 내용에 맞게 확장) */
-    if(tbl.style.tableLayout==='fixed') tbl.style.tableLayout='auto';
-    /* width:100% 대신 min-width:100% 사용 */
-    tbl.style.width='max-content';
-    tbl.style.minWidth='100%';
     var wrap=document.createElement('div');
     wrap.className='tbl-wrap';
     tbl.parentNode.insertBefore(wrap,tbl);
