@@ -2858,17 +2858,20 @@ function tocScroll(id){
 /* ── 콘텐츠 내 불필요한 배경색 제거 ── */
 function _stripContentBg(container){
   if(!container)return;
-  container.querySelectorAll('div,section,article,main,header,footer,aside,nav,span,p').forEach(function(el){
-    if(!el.style)return;
-    if(el.classList.contains('callout')||el.classList.contains('img-link-card')||
-       el.classList.contains('img-link-card-body')||el.classList.contains('rte-video-wrap')||
-       el.getAttribute('data-callout')||el.closest('.callout')||el.closest('.img-link-card'))return;
-    var bg=el.style.background||el.style.backgroundColor||'';
-    if(bg&&bg!=='transparent'){
-      el.style.removeProperty('background');
-      el.style.removeProperty('background-color');
-    }
-    if(el.hasAttribute('style')&&!el.getAttribute('style').trim()) el.removeAttribute('style');
+  container.querySelectorAll('*').forEach(function(el){
+    if(el.classList.contains('callout')||el.closest('.callout'))return;
+    if(el.classList.contains('img-link-card')||el.closest('.img-link-card'))return;
+    if(el.classList.contains('rte-video-wrap')||el.closest('.rte-video-wrap'))return;
+    if(el.classList.contains('callout-icon'))return;
+    if(el.getAttribute('data-callout'))return;
+    var st=el.getAttribute('style');
+    if(!st)return;
+    var cleaned=st
+      .replace(/background-color\s*:\s*[^;]+;?/gi,'')
+      .replace(/background\s*:\s*(?!.*(?:url|gradient))[^;]+;?/gi,'')
+      .trim();
+    if(!cleaned||cleaned===';') el.removeAttribute('style');
+    else if(cleaned!==st) el.setAttribute('style',cleaned);
   });
 }
 
