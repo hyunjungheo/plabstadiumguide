@@ -2382,6 +2382,7 @@ function openUpdArt(updId, fromView){
   hAll();
   document.getElementById('updArtV').style.display='';
   repairLinkCards(document.getElementById('updArtContent'));
+  _stripContentBg(document.getElementById('updArtContent'));
   // TOC 생성 (업데이트 소식)
   buildToc('updArtContent','updTocSidebar','updTocList');
   window.scrollTo(0,0);
@@ -2574,6 +2575,7 @@ function goSvcDetailPage(svcId,fromView){
   /* 서비스 페이지 내 링크 카드 클릭 처리 */
   const svcBody=document.querySelector('#svcPageContent .svc-page-body');
   if(svcBody){
+    _stripContentBg(svcBody);
     repairLinkCards(svcBody);
     svcBody.querySelectorAll('[contenteditable]').forEach(function(el){el.removeAttribute('contenteditable');});
     svcBody.querySelectorAll('.img-link-card').forEach(function(card){
@@ -2728,7 +2730,8 @@ function openArt(id,fromView){
     ${cat?`<div class="a-badge">${cat.emoji} ${cat.name}</div>`:''}
     <h1 class="a-h1">${p.title}</h1>`;
   document.getElementById('artBody').innerHTML=p.content;
-  /* 깨진 링크카드 복구 */
+  /* 불필요한 배경색 제거 + 깨진 링크카드 복구 */
+  _stripContentBg(document.getElementById('artBody'));
   repairLinkCards(document.getElementById('artBody'));
   /* contenteditable 속성 제거 (어드민용) */
   document.querySelectorAll('#artBody [contenteditable]').forEach(function(el){el.removeAttribute('contenteditable');});
@@ -2847,6 +2850,23 @@ function tocScroll(id){
 }
 
 /* ── 깨진 링크카드 복구 ── */
+/* ── 콘텐츠 내 불필요한 배경색 제거 ── */
+function _stripContentBg(container){
+  if(!container)return;
+  container.querySelectorAll('div,section,article,main,header,footer,aside,nav,span,p').forEach(function(el){
+    if(!el.style)return;
+    if(el.classList.contains('callout')||el.classList.contains('img-link-card')||
+       el.classList.contains('img-link-card-body')||el.classList.contains('rte-video-wrap')||
+       el.getAttribute('data-callout')||el.closest('.callout')||el.closest('.img-link-card'))return;
+    var bg=el.style.background||el.style.backgroundColor||'';
+    if(bg&&bg!=='transparent'){
+      el.style.removeProperty('background');
+      el.style.removeProperty('background-color');
+    }
+    if(el.hasAttribute('style')&&!el.getAttribute('style').trim()) el.removeAttribute('style');
+  });
+}
+
 function repairLinkCards(container){
   if(!container)return;
 
