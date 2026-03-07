@@ -2716,6 +2716,30 @@ function goSvcDetailPage(svcId,fromView){
     });
     svcBody.querySelectorAll('.callout-color-btn').forEach(function(btn){btn.remove();});
   }
+  /* ── 서비스 페이지 하단 관련 자료 ── */
+  var svcRelWrap=document.getElementById('svcPageContent');
+  if(svcRelWrap&&pageContent){
+    var svcPosts=S.posts.filter(function(p){
+      return p.postType==='service'&&p.serviceId===pageKey&&p.status==='published'&&!p.parentId;
+    });
+    /* serviceId 매칭 게시글이 없으면 같은 서비스 카테고리 게시글 */
+    if(!svcPosts.length){
+      svcPosts=S.posts.filter(function(p){
+        return p.postType==='service'&&p.status==='published'&&!p.parentId;
+      }).slice(0,5);
+    }
+    if(svcPosts.length){
+      var relHtml=svcPosts.map(function(rp){
+        return '<div class="related-item" onclick="openArt(\''+rp.id+'\',\'svcDetail\')">'+
+          '<span class="related-item-title">'+rp.title+'</span>'+
+          '<span class="related-item-arrow">›</span>'+
+          '</div>';
+      }).join('');
+      var relSection=document.createElement('div');
+      relSection.innerHTML='<div class="related-section" style="max-width:720px"><div class="related-section-title">관련 자료</div><div class="related-list">'+relHtml+'</div></div>';
+      svcRelWrap.appendChild(relSection);
+    }
+  }
 }
 
 /* ── GUIDE LIST ── */
@@ -2872,8 +2896,10 @@ function openArt(id,fromView){
   var relBox=document.getElementById('artRelated');
   if(relBox){
     var relIds = p.relatedPosts && p.relatedPosts.length ? p.relatedPosts
-      // 목데이터: relatedPosts 없는 경우 같은 카테고리 게시글 최대 3개
-      : S.posts.filter(function(x){ return x.id!==p.id && x.category===p.category && x.status!=='draft'; }).slice(0,3).map(function(x){return x.id;});
+      : (p.postType==='service'
+        ? S.posts.filter(function(x){return x.id!==p.id&&x.postType==='service'&&x.status!=='draft';}).slice(0,3).map(function(x){return x.id;})
+        : S.posts.filter(function(x){return x.id!==p.id&&x.category===p.category&&x.status!=='draft';}).slice(0,3).map(function(x){return x.id;})
+      );
     var items = relIds.map(function(rid){
       var rp = S.posts.find(function(x){return x.id===rid;});
       if(!rp || rp.status==='draft') return '';
