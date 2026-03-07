@@ -473,6 +473,8 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 .abody .rte-video-wrap{margin:12px 0;border-radius:10px;overflow:hidden;background:#000}
 /* 그리드 갤러리 이미지 */
 .abody [style*="display:grid"] img,.abody [style*="display: grid"] img{margin:0!important;border-radius:6px;aspect-ratio:4/3;object-fit:cover;width:100%!important}
+/* 인라인 그리드 컬럼 모바일 지원 */
+.abody [style*="display:grid"]>div,.svc-page-body [style*="display:grid"]>div{min-width:0;overflow:hidden;word-break:break-word}
 /* 링크 카드 — 반드시 카드로 표시 (모든 컨텍스트) */
 .img-link-card{display:flex!important;border:1px solid var(--bdr,#e5e7eb)!important;border-radius:8px;overflow:hidden;margin:10px 0;cursor:pointer;text-decoration:none!important;color:inherit!important;transition:box-shadow .15s;max-height:130px;background:var(--white,#fff)}
 .img-link-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.12)}
@@ -498,17 +500,17 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
 /* 배경 하이라이트 패딩 */
 .abody span[style*="background"]{padding:1px 2px;border-radius:2px}
 /* ── 다단 컬럼 레이아웃 (어드민 에디터 출력) ── */
-.col-layout{display:grid;gap:16px;margin:12px 0;width:100%}
+.col-layout{display:grid;gap:12px;margin:12px 0;width:100%}
 .col-layout.cols-2{grid-template-columns:repeat(2,1fr)}
 .col-layout.cols-3{grid-template-columns:repeat(3,1fr)}
 .col-layout.cols-4{grid-template-columns:repeat(4,1fr)}
 .col-layout.cols-5{grid-template-columns:repeat(5,1fr)}
 .col-layout.cols-6{grid-template-columns:repeat(6,1fr)}
-.col-item{padding:10px 12px;border-radius:8px}
+.col-item{padding:8px 10px;border-radius:8px;font-size:14px;min-width:0;overflow:hidden}
 .col-layout-del{display:none}
-@media(max-width:600px){
-  .col-layout.cols-2,.col-layout.cols-3,.col-layout.cols-4,
-  .col-layout.cols-5,.col-layout.cols-6{grid-template-columns:1fr}
+@media(max-width:480px){
+  .col-layout{gap:8px}
+  .col-item{padding:6px 8px;font-size:13px}
 }
 
 /* ── SEARCH ── */
@@ -1110,9 +1112,10 @@ html.dark .pl-logo{color:#fff}
 /* 다크모드 */
 html.dark .gl-pg{background:var(--bg)}
 @media(max-width:480px){
-  .gl-pg{padding:20px 14px 60px}
-  .gl-group-hd{padding:16px 16px 12px;font-size:18px}
-  .gl-item{padding:15px 16px}
+  .gl-pg{padding:20px 16px 60px}
+  .gl-group{border-radius:10px;margin-bottom:12px}
+  .gl-group-hd{padding:14px 14px 10px;font-size:18px}
+  .gl-item{padding:13px 14px}
   .gl-item-ttl{font-size:16px}
   .gl-item-cnt{font-size:13.5px}
   .gl-hd{font-size:23px}
