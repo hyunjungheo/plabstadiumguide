@@ -1293,7 +1293,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
     <nav class="pnav" id="pnav">
       <button class="pnav-btn on" id="navHome" onclick="goHome();closeMobileNav()">홈</button>
       <button class="pnav-btn" id="navUpd" onclick="goUpdNotes(true);closeMobileNav()">업데이트 소식</button>
-      <button class="pnav-btn" id="navGuide" onclick="goGuidePage();closeMobileNav()">이용 가이드</button>
+      <button class="pnav-btn" id="navGuide" onclick="goGuidePage();closeMobileNav()">사용 가이드</button>
       <button class="pnav-btn" id="navSvc" onclick="goSvcPage();closeMobileNav()">서비스 소개</button>
     </nav>
     <div class="ph-r">
@@ -1308,7 +1308,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
     <div class="mob-nav" id="mobNav">
       <button class="mob-nav-btn" id="mnHome" onclick="goHome();closeMobileNav()">홈</button>
       <button class="mob-nav-btn" id="mnUpd" onclick="goUpdNotes(true);closeMobileNav()">업데이트 소식</button>
-      <button class="mob-nav-btn" id="mnGuide" onclick="goGuidePage();closeMobileNav()">이용 가이드</button>
+      <button class="mob-nav-btn" id="mnGuide" onclick="goGuidePage();closeMobileNav()">사용 가이드</button>
       <button class="mob-nav-btn" id="mnSvc" onclick="goSvcPage();closeMobileNav()">서비스 소개</button>
     </div>
   </header>
@@ -1402,7 +1402,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
       <div class="si">
         <div class="pg-hd">
           <button class="pg-bk" onclick="goHome()">← 홈으로</button>
-          <div class="pg-ttl">이용 가이드</div>
+          <div class="pg-ttl">사용 가이드</div>
         </div>
         <div class="ggrid" id="ggEl2"></div>
       </div>
@@ -2009,7 +2009,7 @@ function _stateToTitle(state){
   if(!state)return base;
   switch(state.view){
     case 'home': return base;
-    case 'guidePage': return '이용 가이드 | '+base;
+    case 'guidePage': return '사용 가이드 | '+base;
     case 'guide':{
       var c=S.categories.find(function(x){return x.id===state.catId;});
       return (c?c.name:'카테고리')+' | '+base;
@@ -2717,12 +2717,11 @@ function goSvcDetailPage(svcId,fromView){
     svcBody.querySelectorAll('.callout-color-btn').forEach(function(btn){btn.remove();});
   }
   /* ── 서비스 페이지 하단 관련 자료 ── */
-  var svcRelWrap=document.getElementById('svcPageContent');
-  if(svcRelWrap&&pageContent){
+  var svcBodyForRel=document.querySelector('#svcPageContent .svc-page-body');
+  if(svcBodyForRel&&pageContent){
     var svcPosts=S.posts.filter(function(p){
       return p.postType==='service'&&p.serviceId===pageKey&&p.status==='published'&&!p.parentId;
     });
-    /* serviceId 매칭 게시글이 없으면 같은 서비스 카테고리 게시글 */
     if(!svcPosts.length){
       svcPosts=S.posts.filter(function(p){
         return p.postType==='service'&&p.status==='published'&&!p.parentId;
@@ -2735,9 +2734,10 @@ function goSvcDetailPage(svcId,fromView){
           '<span class="related-item-arrow">›</span>'+
           '</div>';
       }).join('');
-      var relSection=document.createElement('div');
-      relSection.innerHTML='<div class="related-section" style="max-width:720px"><div class="related-section-title">관련 자료</div><div class="related-list">'+relHtml+'</div></div>';
-      svcRelWrap.appendChild(relSection);
+      var relDiv=document.createElement('div');
+      relDiv.className='related-section';
+      relDiv.innerHTML='<div class="related-section-title">관련 자료</div><div class="related-list">'+relHtml+'</div>';
+      svcBodyForRel.appendChild(relDiv);
     }
   }
 }
@@ -2758,7 +2758,7 @@ function showGuide(catId,fromView){
     bkBtn.textContent='← 홈으로';
     bkBtn.onclick=()=>{if(history.state&&history.state.view==='guide')history.back();else goHome();};
   } else {
-    bkBtn.textContent='← 이용 가이드';
+    bkBtn.textContent='← 사용 가이드';
     bkBtn.onclick=()=>{if(history.state&&history.state.view==='guide')history.back();else goGuidePage();};
   }
 
