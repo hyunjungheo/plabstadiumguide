@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>플랩 이용 가이드</title>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9DG610TXWP"></script>
 <script>
@@ -9,9 +12,6 @@
   gtag('js', new Date());
   gtag('config', 'G-9DG610TXWP');
 </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>플랩 이용 가이드</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <style>
 html,body{overflow-x:hidden;max-width:100vw}
@@ -313,7 +313,7 @@ body{font-family:'Pretendard',sans-serif;background:var(--white);color:var(--txt
   margin-bottom:14px;flex-shrink:0;font-size:0;align-self:flex-start;
 }
 .schip-ic svg{width:24px;height:24px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.schip-nm{font-size:14px;font-weight:700;color:var(--txt);margin-bottom:5px;letter-spacing:-.1px}
+.schip-nm{font-size:14px;font-weight:600;color:var(--txt);margin-bottom:5px;letter-spacing:-.1px}
 .schip-ds{font-size:12px;color:var(--muted);line-height:1.6;flex:1;margin-bottom:12px}
 .schip-cta{
   display:inline-flex;align-items:center;gap:4px;
@@ -2034,8 +2034,9 @@ function _stateToTitle(state){
     }
     case 'svcPage': return '서비스 소개 | '+base;
     case 'svcDetail':{
-      var SV_NM={gc1:'소셜 매치',gc2:'구장 예약',gc6:'팀',s1:'소셜 매치',s2:'구장 예약',s3:'런드리',s4:'마케팅 지원'};
-      return (SV_NM[state.svcId]||'서비스')+' | '+base;
+      var svcNm='서비스';
+      (S.services||[]).forEach(function(s){if(s.id===state.svcId||s.link===state.svcId)svcNm=s.title;});
+      return svcNm+' | '+base;
     }
     default: return base;
   }
@@ -2616,22 +2617,17 @@ function renderGGrid2(){
   }).join('');
 }
 function renderSvcRow(){
-  const SV=[
-    {id:'gc1',nm:'소셜 매치',ds:'내가 하고 싶을 때, 하고 싶은 곳에서, 하고 싶은 사람들과 하는 원데이 소셜 풋살',
-     svg:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/>'},
-    {id:'gc2',nm:'구장 예약',ds:'원하는 시간, 구장을 한 번에 확인하고 바로 예약',
-     svg:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/>'},
-    {id:'gc6',nm:'팀',ds:'우리 팀과 팀리그, 게스트 모집 참여하기',
-     svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>'},
-  ];
-  document.getElementById('srowEl').innerHTML=SV.map(s=>
-    `<div class="schip" onclick="goSvcDetailPage('${s.id}','home')">` +
-    `<div class="schip-ic"><svg viewBox="0 0 24 24">${s.svg}</svg></div>` +
-    `<div class="schip-nm">${s.nm}</div>` +
-    `<div class="schip-ds">${s.ds}</div>` +
-    `<button class="schip-cta" onclick="goSvcDetailPage('${s.id}','home')">자세히 보기 <span class="schip-ar">→</span></button>` +
-    `</div>`
-  ).join('');
+  var el=document.getElementById('srowEl');if(!el)return;
+  el.innerHTML=(S.services||[]).map(function(s){
+    var svcId=s.link||s.id;
+    var svgPath=EMOJI_SVG[s.emoji]||IDEF;
+    return '<div class="schip" onclick="goSvcDetailPage(\''+svcId+'\',\'home\')">'+
+      '<div class="schip-ic"><svg viewBox="0 0 24 24">'+svgPath+'</svg></div>'+
+      '<div class="schip-nm">'+s.title+'</div>'+
+      '<div class="schip-ds">'+s.desc+'</div>'+
+      '<button class="schip-cta" onclick="goSvcDetailPage(\''+svcId+'\',\'home\')">자세히 보기 <span class="schip-ar">→</span></button>'+
+      '</div>';
+  }).join('');
 }
 
 /* ── SERVICE DETAIL PAGE ── */
@@ -2639,14 +2635,15 @@ function goSvcDetailPage(svcId,fromView){
   // svcId는 gc1,gc2,gc6 형식 또는 s1,s2... 형식 모두 지원
   // SV 매핑 (renderSvcRow 기준)
   const SV_META={
-    gc1:{nm:'소셜 매치',ds:'내가 하고 싶을 때, 하고 싶은 곳에서, 하고 싶은 사람들과 하는 원데이 소셜 풋살',icon:'⚽',pageKey:'s1'},
-    gc2:{nm:'구장 예약',ds:'원하는 시간, 구장을 한 번에 확인하고 바로 예약',icon:'🏟️',pageKey:'s2'},
-    gc6:{nm:'팀',ds:'우리 팀과 팀리그, 게스트 모집 참여하기',icon:'👥',pageKey:'s3'},
-    s1:{nm:'소셜 매치',ds:'간편 신청으로 5분 만에 레벨에 맞는 상대와 매치를 즐기세요.',icon:'⚽',pageKey:'s1'},
-    s2:{nm:'구장 예약',ds:'원하는 날짜와 시간에 구장을 예약하세요.',icon:'🏟️',pageKey:'s2'},
-    s3:{nm:'런드리',ds:'유니폼 세탁부터 수거·반납까지 한 번에 관리하세요.',icon:'👕',pageKey:'s3'},
-    s4:{nm:'마케팅 지원',ds:'80만 유저에게 구장을 알릴 수 있는 홍보 도구를 제공합니다.',icon:'📣',pageKey:'s4'},
+    gc1:{nm:'소셜 매치',ds:'',icon:'⚽',pageKey:'s1'},
+    gc2:{nm:'구장 예약',ds:'',icon:'🏟️',pageKey:'s2'},
+    gc6:{nm:'팀',ds:'',icon:'👥',pageKey:'s3'},
   };
+  /* S.services에서 동적으로 매핑 추가 */
+  (S.services||[]).forEach(function(s){
+    SV_META[s.id]={nm:s.title,ds:s.desc,icon:s.emoji,pageKey:s.id};
+    if(s.link) SV_META[s.link]={nm:s.title,ds:s.desc,icon:s.emoji,pageKey:s.id};
+  });
   const meta = SV_META[svcId] || {nm:'서비스',ds:'',icon:'⚙️',pageKey:svcId};
   const pageKey = meta.pageKey;
   // 어드민에서 작성된 페이지 내용 (pageKey 또는 svcId로 조회)
